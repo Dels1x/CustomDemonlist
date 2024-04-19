@@ -4,8 +4,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import ua.delsix.exception.AuthorizationException;
 import ua.delsix.jpa.entity.Demonlist;
 import ua.delsix.service.DemonlistService;
+import ua.delsix.utils.ResponseUtils;
 
 @RestController
 @RequestMapping("/demonlists")
@@ -26,5 +28,16 @@ public class DemonlistController {
                                                      @AuthenticationPrincipal UserDetails userDetails) {
         demonlistService.createDemonlist(demonlist, userDetails);
         return ResponseEntity.ok(String.format("Demonlist %s has been created", demonlist.getName()));
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteDemonlist(@RequestParam long id,
+                                                  @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            demonlistService.deleteDemonlist(id, userDetails);
+            return ResponseEntity.ok(String.format("Demonlist %s has been deleted", id));
+        } catch (AuthorizationException e) {
+            return ResponseUtils.authorizationExceptionMessage(e.getMessage());
+        }
     }
 }

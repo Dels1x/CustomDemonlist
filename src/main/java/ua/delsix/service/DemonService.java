@@ -10,7 +10,7 @@ import ua.delsix.jpa.entity.Demonlist;
 import ua.delsix.jpa.entity.User;
 import ua.delsix.jpa.repository.DemonRepository;
 import ua.delsix.jpa.repository.DemonlistRepository;
-import ua.delsix.jpa.repository.UserRepository;
+import ua.delsix.utils.UserUtils;
 
 @Service
 @Log4j2
@@ -18,19 +18,21 @@ public class DemonService {
     private final DemonlistRepository demonlistRepository;
     private final AuthorizationService authorizationService;
     private final DemonRepository demonRepository;
-    private final UserRepository userRepository;
+    private final UserUtils userUtils;
 
-    public DemonService(AuthorizationService authorizationService, DemonRepository demonRepository, UserRepository userRepository,
-                        DemonlistRepository demonlistRepository) {
+    public DemonService(AuthorizationService authorizationService,
+                        DemonRepository demonRepository,
+                        DemonlistRepository demonlistRepository,
+                        UserUtils userUtils) {
         this.authorizationService = authorizationService;
         this.demonRepository = demonRepository;
-        this.userRepository = userRepository;
+        this.userUtils = userUtils;
         this.demonlistRepository = demonlistRepository;
     }
 
     @Transactional
     public void createDemon(Demon demon, UserDetails userDetails) throws AuthorizationException {
-        User user = userRepository.findByUsername(userDetails.getUsername());
+        User user = userUtils.getUserFromUserDetails(userDetails);
         Demonlist demonlist = demon.getDemonlist();
         authorizationService.verifyOwnershipOfTheDemonlist(demonlist, user);
 
@@ -52,14 +54,16 @@ public class DemonService {
         }
 
         demonRepository.save(demon);
+        log.info("New demon {} of user {} has been created", demon.getId(), user.getUsername());
     }
 
     public void deleteDemon(long demonlistId, long demonId, UserDetails userDetails) throws AuthorizationException {
-        User user = userRepository.findByUsername(userDetails.getUsername());
+        User user = userUtils.getUserFromUserDetails(userDetails);
         Demonlist demonlist = demonlistRepository.getReferenceById(demonlistId);
         authorizationService.verifyOwnershipOfTheDemonlist(demonlist, user);
 
         demonRepository.deleteById(demonId);
+        log.info("Demon {} of user {} has been deleted", demonId, user.getUsername());
     }
 
     private int nextIndex(Demon demon) {
