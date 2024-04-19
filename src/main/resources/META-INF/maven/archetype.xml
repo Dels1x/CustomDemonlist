@@ -1,0 +1,9 @@
+<archetype>
+  <id>CustomDemonlist</id>
+  <sources>
+    <source>src/main/java/ua.delsix.App.java</source>
+  </sources>
+  <testSources>
+    <source>src/test/java/AppTest.java</source>
+  </testSources>
+</archetype>
