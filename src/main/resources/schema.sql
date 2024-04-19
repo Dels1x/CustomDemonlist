@@ -22,5 +22,5 @@ CREATE TABLE IF NOT EXISTS demon (
     author VARCHAR(32),
     attempts_count INTEGER,
     enjoyment_rating INTEGER,
-    order_index INTEGER NOT NULL UNIQUE
+    order_index INTEGER NOT NULL
 );
