@@ -1,5 +1,6 @@
 package ua.delsix.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -8,6 +9,8 @@ import ua.delsix.jpa.entity.Demonlist;
 import ua.delsix.jpa.entity.User;
 import ua.delsix.jpa.repository.DemonlistRepository;
 import ua.delsix.util.UserUtil;
+
+import java.util.Optional;
 
 @Service
 @Log4j2
@@ -24,8 +27,14 @@ public class DemonlistService {
         this.userUtil = userUtil;
     }
 
-    public Demonlist getDemonlistById(long id) {
-        return demonlistRepository.getReferenceById(id);
+    public Demonlist getDemonlistById(long id) throws EntityNotFoundException {
+        Optional<Demonlist> demonlist = demonlistRepository.findById(id);
+
+        if (demonlist.isEmpty()) {
+            throw new EntityNotFoundException("Demonlist with id " + id + " not found");
+        }
+
+        return demonlist.get();
     }
 
     public void createDemonlist(Demonlist demonlist, UserDetails userDetails) {
@@ -36,12 +45,18 @@ public class DemonlistService {
         log.info("New demonlist {} of user {} has been created", demonlist.getId(), user.getUsername());
     }
 
-    public void deleteDemonlist(long demonlistId, UserDetails userDetails) throws AuthorizationException {
+    public void deleteDemonlist(long id, UserDetails userDetails) throws
+            AuthorizationException,
+            EntityNotFoundException {
         User user = userUtil.getUserFromUserDetails(userDetails);
-        Demonlist demonlist = getDemonlistById(demonlistId);
+        Demonlist demonlist = getDemonlistById(id);
         authorizationService.verifyOwnershipOfTheDemonlist(demonlist, user);
 
-        demonlistRepository.deleteById(demonlistId);
-        log.info("Demonlist {} of user {} has been deleted", demonlistId, user.getUsername());
+        if (!demonlistRepository.existsById(id)) {
+            throw new EntityNotFoundException("Demonlist with id " + id + " not found");
+        }
+
+        demonlistRepository.deleteById(id);
+        log.info("Demonlist {} of user {} has been deleted", id, user.getUsername());
     }
 }

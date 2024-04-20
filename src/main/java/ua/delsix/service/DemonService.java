@@ -1,5 +1,6 @@
 package ua.delsix.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -61,6 +62,10 @@ public class DemonService {
         User user = userUtil.getUserFromUserDetails(userDetails);
         Demonlist demonlist = demonlistRepository.getReferenceById(demonlistId);
         authorizationService.verifyOwnershipOfTheDemonlist(demonlist, user);
+
+        if (!demonRepository.existsById(demonId)) {
+            throw new EntityNotFoundException("Demon with id " + demonId + " not found");
+        }
 
         demonRepository.deleteById(demonId);
         log.info("Demon {} of user {} has been deleted", demonId, user.getUsername());

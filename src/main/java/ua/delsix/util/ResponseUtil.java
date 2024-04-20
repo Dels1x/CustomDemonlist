@@ -11,4 +11,8 @@ public class ResponseUtil {
     public static ResponseEntity<String> authorizationExceptionMessage(String s){
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(s);
     }
+
+    public static ResponseEntity<String> notFoundMessage(String s) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(s);
+    }
 }

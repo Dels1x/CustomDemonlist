@@ -1,5 +1,7 @@
 package ua.delsix.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,6 +10,7 @@ import ua.delsix.exception.AuthorizationException;
 import ua.delsix.jpa.entity.Demonlist;
 import ua.delsix.service.DemonlistService;
 import ua.delsix.util.ResponseUtil;
+import ua.delsix.util.Views;
 
 @RestController
 @RequestMapping("/demonlists")
@@ -19,8 +22,13 @@ public class DemonlistController {
     }
 
     @GetMapping("/demonlist")
-    public ResponseEntity<Demonlist> getDemonlist(@RequestParam long id) {
-        return ResponseEntity.ok(demonlistService.getDemonlistById(id));
+    @JsonView(Views.Public.class)
+    public ResponseEntity<?> getDemonlist(@RequestParam long id) {
+        try {
+            return ResponseEntity.ok(demonlistService.getDemonlistById(id));
+        } catch (EntityNotFoundException e) {
+            return ResponseUtil.notFoundMessage(e.getMessage());
+        }
     }
 
     @PostMapping("/create")
@@ -38,6 +46,8 @@ public class DemonlistController {
             return ResponseEntity.ok(String.format("Demonlist %s has been deleted", id));
         } catch (AuthorizationException e) {
             return ResponseUtil.authorizationExceptionMessage(e.getMessage());
+        } catch (EntityNotFoundException e) {
+            return ResponseUtil.notFoundMessage(e.getMessage());
         }
     }
 }

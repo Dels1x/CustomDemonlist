@@ -1,5 +1,6 @@
 package ua.delsix.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,6 +11,8 @@ import ua.delsix.jpa.entity.User;
 import ua.delsix.jpa.repository.DemonRepository;
 import ua.delsix.jpa.repository.DemonlistRepository;
 import ua.delsix.jpa.repository.UserRepository;
+
+import java.util.Optional;
 
 @Service
 @Log4j2
@@ -32,8 +35,14 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User getUserById(long id) {
-        return userRepository.getReferenceById(id);
+    public User getUserById(long id) throws EntityNotFoundException {
+        Optional<User> user = userRepository.findById(id);
+
+        if (user.isEmpty()) {
+            throw new EntityNotFoundException("User with id " + id + " not found");
+        }
+
+        return user.get();
     }
 
     public void createUser(User user) throws UsernameAlreadyExists {
@@ -49,9 +58,15 @@ public class UserService {
         log.info("New user {} created", user.getUsername());
     }
 
-    public void deleteUser(long id, UserDetails userDetails) throws AuthorizationException {
+    public void deleteUser(long id, UserDetails userDetails) throws
+            AuthorizationException,
+            EntityNotFoundException {
         User user = userRepository.findByUsername(userDetails.getUsername());
         authorizationService.verifyUserAuthorization(getUserById(id), user);
+
+        if (!userRepository.existsById(id)) {
+            throw new EntityNotFoundException("User with id " + id + " not found");
+        }
 
         demonRepository.deleteByDemonlistUserId(id);
         demonlistRepository.deleteByUserId(id);
