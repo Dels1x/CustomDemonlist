@@ -2,11 +2,13 @@ package ua.delsix.jpa.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
+import ua.delsix.util.Views;
 
 import java.time.Instant;
 import java.util.LinkedHashSet;
@@ -24,13 +26,14 @@ public class User {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_gen")
     @SequenceGenerator(name = "user_id_gen", sequenceName = "user_id_seq", allocationSize = 1)
     @Column(name = "id", nullable = false)
+    @JsonView(Views.Public.class)
     private Long id;
 
     @Column(name = "username", nullable = false, length = 40)
+    @JsonView(Views.Public.class)
     private String username;
 
     @Column(name = "password", nullable = false)
-    @JsonIgnore
     private String password;
 
     @OneToMany(mappedBy = "user")
@@ -47,6 +50,7 @@ public class User {
     private String oathId;
 
     @Column(name = "created_at")
+    @JsonView(Views.Public.class)
     private Instant createdAt;
 
     @Override

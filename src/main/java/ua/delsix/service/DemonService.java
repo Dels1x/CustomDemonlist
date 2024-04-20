@@ -10,7 +10,7 @@ import ua.delsix.jpa.entity.Demonlist;
 import ua.delsix.jpa.entity.User;
 import ua.delsix.jpa.repository.DemonRepository;
 import ua.delsix.jpa.repository.DemonlistRepository;
-import ua.delsix.utils.UserUtils;
+import ua.delsix.util.UserUtil;
 
 @Service
 @Log4j2
@@ -18,21 +18,21 @@ public class DemonService {
     private final DemonlistRepository demonlistRepository;
     private final AuthorizationService authorizationService;
     private final DemonRepository demonRepository;
-    private final UserUtils userUtils;
+    private final UserUtil userUtil;
 
     public DemonService(AuthorizationService authorizationService,
                         DemonRepository demonRepository,
                         DemonlistRepository demonlistRepository,
-                        UserUtils userUtils) {
+                        UserUtil userUtil) {
         this.authorizationService = authorizationService;
         this.demonRepository = demonRepository;
-        this.userUtils = userUtils;
+        this.userUtil = userUtil;
         this.demonlistRepository = demonlistRepository;
     }
 
     @Transactional
     public void createDemon(Demon demon, UserDetails userDetails) throws AuthorizationException {
-        User user = userUtils.getUserFromUserDetails(userDetails);
+        User user = userUtil.getUserFromUserDetails(userDetails);
         Demonlist demonlist = demon.getDemonlist();
         authorizationService.verifyOwnershipOfTheDemonlist(demonlist, user);
 
@@ -58,7 +58,7 @@ public class DemonService {
     }
 
     public void deleteDemon(long demonlistId, long demonId, UserDetails userDetails) throws AuthorizationException {
-        User user = userUtils.getUserFromUserDetails(userDetails);
+        User user = userUtil.getUserFromUserDetails(userDetails);
         Demonlist demonlist = demonlistRepository.getReferenceById(demonlistId);
         authorizationService.verifyOwnershipOfTheDemonlist(demonlist, user);
 

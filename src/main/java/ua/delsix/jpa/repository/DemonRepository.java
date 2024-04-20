@@ -15,4 +15,5 @@ public interface DemonRepository extends JpaRepository<Demon, Long> {
     @Query("UPDATE Demon d SET d.orderIndex = d.orderIndex + 1 WHERE d.orderIndex >= :orderIndex AND d.demonlist.id = :demonlistId")
     void incrementTargetIndex(int orderIndex, long demonlistId);
     boolean existsByOrderIndexAndDemonlistId(int orderIndex, long demonlistId);
+    void deleteByDemonlistUserId(long userId);
 }

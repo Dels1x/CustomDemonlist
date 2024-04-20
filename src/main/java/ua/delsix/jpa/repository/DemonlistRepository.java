@@ -6,4 +6,5 @@ import ua.delsix.jpa.entity.Demonlist;
 
 @Repository
 public interface DemonlistRepository extends JpaRepository<Demonlist, Long> {
+    void deleteByUserId(long userId);
 }

@@ -1,4 +1,4 @@
-package ua.delsix.utils;
+package ua.delsix.util;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -6,10 +6,10 @@ import ua.delsix.jpa.entity.User;
 import ua.delsix.jpa.repository.UserRepository;
 
 @Component
-public class UserUtils {
+public class UserUtil {
     private final UserRepository userRepository;
 
-    public UserUtils(UserRepository userRepository) {
+    public UserUtil(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

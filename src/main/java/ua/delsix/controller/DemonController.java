@@ -8,18 +8,18 @@ import ua.delsix.exception.AuthorizationException;
 import ua.delsix.exception.DemonlistDoesntExist;
 import ua.delsix.jpa.entity.Demon;
 import ua.delsix.service.DemonService;
-import ua.delsix.utils.DemonlistUtils;
-import ua.delsix.utils.ResponseUtils;
+import ua.delsix.util.DemonlistUtil;
+import ua.delsix.util.ResponseUtil;
 
 @RestController
 @RequestMapping("/demons")
 public class DemonController {
     private final DemonService demonService;
-    private final DemonlistUtils demonlistUtils;
+    private final DemonlistUtil demonlistUtil;
 
-    public DemonController(DemonService demonService, DemonlistUtils demonlistUtils) {
+    public DemonController(DemonService demonService, DemonlistUtil demonlistUtil) {
         this.demonService = demonService;
-        this.demonlistUtils = demonlistUtils;
+        this.demonlistUtil = demonlistUtil;
     }
 
     @DeleteMapping("/delete")
@@ -34,7 +34,7 @@ public class DemonController {
                     demonlistId,
                     userDetails.getUsername()));
         } catch (AuthorizationException e) {
-            return ResponseUtils.authorizationExceptionMessage(e.getMessage());
+            return ResponseUtil.authorizationExceptionMessage(e.getMessage());
         }
     }
 
@@ -43,9 +43,9 @@ public class DemonController {
                                               @RequestParam long demonlistId,
                                               @AuthenticationPrincipal UserDetails userDetails) {
         try {
-            demonlistUtils.LinkDemonlistToDemon(demon, demonlistId);
+            demonlistUtil.LinkDemonlistToDemon(demon, demonlistId);
         } catch (DemonlistDoesntExist e) {
-            return ResponseUtils.demonlistDoesntExistMessage();
+            return ResponseUtil.demonlistDoesntExistMessage();
         }
 
         try {
@@ -56,7 +56,7 @@ public class DemonController {
                     demon.getDemonlist().getId(),
                     userDetails.getUsername()));
         } catch (AuthorizationException e) {
-            return ResponseUtils.authorizationExceptionMessage(e.getMessage());
+            return ResponseUtil.authorizationExceptionMessage(e.getMessage());
         }
     }
 }

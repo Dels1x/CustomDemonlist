@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ua.delsix.exception.AuthorizationException;
 import ua.delsix.jpa.entity.Demonlist;
 import ua.delsix.service.DemonlistService;
-import ua.delsix.utils.ResponseUtils;
+import ua.delsix.util.ResponseUtil;
 
 @RestController
 @RequestMapping("/demonlists")
@@ -37,7 +37,7 @@ public class DemonlistController {
             demonlistService.deleteDemonlist(id, userDetails);
             return ResponseEntity.ok(String.format("Demonlist %s has been deleted", id));
         } catch (AuthorizationException e) {
-            return ResponseUtils.authorizationExceptionMessage(e.getMessage());
+            return ResponseUtil.authorizationExceptionMessage(e.getMessage());
         }
     }
 }

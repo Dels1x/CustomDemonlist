@@ -1,4 +1,4 @@
-package ua.delsix.utils;
+package ua.delsix.util;
 
 import org.springframework.stereotype.Component;
 import ua.delsix.exception.DemonlistDoesntExist;
@@ -7,10 +7,10 @@ import ua.delsix.jpa.entity.Demonlist;
 import ua.delsix.service.DemonlistService;
 
 @Component
-public class DemonlistUtils {
+public class DemonlistUtil {
     private final DemonlistService demonlistService;
 
-    public DemonlistUtils(DemonlistService demonlistService) {
+    public DemonlistUtil(DemonlistService demonlistService) {
         this.demonlistService = demonlistService;
     }
 

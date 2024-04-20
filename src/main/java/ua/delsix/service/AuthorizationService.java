@@ -12,4 +12,10 @@ public class AuthorizationService {
             throw new AuthorizationException("You are not authorized to perform actions with the desired demonlist");
         }
     }
+
+    public void verifyUserAuthorization(User user1, User user2) throws AuthorizationException {
+        if ((!user1.equals(user2))) {
+            throw new AuthorizationException("You are not authorized to perform actions with the desired user");
+        }
+    }
 }
