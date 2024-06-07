@@ -20,7 +20,7 @@ public class Demonlist {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "demonlist_id_gen")
     @SequenceGenerator(name = "demonlist_id_gen", sequenceName = "demonlist_id_seq", allocationSize = 1)
     @Column(name = "id", nullable = false)
-    @JsonView(Views.Public.class)
+    @JsonView({Views.Public.class, Views.Superficial.class})
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
@@ -29,15 +29,15 @@ public class Demonlist {
     private User user;
 
     @Column(name = "name", nullable = false, length = 80, columnDefinition = "BOOLEAN DEFAULT 'Demonlist'")
-    @JsonView(Views.Public.class)
+    @JsonView({Views.Public.class, Views.Superficial.class})
     private String name;
 
     @Column(name = "is_public", nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
-    @JsonView(Views.Public.class)
+    @JsonView({Views.Public.class, Views.Superficial.class})
     private Boolean isPublic = false;
 
     @Column(name = "is_multi", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
-    @JsonView(Views.Public.class)
+    @JsonView({Views.Public.class, Views.Superficial.class})
     private Boolean isMulti = false;
 
     @OneToMany(mappedBy = "demonlist")
