@@ -7,6 +7,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import ua.delsix.exception.AuthorizationException;
+import ua.delsix.exception.MoreDemonlistsThanAllowed;
 import ua.delsix.jpa.entity.Demonlist;
 import ua.delsix.service.DemonlistService;
 import ua.delsix.util.ResponseUtil;
@@ -34,7 +35,11 @@ public class DemonlistController {
     @PostMapping("/create")
     public ResponseEntity<String> createNewDemonlist(@RequestBody Demonlist demonlist,
                                                      @AuthenticationPrincipal UserDetails userDetails) {
-        demonlistService.createDemonlist(demonlist, userDetails);
+        try {
+            demonlistService.createDemonlist(demonlist, userDetails);
+        } catch (MoreDemonlistsThanAllowed e) {
+            return ResponseUtil.moreDemonlistsThanAllowed();
+        }
         return ResponseEntity.ok(String.format("Demonlist %s has been created", demonlist.getName()));
     }
 

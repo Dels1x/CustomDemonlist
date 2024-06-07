@@ -20,6 +20,11 @@ CREATE TABLE IF NOT EXISTS demon (
     demonlist_id BIGINT REFERENCES "demonlist" NOT NULL,
     name VARCHAR(32) NOT NULL DEFAULT 'Demon',
     author VARCHAR(32),
+    difficulty VARCHAR(32),
+    gddp_difficulty VARCHAR(32),
+    nlw_tier VARCHAR(32),
+    gddl_tier VARCHAR(32),
+    aredl_placement INTEGER,
     attempts_count INTEGER,
     enjoyment_rating INTEGER,
     order_index INTEGER NOT NULL

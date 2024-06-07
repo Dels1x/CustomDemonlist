@@ -5,30 +5,28 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ua.delsix.exception.AuthorizationException;
+import ua.delsix.exception.SamePasswordReset;
 import ua.delsix.exception.UsernameAlreadyExists;
 import ua.delsix.jpa.entity.User;
 import ua.delsix.jpa.repository.DemonRepository;
 import ua.delsix.jpa.repository.DemonlistRepository;
 import ua.delsix.jpa.repository.UserRepository;
+import ua.delsix.security.PasswordChangeRequest;
 
 import java.util.Optional;
 
 @Service
 @Log4j2
 public class UserService {
-    private final AuthorizationService authorizationService;
     private final DemonlistRepository demonlistRepository;
     private final DemonRepository demonRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(AuthorizationService authorizationService,
-                       DemonlistRepository demonlistRepository,
+    public UserService(DemonlistRepository demonlistRepository,
                        DemonRepository demonRepository,
                        UserRepository userRepository,
                        PasswordEncoder passwordEncoder) {
-        this.authorizationService = authorizationService;
         this.demonlistRepository = demonlistRepository;
         this.demonRepository = demonRepository;
         this.userRepository = userRepository;
@@ -58,18 +56,25 @@ public class UserService {
         log.info("New user {} created", user.getUsername());
     }
 
-    public void deleteUser(long id, UserDetails userDetails) throws
-            AuthorizationException,
-            EntityNotFoundException {
+    public void deleteUser(UserDetails userDetails) {
         User user = userRepository.findByUsername(userDetails.getUsername());
-        authorizationService.verifyUserAuthorization(getUserById(id), user);
-
-        if (!userRepository.existsById(id)) {
-            throw new EntityNotFoundException("User with id " + id + " not found");
-        }
+        long id = user.getId();
 
         demonRepository.deleteByDemonlistUserId(id);
         demonlistRepository.deleteByUserId(id);
         userRepository.deleteById(id);
+    }
+
+    public void changePassword(PasswordChangeRequest passwordRequest, UserDetails userDetails) throws SamePasswordReset {
+        String password = passwordRequest.getPassword();
+        User user = userRepository.findByUsername(userDetails.getUsername());
+        String oldPassword = user.getPassword();
+
+        if (passwordEncoder.matches(password, oldPassword)) {
+            throw new SamePasswordReset();
+        }
+
+        user.setPassword(password);
+        userRepository.save(user);
     }
 }

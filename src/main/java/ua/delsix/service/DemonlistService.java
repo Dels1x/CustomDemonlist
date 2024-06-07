@@ -5,6 +5,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import ua.delsix.exception.AuthorizationException;
+import ua.delsix.exception.MoreDemonlistsThanAllowed;
 import ua.delsix.jpa.entity.Demonlist;
 import ua.delsix.jpa.entity.User;
 import ua.delsix.jpa.repository.DemonlistRepository;
@@ -37,10 +38,15 @@ public class DemonlistService {
         return demonlist.get();
     }
 
-    public void createDemonlist(Demonlist demonlist, UserDetails userDetails) {
+    public void createDemonlist(Demonlist demonlist, UserDetails userDetails) throws MoreDemonlistsThanAllowed {
         User user = userUtil.getUserFromUserDetails(userDetails);
 
         demonlist.setUser(user);
+
+        if (demonlistRepository.countByUser(user) >= 25) {
+            throw new MoreDemonlistsThanAllowed();
+        }
+
         demonlistRepository.save(demonlist);
         log.info("New demonlist {} of user {} has been created", demonlist.getId(), user.getUsername());
     }

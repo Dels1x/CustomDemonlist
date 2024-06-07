@@ -3,7 +3,12 @@ package ua.delsix.util;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+// messages for API calls
 public class ResponseUtil {
+    private ResponseUtil() {
+        throw new AssertionError();
+    }
+
     public static ResponseEntity<String> demonlistDoesntExistMessage() {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Provided demonlist doesn't exist");
     }
@@ -14,5 +19,13 @@ public class ResponseUtil {
 
     public static ResponseEntity<String> notFoundMessage(String s) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(s);
+    }
+
+    public static ResponseEntity<String> moreDemonlistsThanAllowed() {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You have exceeded the allowed amount of demonlists");
+    }
+
+    public static ResponseEntity<String> samePasswordReset() {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User tried to reset password with the same password they had before");
     }
 }

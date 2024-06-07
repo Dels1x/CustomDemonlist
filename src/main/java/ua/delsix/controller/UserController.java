@@ -8,9 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import ua.delsix.exception.AuthorizationException;
+import ua.delsix.exception.SamePasswordReset;
 import ua.delsix.exception.UsernameAlreadyExists;
 import ua.delsix.jpa.entity.User;
+import ua.delsix.security.PasswordChangeRequest;
 import ua.delsix.service.UserService;
 import ua.delsix.util.ResponseUtil;
 import ua.delsix.util.Views;
@@ -45,16 +46,19 @@ public class UserController {
         }
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteUser(@RequestParam long id,
-                                             @AuthenticationPrincipal UserDetails userDetails) {
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestBody PasswordChangeRequest passwordRequest, @AuthenticationPrincipal UserDetails userDetails) {
         try {
-            userService.deleteUser(id, userDetails);
-            return ResponseEntity.ok(String.format("User %s was successfully deleted", userDetails.getUsername()));
-        } catch (AuthorizationException e) {
-            return ResponseUtil.authorizationExceptionMessage(e.getMessage());
-        } catch (EntityNotFoundException e) {
-            return ResponseUtil.notFoundMessage(e.getMessage());
+            userService.changePassword(passwordRequest, userDetails);
+            return ResponseEntity.ok(String.format("%s's password has been successfully changed.", userDetails.getUsername()));
+        } catch (SamePasswordReset e) {
+            return ResponseUtil.samePasswordReset();
         }
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteUser(@AuthenticationPrincipal UserDetails userDetails) {
+        userService.deleteUser(userDetails);
+        return ResponseEntity.ok(String.format("User %s was successfully deleted", userDetails.getUsername()));
     }
 }
