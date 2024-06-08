@@ -18,4 +18,8 @@ public class AuthorizationService {
             throw new AuthorizationException("You are not authorized to perform actions with the desired user");
         }
     }
+
+    public boolean isAuthorized(User user1, User user2) {
+        return user1.equals(user2);
+    }
 }

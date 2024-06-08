@@ -13,6 +13,8 @@ import ua.delsix.jpa.repository.DemonlistRepository;
 import ua.delsix.mapper.DemonlistMapper;
 import ua.delsix.util.UserUtil;
 
+import java.util.List;
+
 @Service
 @Log4j2
 public class DemonlistService {
@@ -33,6 +35,17 @@ public class DemonlistService {
 
     public Demonlist getDemonlistById(long id) throws EntityNotFoundException {
         return demonlistRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Demonlist with id " + id + " not found"));
+    }
+
+    public List<Demonlist> getDemonlistsByUserId(long userId, UserDetails userDetails) throws EntityNotFoundException {
+        User user1 = userUtil.getUserById(userId);
+        User user2 = userUtil.getUserFromUserDetails(userDetails);
+
+        if (authorizationService.isAuthorized(user1, user2)) {
+            return demonlistRepository.findAllByUser(user1);
+        } else {
+            return demonlistRepository.findAllByUserAndIsPublicTrue(user1);
+        }
     }
 
     public void createDemonlist(Demonlist demonlist, UserDetails userDetails) throws MoreDemonlistsThanAllowed {

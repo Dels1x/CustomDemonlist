@@ -35,6 +35,10 @@ public class UserService {
         return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User with id " + id + " not found"));
     }
 
+    public User getUserByUsername(String username) throws EntityNotFoundException {
+        return userRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException("User with username " + username + " not found"));
+    }
+
     public void createUser(User user) throws UsernameAlreadyExists {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
@@ -49,7 +53,8 @@ public class UserService {
     }
 
     public void deleteUser(UserDetails userDetails) {
-        User user = userRepository.findByUsername(userDetails.getUsername());
+        User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(() ->
+                new EntityNotFoundException("User with username " + userDetails.getUsername() + " not found"));
         long id = user.getId();
 
         demonRepository.deleteByDemonlistUserId(id);
@@ -59,7 +64,8 @@ public class UserService {
 
     public void changePassword(PasswordChangeRequest passwordRequest, UserDetails userDetails) throws SamePasswordReset {
         String password = passwordRequest.getPassword();
-        User user = userRepository.findByUsername(userDetails.getUsername());
+        User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(() ->
+                new EntityNotFoundException("User with username " + userDetails.getUsername() + " not found"));
         String oldPassword = user.getPassword();
 
         if (passwordEncoder.matches(password, oldPassword)) {

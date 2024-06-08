@@ -33,6 +33,16 @@ public class DemonlistController {
         }
     }
 
+    @GetMapping("/demonlists")
+    @JsonView(Views.Superficial.class)
+    public ResponseEntity<?> getDemonlists(@RequestParam long id, @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            return ResponseEntity.ok(demonlistService.getDemonlistsByUserId(id, userDetails));
+        } catch (EntityNotFoundException e) {
+            return ResponseUtil.notFoundMessage(String.format("User %s not found", id));
+        }
+    }
+
     @PostMapping("/create")
     public ResponseEntity<String> createNewDemonlist(@RequestBody Demonlist demonlist,
                                                      @AuthenticationPrincipal UserDetails userDetails) {
