@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import ua.delsix.util.Views;
 
 import java.util.LinkedHashSet;
@@ -15,6 +16,7 @@ import java.util.Set;
 @Entity
 @Table(name = "demonlist")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@ToString
 public class Demonlist {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "demonlist_id_gen")
@@ -42,5 +44,6 @@ public class Demonlist {
 
     @OneToMany(mappedBy = "demonlist")
     @JsonView(Views.Public.class)
+    @ToString.Exclude
     private Set<Demon> demons = new LinkedHashSet<>();
 }

@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import ua.delsix.dto.DemonlistDto;
 import ua.delsix.exception.AuthorizationException;
 import ua.delsix.exception.MoreDemonlistsThanAllowed;
 import ua.delsix.jpa.entity.Demonlist;
@@ -49,6 +50,20 @@ public class DemonlistController {
         try {
             demonlistService.deleteDemonlist(id, userDetails);
             return ResponseEntity.ok(String.format("Demonlist %s has been deleted", id));
+        } catch (AuthorizationException e) {
+            return ResponseUtil.authorizationExceptionMessage(e.getMessage());
+        } catch (EntityNotFoundException e) {
+            return ResponseUtil.notFoundMessage(e.getMessage());
+        }
+    }
+
+    @PatchMapping("/update")
+    public ResponseEntity<String> updateDemonlist(@RequestParam long id,
+                                                  @RequestBody DemonlistDto dto,
+                                                  @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            demonlistService.updateDemonlist(id, dto, userDetails);
+            return ResponseEntity.ok(String.format("%s demonlist %s has been updated", userDetails.getUsername(), id));
         } catch (AuthorizationException e) {
             return ResponseUtil.authorizationExceptionMessage(e.getMessage());
         } catch (EntityNotFoundException e) {

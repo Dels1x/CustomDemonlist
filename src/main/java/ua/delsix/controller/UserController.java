@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import ua.delsix.exception.SamePasswordReset;
 import ua.delsix.exception.UsernameAlreadyExists;
 import ua.delsix.jpa.entity.User;
-import ua.delsix.security.PasswordChangeRequest;
+import ua.delsix.dto.PasswordChangeRequest;
 import ua.delsix.service.UserService;
 import ua.delsix.util.ResponseUtil;
 import ua.delsix.util.Views;

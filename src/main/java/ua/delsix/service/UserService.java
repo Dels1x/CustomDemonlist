@@ -11,9 +11,7 @@ import ua.delsix.jpa.entity.User;
 import ua.delsix.jpa.repository.DemonRepository;
 import ua.delsix.jpa.repository.DemonlistRepository;
 import ua.delsix.jpa.repository.UserRepository;
-import ua.delsix.security.PasswordChangeRequest;
-
-import java.util.Optional;
+import ua.delsix.dto.PasswordChangeRequest;
 
 @Service
 @Log4j2
@@ -34,13 +32,7 @@ public class UserService {
     }
 
     public User getUserById(long id) throws EntityNotFoundException {
-        Optional<User> user = userRepository.findById(id);
-
-        if (user.isEmpty()) {
-            throw new EntityNotFoundException("User with id " + id + " not found");
-        }
-
-        return user.get();
+        return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User with id " + id + " not found"));
     }
 
     public void createUser(User user) throws UsernameAlreadyExists {
