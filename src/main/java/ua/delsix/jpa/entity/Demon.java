@@ -8,6 +8,8 @@ import lombok.Setter;
 import lombok.ToString;
 import ua.delsix.util.Views;
 
+import java.time.LocalDate;
+
 @ToString
 @Getter
 @Setter
@@ -43,7 +45,35 @@ public class Demon {
     @JsonView(Views.Public.class)
     private Integer enjoymentRating;
 
-    @Column(name = "order_index", nullable = false)
+    @Column(name = "difficulty", length = 32)
     @JsonView(Views.Public.class)
-    private Integer orderIndex;
+    private String difficulty;
+
+    @Column(name = "date_of_completion")
+    @JsonView(Views.Public.class)
+    private LocalDate dateOfCompletion;
+
+    @Column(name = "gddp_difficulty", length = 32)
+    @JsonView(Views.Public.class)
+    private String gddpDifficulty;
+
+    @Column(name = "nlw_tier", length = 32)
+    @JsonView(Views.Public.class)
+    private String nlwTier;
+
+    @Column(name = "gddl_tier", length = 32)
+    @JsonView(Views.Public.class)
+    private String gddlTier;
+
+    @Column(name = "aredl_placement")
+    @JsonView(Views.Public.class)
+    private Integer aredlPlacement;
+
+    @Column(name = "placement", nullable = false)
+    @JsonView(Views.Public.class)
+    private Integer placement;
+
+    @Column(name = "initial_placement")
+    @JsonView(Views.Public.class)
+    private Integer initialPlacement;
 }

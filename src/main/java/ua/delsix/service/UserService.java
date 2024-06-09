@@ -39,6 +39,10 @@ public class UserService {
         return userRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException("User with username " + username + " not found"));
     }
 
+    public User getUserFromUserDetails(UserDetails userDetails) throws EntityNotFoundException {
+        return getUserByUsername(userDetails.getUsername());
+    }
+
     public void createUser(User user) throws UsernameAlreadyExists {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 

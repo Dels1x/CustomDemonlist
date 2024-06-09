@@ -11,7 +11,6 @@ import ua.delsix.jpa.entity.Demonlist;
 import ua.delsix.jpa.entity.User;
 import ua.delsix.jpa.repository.DemonRepository;
 import ua.delsix.jpa.repository.DemonlistRepository;
-import ua.delsix.util.UserUtil;
 
 @Service
 @Log4j2
@@ -19,35 +18,35 @@ public class DemonService {
     private final DemonlistRepository demonlistRepository;
     private final AuthorizationService authorizationService;
     private final DemonRepository demonRepository;
-    private final UserUtil userUtil;
+    private final UserService userService;
 
     public DemonService(AuthorizationService authorizationService,
                         DemonRepository demonRepository,
                         DemonlistRepository demonlistRepository,
-                        UserUtil userUtil) {
+                        UserService userService) {
         this.authorizationService = authorizationService;
         this.demonRepository = demonRepository;
-        this.userUtil = userUtil;
+        this.userService = userService;
         this.demonlistRepository = demonlistRepository;
     }
 
     @Transactional
     public void createDemon(Demon demon, UserDetails userDetails) throws AuthorizationException {
-        User user = userUtil.getUserFromUserDetails(userDetails);
+        User user = userService.getUserFromUserDetails(userDetails);
         Demonlist demonlist = demon.getDemonlist();
         authorizationService.verifyOwnershipOfTheDemonlist(demonlist, user);
 
         int nextIndex = nextIndex(demon);
 
-        if (demon.getOrderIndex() == null) {
-            demon.setOrderIndex(nextIndex);
+        if (demon.getPlacement() == null) {
+            demon.setPlacement(nextIndex);
         }
 
-        if (demonRepository.existsByOrderIndexAndDemonlistId(demon.getOrderIndex(), demon.getDemonlist().getId())) {
-            log.info("Indexes {} to {} will be incremented", demon.getOrderIndex(), (nextIndex - 1));
-            demonRepository.incrementTargetIndex(demon.getOrderIndex(), demon.getDemonlist().getId());
-        } else if (demon.getOrderIndex() > nextIndex) {
-            demon.setOrderIndex(nextIndex);
+        if (demonRepository.existsByOrderIndexAndDemonlistId(demon.getPlacement(), demon.getDemonlist().getId())) {
+            log.info("Indexes {} to {} will be incremented", demon.getPlacement(), (nextIndex - 1));
+            demonRepository.incrementTargetIndex(demon.getPlacement(), demon.getDemonlist().getId());
+        } else if (demon.getPlacement() > nextIndex) {
+            demon.setPlacement(nextIndex);
         }
 
         if (demon.getName() == null) {
@@ -59,7 +58,7 @@ public class DemonService {
     }
 
     public void deleteDemon(long demonlistId, long demonId, UserDetails userDetails) throws AuthorizationException {
-        User user = userUtil.getUserFromUserDetails(userDetails);
+        User user = userService.getUserFromUserDetails(userDetails);
         Demonlist demonlist = demonlistRepository.getReferenceById(demonlistId);
         authorizationService.verifyOwnershipOfTheDemonlist(demonlist, user);
 
