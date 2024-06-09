@@ -42,7 +42,7 @@ public class DemonService {
             demon.setPlacement(nextIndex);
         }
 
-        if (demonRepository.existsByOrderIndexAndDemonlistId(demon.getPlacement(), demon.getDemonlist().getId())) {
+        if (demonRepository.existsByPlacementAndDemonlistId(demon.getPlacement(), demon.getDemonlist().getId())) {
             log.info("Indexes {} to {} will be incremented", demon.getPlacement(), (nextIndex - 1));
             demonRepository.incrementTargetIndex(demon.getPlacement(), demon.getDemonlist().getId());
         } else if (demon.getPlacement() > nextIndex) {
