@@ -65,14 +65,11 @@ public class DemonService {
         authorizationService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), user);
         int oldPosition = demon.getPlacement();
 
-        System.out.println(oldPosition);
-        System.out.println(newPosition);
+        log.debug("old position: {}; new position: {}", oldPosition, newPosition);
 
         if (oldPosition > newPosition) {
-            System.out.println("increment");
             demonRepository.incrementPlacementsBetween(newPosition, oldPosition, demon.getDemonlist().getId()); // old is smaller than new
         } else if (oldPosition < newPosition) {
-            System.out.println("decrement");
             demonRepository.decrementPlacementsBetween(oldPosition, newPosition, demon.getDemonlist().getId()); // new is smaller than old
         }
 
