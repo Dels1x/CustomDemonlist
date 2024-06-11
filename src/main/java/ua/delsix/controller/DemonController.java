@@ -73,6 +73,8 @@ public class DemonController {
             return ResponseUtil.authorizationExceptionMessage(e.getMessage());
         } catch (EntityNotFoundException e) {
             return ResponseUtil.notFoundMessage(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseUtil.illegalArgument(e.getMessage());
         }
     }
 
@@ -82,7 +84,7 @@ public class DemonController {
                                               @AuthenticationPrincipal UserDetails userDetails) {
         try {
             demonService.updateDemonPosition(id, position, userDetails);
-            return ResponseEntity.ok(String.format("%s demon #%s position has been changed to %s", userDetails.getUsername(), id, position));
+            return ResponseEntity.ok(String.format("%s demon #%s position has been updated", userDetails.getUsername(), id));
         } catch (AuthorizationException e) {
             return ResponseUtil.authorizationExceptionMessage(e.getMessage());
         } catch (EntityNotFoundException e) {

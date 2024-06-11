@@ -56,6 +56,7 @@ public class DemonService {
         log.info("New demon #{} {} of user {} has been created", demon.getId(), demon.getName(), user.getUsername());
     }
 
+
     @Transactional
     public void updateDemonPosition(long id, int newPosition, UserDetails userDetails) throws
             AuthorizationException,
@@ -65,20 +66,69 @@ public class DemonService {
         authorizationService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), user);
         int oldPosition = demon.getPlacement();
 
-        log.debug("old position: {}; new position: {}", oldPosition, newPosition);
+        editPlacements(demon, newPosition, oldPosition);
+    }
 
-        if (oldPosition > newPosition) {
-            demonRepository.incrementPlacementsBetween(newPosition, oldPosition, demon.getDemonlist().getId()); // old is smaller than new
-        } else if (oldPosition < newPosition) {
-            demonRepository.decrementPlacementsBetween(oldPosition, newPosition, demon.getDemonlist().getId()); // new is smaller than old
+    private void editPlacements(Demon demon, int newPos, int oldPos) {
+        log.debug("old position: {}; new position: {}", oldPos, newPos);
+
+        int max = countByDemonlist(demon.getDemonlist());
+
+        if (newPos > max) {
+            newPos = max;
         }
 
-        demon.setPlacement(newPosition);
+        if (newPos < 1) {
+            newPos = 1;
+        }
+
+        if (oldPos > newPos) {
+            demonRepository.incrementPlacementsBetween(newPos, oldPos, demon.getDemonlist().getId()); // old is smaller than new
+        } else if (oldPos < newPos) {
+            demonRepository.decrementPlacementsBetween(oldPos, newPos, demon.getDemonlist().getId()); // new is smaller than old
+        } else {
+            return;
+        }
+
+        demon.setPlacement(newPos);
+        log.info("demon's placement {}", newPos);
+        demonRepository.setPlacementById(newPos, demon.getId());
+        demonRepository.flush();
+    }
+
+    @Transactional
+    public void updateDemon(long id, DemonDto dto, UserDetails userDetails) throws
+            EntityNotFoundException,
+            AuthorizationException,
+            IllegalArgumentException {
+        User user = userService.getUserFromUserDetails(userDetails);
+        Demon demon = getDemonById(id);
+        authorizationService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), user);
+        int oldPos = demon.getPlacement();
+        demonMapper.updateDemonFromDto(dto, demon);
+        log.info("dto {}", dto);
+
+        if (demon.getPlacement() == null || demon.getName() == null) {
+            throw new IllegalArgumentException("Placement and name fields cannot be null");
+        }
+
         demonRepository.save(demon);
+
+        int newPos = demon.getPlacement();
+        if (oldPos != newPos) {
+            log.info("oldPos: {}; newPos: {}", oldPos, newPos);
+            editPlacements(demon, newPos, oldPos);
+        }
+
+        log.info("Demon #{} {} of user {} has been updated", demon.getId(), demon.getName(), user.getUsername());
     }
 
     private int nextIndex(Demon demon) {
-        return demonRepository.countByDemonlistId(demon.getDemonlist().getId()) + 1;
+        return countByDemonlist(demon.getDemonlist()) + 1;
+    }
+
+    private int countByDemonlist(Demonlist demonlist) {
+        return demonRepository.countByDemonlistId(demonlist.getId());
     }
 
     public void deleteDemon(long demonlistId, long demonId, UserDetails userDetails) throws AuthorizationException {
@@ -92,18 +142,6 @@ public class DemonService {
 
         demonRepository.deleteById(demonId);
         log.info("Demon #{} of user {} has been deleted", demonId, user.getUsername());
-    }
-
-    public void updateDemon(long id, DemonDto dto, UserDetails userDetails) throws
-            EntityNotFoundException,
-            AuthorizationException {
-        User user = userService.getUserFromUserDetails(userDetails);
-        Demon demon = getDemonById(id);
-        authorizationService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), user);
-        demonMapper.updateDemonFromDto(dto, demon);
-
-        demonRepository.save(demon);
-        log.info("Demon #{} {} of user {} has been updated", demon.getId(), demon.getName(), user.getUsername());
     }
 
     public Demon getDemonById(long id) {
