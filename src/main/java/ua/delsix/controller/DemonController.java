@@ -1,9 +1,11 @@
 package ua.delsix.controller;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import ua.delsix.dto.DemonDto;
 import ua.delsix.exception.AuthorizationException;
 import ua.delsix.exception.DemonlistDoesntExist;
 import ua.delsix.jpa.entity.Demon;
@@ -51,12 +53,40 @@ public class DemonController {
         try {
             demonService.createDemon(demon, userDetails);
             return ResponseEntity.ok(String.format(
-                    "New demon \"%s\" of demonlist \"%s\" of user \"%s\" successfully created",
+                    "New demon #%s of demonlist #%s of user \"%s\" successfully created",
                     demon.getId(),
                     demon.getDemonlist().getId(),
                     userDetails.getUsername()));
         } catch (AuthorizationException e) {
             return ResponseUtil.authorizationExceptionMessage(e.getMessage());
+        }
+    }
+
+    @PatchMapping("/update")
+    public ResponseEntity<String> updateDemon(@RequestParam long id,
+                                              @RequestBody DemonDto dto,
+                                              @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            demonService.updateDemon(id, dto, userDetails);
+            return ResponseEntity.ok(String.format("%s demon #%s has been updated", userDetails.getUsername(), id));
+        } catch (AuthorizationException e) {
+            return ResponseUtil.authorizationExceptionMessage(e.getMessage());
+        } catch (EntityNotFoundException e) {
+            return ResponseUtil.notFoundMessage(e.getMessage());
+        }
+    }
+
+    @PatchMapping("/update-position")
+    public ResponseEntity<String> updateDemonPosition(@RequestParam long id,
+                                              @RequestParam int position,
+                                              @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            demonService.updateDemonPosition(id, position, userDetails);
+            return ResponseEntity.ok(String.format("%s demon #%s position has been changed to %s", userDetails.getUsername(), id, position));
+        } catch (AuthorizationException e) {
+            return ResponseUtil.authorizationExceptionMessage(e.getMessage());
+        } catch (EntityNotFoundException e) {
+            return ResponseUtil.notFoundMessage(e.getMessage());
         }
     }
 }
