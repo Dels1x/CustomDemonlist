@@ -35,11 +35,11 @@ public class DemonlistController {
 
     @GetMapping("/demonlists")
     @JsonView(Views.Superficial.class)
-    public ResponseEntity<?> getDemonlists(@RequestParam long id, @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<?> getDemonlists(@RequestParam long userId, @AuthenticationPrincipal UserDetails userDetails) {
         try {
-            return ResponseEntity.ok(demonlistService.getDemonlistsByUserId(id, userDetails));
+            return ResponseEntity.ok(demonlistService.getDemonlistsByUserId(userId, userDetails));
         } catch (EntityNotFoundException e) {
-            return ResponseUtil.notFoundMessage(String.format("User %s not found", id));
+            return ResponseUtil.notFoundMessage(String.format("User %s not found", userId));
         }
     }
 

@@ -14,8 +14,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import ua.delsix.jpa.entity.User;
 import ua.delsix.jpa.repository.UserRepository;
 
-import java.util.Optional;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -45,13 +43,8 @@ public class SecurityConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> {
-            Optional<User> optionalUser = userRepository.findOptionalByUsername(username);
-
-            if (optionalUser.isEmpty()) {
-                throw new UsernameNotFoundException("User not found with username: " + username);
-            }
-
-            User user = optionalUser.get();
+            User user = userRepository.findOptionalByUsername(username).orElseThrow(() ->
+                    new UsernameNotFoundException("User not found with username: " + username));
 
             return org.springframework.security.core.userdetails.User.withUsername(user.getUsername())
                     .password(user.getPassword())
