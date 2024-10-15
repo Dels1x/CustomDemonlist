@@ -42,7 +42,6 @@ public class User {
     private Set<Demonlist> demonlists = new LinkedHashSet<>();
 
     @Column(name = "email", length = 100)
-    @JsonIgnore
     private String email;
 
     @Column(name = "oath_id", length = 100)

@@ -12,6 +12,7 @@ import ua.delsix.exception.SamePasswordReset;
 import ua.delsix.exception.UsernameAlreadyExists;
 import ua.delsix.jpa.entity.User;
 import ua.delsix.dto.PasswordChangeRequest;
+import ua.delsix.service.EmailAlreadyExists;
 import ua.delsix.service.UserService;
 import ua.delsix.util.ResponseUtil;
 import ua.delsix.util.Views;
@@ -39,9 +40,10 @@ public class UserController {
     @PostMapping("/create")
     public ResponseEntity<String> createUser(@RequestBody User user) {
         try {
+            System.out.println(user);
             userService.createUser(user);
             return ResponseEntity.ok(String.format("User %s was successfully created", user.getUsername()));
-        } catch (UsernameAlreadyExists e) {
+        } catch (UsernameAlreadyExists | EmailAlreadyExists e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
     }
