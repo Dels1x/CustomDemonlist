@@ -13,6 +13,8 @@ import ua.delsix.jpa.repository.DemonlistRepository;
 import ua.delsix.jpa.repository.UserRepository;
 import ua.delsix.dto.PasswordChangeRequest;
 
+import java.time.Instant;
+
 @Service
 @Log4j2
 public class UserService {
@@ -44,8 +46,6 @@ public class UserService {
     }
 
     public void createUser(User user) throws UsernameAlreadyExists, EmailAlreadyExists {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-
         if (userRepository.existsByUsername(user.getUsername())) {
             String errorMessage = String.format("User %s already exists", user.getUsername());
             log.info(errorMessage);
@@ -57,6 +57,8 @@ public class UserService {
             throw new EmailAlreadyExists(errorMessage);
         }
 
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setCreatedAt(Instant.now());
         userRepository.save(user);
         log.info("New user {} created", user.getUsername());
     }
