@@ -1,9 +1,9 @@
 CREATE TABLE IF NOT EXISTS "user" (
     id BIGSERIAL PRIMARY KEY,
     username VARCHAR(40) UNIQUE NOT NULL,
-    "password" VARCHAR(255),
     email VARCHAR(100) UNIQUE,
-    oath_id VARCHAR(100),
+    google_id VARCHAR(100) UNIQUE,
+    discord_id VARCHAR(100) UNIQUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

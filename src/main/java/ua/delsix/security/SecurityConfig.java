@@ -2,7 +2,6 @@ package ua.delsix.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -25,12 +24,16 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
-                .httpBasic(Customizer.withDefaults())
+        http
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/demonlists/create").authenticated()
-                        .requestMatchers("/demons/create").authenticated()
-                        .anyRequest().permitAll());
+                        .requestMatchers("/users/create").permitAll()
+                        .requestMatchers("/oauth2/callback/**").permitAll()
+                        .anyRequest().authenticated())
+                .oauth2Login(oauth2 -> oauth2 // Discord
+                        .loginPage("/oauth2/callback/discord")
+                        .defaultSuccessUrl("/dashboard", true)
+                        .failureUrl("/login?error=true"));
 
         return http.build();
     }
