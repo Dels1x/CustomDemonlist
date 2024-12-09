@@ -1,15 +1,18 @@
-CREATE TABLE IF NOT EXISTS "user" (
+CREATE TABLE IF NOT EXISTS person (
     id BIGSERIAL PRIMARY KEY,
-    username VARCHAR(40) UNIQUE NOT NULL,
-    email VARCHAR(100) UNIQUE,
-    google_id VARCHAR(100) UNIQUE,
-    discord_id VARCHAR(100) UNIQUE,
+    username VARCHAR(40) NOT NULL,
+    discriminator VARCHAR(8),
+    pfp_url VARCHAR(255),
+    email VARCHAR(255) UNIQUE,
+    access_token VARCHAR(255),
+    refresh_token VARCHAR(255),
+    token_expiry TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS demonlist (
     id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT REFERENCES "user" (id) NOT NULL,
+    person_id BIGINT REFERENCES person (id) NOT NULL,
     name VARCHAR(80) NOT NULL DEFAULT 'Demonlist',
     is_public BOOLEAN NOT NULL DEFAULT TRUE,
     is_multi BOOLEAN NOT NULL DEFAULT FALSE
