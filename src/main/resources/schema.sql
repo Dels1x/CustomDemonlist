@@ -1,7 +1,6 @@
 CREATE TABLE IF NOT EXISTS person (
     id BIGSERIAL PRIMARY KEY,
     username VARCHAR(40) NOT NULL,
-    discriminator VARCHAR(8),
     pfp_url VARCHAR(255),
     email VARCHAR(255) UNIQUE,
     access_token VARCHAR(255),
