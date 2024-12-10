@@ -20,7 +20,8 @@ public class LoginController {
     @GetMapping("/callback/discord")
     public ResponseEntity<?> callbackDiscord(@RequestParam String code) {
         try {
-            return ResponseEntity.status(200).body(discordOAuthService.fetchAccessTokenFromDiscord(code));
+            String accessToken = discordOAuthService.fetchAccessTokenFromDiscord(code);
+            return ResponseEntity.status(200).body(discordOAuthService.fetchDiscordUser(accessToken));
         } catch (HttpClientErrorException e) {
             return ResponseEntity.status(400).body(e.getMessage());
         }
