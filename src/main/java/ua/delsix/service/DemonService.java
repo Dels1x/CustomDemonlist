@@ -9,7 +9,7 @@ import ua.delsix.dto.DemonDto;
 import ua.delsix.exception.AuthorizationException;
 import ua.delsix.jpa.entity.Demon;
 import ua.delsix.jpa.entity.Demonlist;
-import ua.delsix.jpa.entity.User;
+import ua.delsix.jpa.entity.Person;
 import ua.delsix.jpa.repository.DemonRepository;
 import ua.delsix.jpa.repository.DemonlistRepository;
 import ua.delsix.mapper.DemonMapper;
@@ -36,8 +36,8 @@ public class DemonService {
 
     @Transactional
     public void createDemon(Demon demon, UserDetails userDetails) throws AuthorizationException {
-        User user = userService.getUserFromUserDetails(userDetails);
-        authorizationService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), user);
+        Person person = userService.getUserFromUserDetails(userDetails);
+        authorizationService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), person);
 
         int nextIndex = nextIndex(demon);
 
@@ -53,7 +53,7 @@ public class DemonService {
         }
 
         demonRepository.save(demon);
-        log.info("New demon #{} {} of user {} has been created", demon.getId(), demon.getName(), user.getUsername());
+        log.info("New demon #{} {} of user {} has been created", demon.getId(), demon.getName(), person.getUsername());
     }
 
 
@@ -61,9 +61,9 @@ public class DemonService {
     public void updateDemonPosition(long id, int newPosition, UserDetails userDetails) throws
             AuthorizationException,
             EntityNotFoundException {
-        User user = userService.getUserFromUserDetails(userDetails);
+        Person person = userService.getUserFromUserDetails(userDetails);
         Demon demon = getDemonById(id);
-        authorizationService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), user);
+        authorizationService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), person);
         int oldPosition = demon.getPlacement();
 
         editPlacements(demon, newPosition, oldPosition);
@@ -101,9 +101,9 @@ public class DemonService {
             EntityNotFoundException,
             AuthorizationException,
             IllegalArgumentException {
-        User user = userService.getUserFromUserDetails(userDetails);
+        Person person = userService.getUserFromUserDetails(userDetails);
         Demon demon = getDemonById(id);
-        authorizationService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), user);
+        authorizationService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), person);
         int oldPos = demon.getPlacement();
         demonMapper.updateDemonFromDto(dto, demon);
         log.info("dto {}", dto);
@@ -120,7 +120,7 @@ public class DemonService {
             editPlacements(demon, newPos, oldPos);
         }
 
-        log.info("Demon #{} {} of user {} has been updated", demon.getId(), demon.getName(), user.getUsername());
+        log.info("Demon #{} {} of user {} has been updated", demon.getId(), demon.getName(), person.getUsername());
     }
 
     private int nextIndex(Demon demon) {
@@ -132,16 +132,16 @@ public class DemonService {
     }
 
     public void deleteDemon(long demonlistId, long demonId, UserDetails userDetails) throws AuthorizationException {
-        User user = userService.getUserFromUserDetails(userDetails);
+        Person person = userService.getUserFromUserDetails(userDetails);
         Demonlist demonlist = demonlistRepository.getReferenceById(demonlistId);
-        authorizationService.verifyOwnershipOfTheDemonlist(demonlist, user);
+        authorizationService.verifyOwnershipOfTheDemonlist(demonlist, person);
 
         if (!demonRepository.existsById(demonId)) {
             throw new EntityNotFoundException("Demon with id " + demonId + " not found");
         }
 
         demonRepository.deleteById(demonId);
-        log.info("Demon #{} of user {} has been deleted", demonId, user.getUsername());
+        log.info("Demon #{} of user {} has been deleted", demonId, person.getUsername());
     }
 
     public Demon getDemonById(long id) {

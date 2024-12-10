@@ -25,7 +25,7 @@ public interface DemonRepository extends JpaRepository<Demon, Long> {
     boolean existsByPlacementAndDemonlistId(int placement, long demonlistId);
     @Modifying
     @Transactional
-    void deleteByDemonlistUserId(long userId);
+    void deleteByDemonlistPersonId(long personId);
     @Modifying
     @Transactional
     @Query("UPDATE Demon d SET d.placement = :placement WHERE d.id = :demonId")

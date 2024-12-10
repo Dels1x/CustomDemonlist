@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ua.delsix.jpa.entity.Demonlist;
-import ua.delsix.jpa.entity.User;
+import ua.delsix.jpa.entity.Person;
 
 import java.util.List;
 
@@ -13,9 +13,9 @@ import java.util.List;
 public interface DemonlistRepository extends JpaRepository<Demonlist, Long> {
     @Modifying
     @Transactional
-    void deleteByUserId(long userId);
-    int countByUser(User user);
+    void deleteByPersonId(long personId);
+    int countByPerson(Person person);
 
-    List<Demonlist> findAllByUser(User user);
-    List<Demonlist> findAllByUserAndIsPublicTrue(User user);
+    List<Demonlist> findAllByPerson(Person person);
+    List<Demonlist> findAllByPersonAndIsPublicTrue(Person person);
 }

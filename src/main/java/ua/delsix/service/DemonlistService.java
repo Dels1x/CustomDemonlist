@@ -8,7 +8,7 @@ import ua.delsix.dto.DemonlistDto;
 import ua.delsix.exception.AuthorizationException;
 import ua.delsix.exception.MoreDemonlistsThanAllowed;
 import ua.delsix.jpa.entity.Demonlist;
-import ua.delsix.jpa.entity.User;
+import ua.delsix.jpa.entity.Person;
 import ua.delsix.jpa.repository.DemonlistRepository;
 import ua.delsix.mapper.DemonlistMapper;
 
@@ -37,49 +37,49 @@ public class DemonlistService {
     }
 
     public List<Demonlist> getDemonlistsByUserId(long userId, UserDetails userDetails) throws EntityNotFoundException {
-        User user1 = userService.getUserById(userId);
-        User user2 = userService.getUserFromUserDetails(userDetails);
+        Person person1 = userService.getUserById(userId);
+        Person person2 = userService.getUserFromUserDetails(userDetails);
 
-        if (authorizationService.isAuthorized(user1, user2)) {
-            return demonlistRepository.findAllByUser(user1);
+        if (authorizationService.isAuthorized(person1, person2)) {
+            return demonlistRepository.findAllByPerson(person1);
         } else {
-            return demonlistRepository.findAllByUserAndIsPublicTrue(user1);
+            return demonlistRepository.findAllByPersonAndIsPublicTrue(person1);
         }
     }
 
     public void createDemonlist(Demonlist demonlist, UserDetails userDetails) throws MoreDemonlistsThanAllowed {
-        User user = userService.getUserFromUserDetails(userDetails);
+        Person person = userService.getUserFromUserDetails(userDetails);
 
-        demonlist.setUser(user);
+        demonlist.setPerson(person);
 
-        if (demonlistRepository.countByUser(user) >= 25) {
+        if (demonlistRepository.countByPerson(person) >= 25) {
             throw new MoreDemonlistsThanAllowed();
         }
 
         demonlistRepository.save(demonlist);
-        log.info("New demonlist {} of user {} has been created", demonlist.getId(), user.getUsername());
+        log.info("New demonlist {} of user {} has been created", demonlist.getId(), person.getUsername());
     }
 
     public void deleteDemonlist(long id, UserDetails userDetails) throws
             AuthorizationException,
             EntityNotFoundException {
-        User user = userService.getUserFromUserDetails(userDetails);
+        Person person = userService.getUserFromUserDetails(userDetails);
         Demonlist demonlist = getDemonlistById(id);
-        authorizationService.verifyOwnershipOfTheDemonlist(demonlist, user);
+        authorizationService.verifyOwnershipOfTheDemonlist(demonlist, person);
 
         demonlistRepository.deleteById(id);
-        log.info("Demonlist {} of user {} has been deleted", id, user.getUsername());
+        log.info("Demonlist {} of user {} has been deleted", id, person.getUsername());
     }
 
     public void updateDemonlist(long id, DemonlistDto dto, UserDetails userDetails) throws
             EntityNotFoundException,
             AuthorizationException {
-        User user = userService.getUserFromUserDetails(userDetails);
+        Person person = userService.getUserFromUserDetails(userDetails);
         Demonlist demonlist = getDemonlistById(id);
-        authorizationService.verifyOwnershipOfTheDemonlist(demonlist, user);
+        authorizationService.verifyOwnershipOfTheDemonlist(demonlist, person);
         demonlistMapper.updateDemonlistFromDto(dto, demonlist);
 
         demonlistRepository.save(demonlist);
-        log.info("Demonlist {} of user {} has been updated", demonlist.getId(), user.getUsername());
+        log.info("Demonlist {} of user {} has been updated", demonlist.getId(), person.getUsername());
     }
 }

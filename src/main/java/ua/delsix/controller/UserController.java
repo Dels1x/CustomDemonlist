@@ -8,10 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import ua.delsix.exception.SamePasswordReset;
 import ua.delsix.exception.UsernameAlreadyExists;
-import ua.delsix.jpa.entity.User;
-import ua.delsix.dto.PasswordChangeRequest;
+import ua.delsix.jpa.entity.Person;
 import ua.delsix.service.EmailAlreadyExists;
 import ua.delsix.service.UserService;
 import ua.delsix.util.ResponseUtil;
@@ -38,23 +36,13 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<String> createUser(@RequestBody User user) {
+    public ResponseEntity<String> createUser(@RequestBody Person person) {
         try {
-            System.out.println(user);
-            userService.createUser(user);
-            return ResponseEntity.ok(String.format("User %s was successfully created", user.getUsername()));
+            System.out.println(person);
+            userService.createUser(person);
+            return ResponseEntity.ok(String.format("User %s was successfully created", person.getUsername()));
         } catch (UsernameAlreadyExists | EmailAlreadyExists e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        }
-    }
-
-    @PostMapping("/reset-password")
-    public ResponseEntity<String> resetPassword(@RequestBody PasswordChangeRequest passwordRequest, @AuthenticationPrincipal UserDetails userDetails) {
-        try {
-            userService.changePassword(passwordRequest, userDetails);
-            return ResponseEntity.ok(String.format("%s's password has been successfully changed.", userDetails.getUsername()));
-        } catch (SamePasswordReset e) {
-            return ResponseUtil.samePasswordReset();
         }
     }
 

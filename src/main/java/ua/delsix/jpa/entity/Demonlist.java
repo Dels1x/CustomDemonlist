@@ -26,9 +26,9 @@ public class Demonlist {
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "person_id", nullable = false)
     @JsonView(Views.Public.class)
-    private User user;
+    private Person person;
 
     @Column(name = "name", nullable = false, length = 80, columnDefinition = "BOOLEAN DEFAULT 'Demonlist'")
     @JsonView({Views.Public.class, Views.Superficial.class})

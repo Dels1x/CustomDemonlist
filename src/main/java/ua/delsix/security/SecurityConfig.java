@@ -10,16 +10,16 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import ua.delsix.jpa.entity.User;
-import ua.delsix.jpa.repository.UserRepository;
+import ua.delsix.jpa.entity.Person;
+import ua.delsix.jpa.repository.PersonRepository;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    private final UserRepository userRepository;
+    private final PersonRepository personRepository;
 
-    public SecurityConfig(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public SecurityConfig(PersonRepository personRepository) {
+        this.personRepository = personRepository;
     }
 
     @Bean
@@ -46,11 +46,10 @@ public class SecurityConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> {
-            User user = userRepository.findOptionalByUsername(username).orElseThrow(() ->
+            Person person = personRepository.findOptionalByUsername(username).orElseThrow(() ->
                     new UsernameNotFoundException("User not found with username: " + username));
 
-            return org.springframework.security.core.userdetails.User.withUsername(user.getUsername())
-                    .password(user.getPassword())
+            return org.springframework.security.core.userdetails.User.withUsername(person.getUsername())
                     .build();
         };
     }

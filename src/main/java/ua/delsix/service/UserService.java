@@ -3,15 +3,12 @@ package ua.delsix.service;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ua.delsix.exception.SamePasswordReset;
 import ua.delsix.exception.UsernameAlreadyExists;
-import ua.delsix.jpa.entity.User;
+import ua.delsix.jpa.entity.Person;
 import ua.delsix.jpa.repository.DemonRepository;
 import ua.delsix.jpa.repository.DemonlistRepository;
-import ua.delsix.jpa.repository.UserRepository;
-import ua.delsix.dto.PasswordChangeRequest;
+import ua.delsix.jpa.repository.PersonRepository;
 
 import java.time.Instant;
 
@@ -20,70 +17,52 @@ import java.time.Instant;
 public class UserService {
     private final DemonlistRepository demonlistRepository;
     private final DemonRepository demonRepository;
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final PersonRepository personRepository;
 
     public UserService(DemonlistRepository demonlistRepository,
                        DemonRepository demonRepository,
-                       UserRepository userRepository,
-                       PasswordEncoder passwordEncoder) {
+                       PersonRepository personRepository) {
         this.demonlistRepository = demonlistRepository;
         this.demonRepository = demonRepository;
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
+        this.personRepository = personRepository;
     }
 
-    public User getUserById(long id) throws EntityNotFoundException {
-        return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User with id " + id + " not found"));
+    public Person getUserById(long id) throws EntityNotFoundException {
+        return personRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User with id " + id + " not found"));
     }
 
-    public User getUserByUsername(String username) throws EntityNotFoundException {
-        return userRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException("User with username " + username + " not found"));
+    public Person getUserByUsername(String username) throws EntityNotFoundException {
+        return personRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException("User with username " + username + " not found"));
     }
 
-    public User getUserFromUserDetails(UserDetails userDetails) throws EntityNotFoundException {
+    public Person getUserFromUserDetails(UserDetails userDetails) throws EntityNotFoundException {
         return getUserByUsername(userDetails.getUsername());
     }
 
-    public void createUser(User user) throws UsernameAlreadyExists, EmailAlreadyExists {
-        if (userRepository.existsByUsername(user.getUsername())) {
-            String errorMessage = String.format("User %s already exists", user.getUsername());
+    public void createUser(Person person) throws UsernameAlreadyExists, EmailAlreadyExists {
+        if (personRepository.existsByUsername(person.getUsername())) {
+            String errorMessage = String.format("User %s already exists", person.getUsername());
             log.info(errorMessage);
             throw new UsernameAlreadyExists(errorMessage);
         }
-        if (userRepository.existsByEmail(user.getEmail())) {
-            String errorMessage = String.format("User %s with email %s that already exists", user.getUsername(), user.getEmail());
+        if (personRepository.existsByEmail(person.getEmail())) {
+            String errorMessage = String.format("User %s with email %s that already exists", person.getUsername(), person.getEmail());
             log.info(errorMessage);
             throw new EmailAlreadyExists(errorMessage);
         }
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setCreatedAt(Instant.now());
-        userRepository.save(user);
-        log.info("New user {} created", user.getUsername());
+        person.setCreatedAt(Instant.now());
+        personRepository.save(person);
+        log.info("New user {} created", person.getUsername());
     }
 
     public void deleteUser(UserDetails userDetails) {
-        User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(() ->
+        Person person = personRepository.findByUsername(userDetails.getUsername()).orElseThrow(() ->
                 new EntityNotFoundException("User with username " + userDetails.getUsername() + " not found"));
-        long id = user.getId();
+        long id = person.getId();
 
-        demonRepository.deleteByDemonlistUserId(id);
-        demonlistRepository.deleteByUserId(id);
-        userRepository.deleteById(id);
-    }
-
-    public void changePassword(PasswordChangeRequest passwordRequest, UserDetails userDetails) throws SamePasswordReset {
-        String password = passwordRequest.getPassword();
-        User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(() ->
-                new EntityNotFoundException("User with username " + userDetails.getUsername() + " not found"));
-        String oldPassword = user.getPassword();
-
-        if (passwordEncoder.matches(password, oldPassword)) {
-            throw new SamePasswordReset();
-        }
-
-        user.setPassword(password);
-        userRepository.save(user);
+        demonRepository.deleteByDemonlistPersonId(id);
+        demonlistRepository.deleteByPersonId(id);
+        personRepository.deleteById(id);
     }
 }
