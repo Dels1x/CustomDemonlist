@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import ua.delsix.dto.DiscordUser;
+import ua.delsix.dto.DiscordUserDto;
 
 import java.util.Collections;
 import java.util.Map;
@@ -51,13 +51,13 @@ public class DiscordOAuthService {
         }
     }
 
-    public DiscordUser fetchDiscordUser(String acessToken) {
+    public DiscordUserDto fetchDiscordUser(String acessToken) {
         String url = "https://discord.com/api/users/@me";
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(acessToken);
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        ResponseEntity<DiscordUser> response = restTemplate.exchange(url, HttpMethod.GET, entity, DiscordUser.class);
+        ResponseEntity<DiscordUserDto> response = restTemplate.exchange(url, HttpMethod.GET, entity, DiscordUserDto.class);
 
         return response.getBody();
     }

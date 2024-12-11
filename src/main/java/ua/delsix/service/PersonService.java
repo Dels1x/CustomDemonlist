@@ -4,24 +4,26 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import ua.delsix.dto.DiscordUserDto;
 import ua.delsix.exception.UsernameAlreadyExists;
 import ua.delsix.jpa.entity.Person;
 import ua.delsix.jpa.repository.DemonRepository;
 import ua.delsix.jpa.repository.DemonlistRepository;
 import ua.delsix.jpa.repository.PersonRepository;
+import ua.delsix.mapper.PersonMapper;
 
 import java.time.Instant;
 
 @Service
 @Log4j2
-public class UserService {
+public class PersonService {
     private final DemonlistRepository demonlistRepository;
     private final DemonRepository demonRepository;
     private final PersonRepository personRepository;
 
-    public UserService(DemonlistRepository demonlistRepository,
-                       DemonRepository demonRepository,
-                       PersonRepository personRepository) {
+    public PersonService(DemonlistRepository demonlistRepository,
+                         DemonRepository demonRepository,
+                         PersonRepository personRepository) {
         this.demonlistRepository = demonlistRepository;
         this.demonRepository = demonRepository;
         this.personRepository = personRepository;
@@ -55,6 +57,22 @@ public class UserService {
         personRepository.save(person);
         log.info("New user {} created", person.getUsername());
     }
+
+    public Person createUserByDiscordUser(DiscordUserDto discordUserDTO) {
+        return personRepository.findById(Long.valueOf(discordUserDTO.getId()))
+                .map(existingUser -> {
+                    existingUser.setUsername(discordUserDTO.getUsername());
+                    existingUser.setEmail(discordUserDTO.getEmail());
+                    existingUser.setPfpUrl(String.format("https://cdn.discordapp.com/avatars/%s/%s.png",
+                            discordUserDTO.getId(), discordUserDTO.getAvatar()));
+                    return personRepository.save(existingUser);
+                })
+                .orElseGet(() -> {
+                    Person newPerson = PersonMapper.INSTANCE.toEntity(discordUserDTO);
+                    return personRepository.save(newPerson);
+                });
+    }
+
 
     public void deleteUser(UserDetails userDetails) {
         Person person = personRepository.findByUsername(userDetails.getUsername()).orElseThrow(() ->

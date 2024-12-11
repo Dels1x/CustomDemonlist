@@ -20,16 +20,16 @@ public class DemonlistService {
     private final AuthorizationService authorizationService;
     private final DemonlistRepository demonlistRepository;
     private final DemonlistMapper demonlistMapper;
-    private final UserService userService;
+    private final PersonService personService;
 
     public DemonlistService(AuthorizationService authorizationService,
                             DemonlistRepository demonlistRepository,
                             DemonlistMapper demonlistMapper,
-                            UserService userService) {
+                            PersonService personService) {
         this.authorizationService = authorizationService;
         this.demonlistRepository = demonlistRepository;
         this.demonlistMapper = demonlistMapper;
-        this.userService = userService;
+        this.personService = personService;
     }
 
     public Demonlist getDemonlistById(long id) throws EntityNotFoundException {
@@ -37,8 +37,8 @@ public class DemonlistService {
     }
 
     public List<Demonlist> getDemonlistsByUserId(long userId, UserDetails userDetails) throws EntityNotFoundException {
-        Person person1 = userService.getUserById(userId);
-        Person person2 = userService.getUserFromUserDetails(userDetails);
+        Person person1 = personService.getUserById(userId);
+        Person person2 = personService.getUserFromUserDetails(userDetails);
 
         if (authorizationService.isAuthorized(person1, person2)) {
             return demonlistRepository.findAllByPerson(person1);
@@ -48,7 +48,7 @@ public class DemonlistService {
     }
 
     public void createDemonlist(Demonlist demonlist, UserDetails userDetails) throws MoreDemonlistsThanAllowed {
-        Person person = userService.getUserFromUserDetails(userDetails);
+        Person person = personService.getUserFromUserDetails(userDetails);
 
         demonlist.setPerson(person);
 
@@ -63,7 +63,7 @@ public class DemonlistService {
     public void deleteDemonlist(long id, UserDetails userDetails) throws
             AuthorizationException,
             EntityNotFoundException {
-        Person person = userService.getUserFromUserDetails(userDetails);
+        Person person = personService.getUserFromUserDetails(userDetails);
         Demonlist demonlist = getDemonlistById(id);
         authorizationService.verifyOwnershipOfTheDemonlist(demonlist, person);
 
@@ -74,7 +74,7 @@ public class DemonlistService {
     public void updateDemonlist(long id, DemonlistDto dto, UserDetails userDetails) throws
             EntityNotFoundException,
             AuthorizationException {
-        Person person = userService.getUserFromUserDetails(userDetails);
+        Person person = personService.getUserFromUserDetails(userDetails);
         Demonlist demonlist = getDemonlistById(id);
         authorizationService.verifyOwnershipOfTheDemonlist(demonlist, person);
         demonlistMapper.updateDemonlistFromDto(dto, demonlist);

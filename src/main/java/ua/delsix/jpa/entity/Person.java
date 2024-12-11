@@ -23,8 +23,8 @@ import java.util.Set;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Person {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_gen")
-    @SequenceGenerator(name = "user_id_gen", sequenceName = "user_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "person_id_gen")
+    @SequenceGenerator(name = "person_id_gen", sequenceName = "person_id_gen", allocationSize = 1)
     @Column(name = "id", nullable = false)
     @JsonView(Views.Public.class)
     private Long id;

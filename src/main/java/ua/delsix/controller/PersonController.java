@@ -11,25 +11,25 @@ import org.springframework.web.bind.annotation.*;
 import ua.delsix.exception.UsernameAlreadyExists;
 import ua.delsix.jpa.entity.Person;
 import ua.delsix.service.EmailAlreadyExists;
-import ua.delsix.service.UserService;
+import ua.delsix.service.PersonService;
 import ua.delsix.util.ResponseUtil;
 import ua.delsix.util.Views;
 
 @RestController
 @Log4j2
 @RequestMapping("/users")
-public class UserController {
-    private final UserService userService;
+public class PersonController {
+    private final PersonService personService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public PersonController(PersonService personService) {
+        this.personService = personService;
     }
 
     @GetMapping("/user")
     @JsonView(Views.Public.class)
     public ResponseEntity<?> getUser(@RequestParam long id) {
         try {
-            return ResponseEntity.ok(userService.getUserById(id));
+            return ResponseEntity.ok(personService.getUserById(id));
         } catch (EntityNotFoundException e) {
             return ResponseUtil.notFoundMessage(e.getMessage());
         }
@@ -39,7 +39,7 @@ public class UserController {
     public ResponseEntity<String> createUser(@RequestBody Person person) {
         try {
             System.out.println(person);
-            userService.createUser(person);
+            personService.createUser(person);
             return ResponseEntity.ok(String.format("User %s was successfully created", person.getUsername()));
         } catch (UsernameAlreadyExists | EmailAlreadyExists e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
@@ -48,7 +48,7 @@ public class UserController {
 
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteUser(@AuthenticationPrincipal UserDetails userDetails) {
-        userService.deleteUser(userDetails);
+        personService.deleteUser(userDetails);
         return ResponseEntity.ok(String.format("User %s was successfully deleted", userDetails.getUsername()));
     }
 }

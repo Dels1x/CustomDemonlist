@@ -21,22 +21,22 @@ public class DemonService {
     private final DemonlistRepository demonlistRepository;
     private final DemonMapper demonMapper;
     private final AuthorizationService authorizationService;
-    private final UserService userService;
+    private final PersonService personService;
 
     public DemonService(AuthorizationService authorizationService,
                         DemonRepository demonRepository,
                         DemonlistRepository demonlistRepository, DemonMapper demonMapper,
-                        UserService userService) {
+                        PersonService personService) {
         this.authorizationService = authorizationService;
         this.demonRepository = demonRepository;
         this.demonMapper = demonMapper;
-        this.userService = userService;
+        this.personService = personService;
         this.demonlistRepository = demonlistRepository;
     }
 
     @Transactional
     public void createDemon(Demon demon, UserDetails userDetails) throws AuthorizationException {
-        Person person = userService.getUserFromUserDetails(userDetails);
+        Person person = personService.getUserFromUserDetails(userDetails);
         authorizationService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), person);
 
         int nextIndex = nextIndex(demon);
@@ -61,7 +61,7 @@ public class DemonService {
     public void updateDemonPosition(long id, int newPosition, UserDetails userDetails) throws
             AuthorizationException,
             EntityNotFoundException {
-        Person person = userService.getUserFromUserDetails(userDetails);
+        Person person = personService.getUserFromUserDetails(userDetails);
         Demon demon = getDemonById(id);
         authorizationService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), person);
         int oldPosition = demon.getPlacement();
@@ -101,7 +101,7 @@ public class DemonService {
             EntityNotFoundException,
             AuthorizationException,
             IllegalArgumentException {
-        Person person = userService.getUserFromUserDetails(userDetails);
+        Person person = personService.getUserFromUserDetails(userDetails);
         Demon demon = getDemonById(id);
         authorizationService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), person);
         int oldPos = demon.getPlacement();
@@ -132,7 +132,7 @@ public class DemonService {
     }
 
     public void deleteDemon(long demonlistId, long demonId, UserDetails userDetails) throws AuthorizationException {
-        Person person = userService.getUserFromUserDetails(userDetails);
+        Person person = personService.getUserFromUserDetails(userDetails);
         Demonlist demonlist = demonlistRepository.getReferenceById(demonlistId);
         authorizationService.verifyOwnershipOfTheDemonlist(demonlist, person);
 
