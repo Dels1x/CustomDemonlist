@@ -63,35 +63,35 @@ public class PersonService {
     }
 
     @Transactional
-    public Person createUserByDiscordUser(DiscordUserDto discordUserDTO) {
-        return personRepository.findById(Long.valueOf(discordUserDTO.getId()))
-                .map(existingUser -> {
-                    existingUser.setUsername(discordUserDTO.getUsername());
-                    existingUser.setEmail(discordUserDTO.getEmail());
-                    existingUser.setPfpUrl(String.format("https://cdn.discordapp.com/avatars/%s/%s.png",
-                            discordUserDTO.getId(), discordUserDTO.getAvatar()));
-                    existingUser = personRepository.save(existingUser);
+    public Person createUserByDiscordUser(DiscordUserDto discordUserDto) {
+        return personRepository.findByEmail(discordUserDto.getEmail())
+                .map(existingPerson -> {
+                    existingPerson.setUsername(discordUserDto.getUsername());
+                    existingPerson.setEmail(discordUserDto.getEmail());
+                    existingPerson.setPfpUrl(String.format("https://cdn.discordapp.com/avatars/%s/%s.png",
+                            discordUserDto.getId(), discordUserDto.getAvatar()));
+                    existingPerson = personRepository.save(existingPerson);
 
-                    String accessToken = jwtUtil.generateAccessToken(existingUser);
-                    String refreshToken = jwtUtil.generateRefreshToken(existingUser);
+                    String accessToken = jwtUtil.generateAccessToken(existingPerson);
+                    String refreshToken = jwtUtil.generateRefreshToken(existingPerson);
 
-                    existingUser.setAccessToken(accessToken);
-                    existingUser.setRefreshToken(refreshToken);
+                    existingPerson.setAccessToken(accessToken);
+                    existingPerson.setRefreshToken(refreshToken);
 
-                    return personRepository.save(existingUser);
+                    return personRepository.save(existingPerson);
                 })
                 .orElseGet(() -> {
-                    Person newUser = PersonMapper.INSTANCE.toEntity(discordUserDTO);
+                    Person newPerson = PersonMapper.INSTANCE.toEntity(discordUserDto);
 
-                    newUser = personRepository.save(newUser);
+                    newPerson = personRepository.save(newPerson);
 
-                    String accessToken = jwtUtil.generateAccessToken(newUser);
-                    String refreshToken = jwtUtil.generateRefreshToken(newUser);
+                    String accessToken = jwtUtil.generateAccessToken(newPerson);
+                    String refreshToken = jwtUtil.generateRefreshToken(newPerson);
 
-                    newUser.setAccessToken(accessToken);
-                    newUser.setRefreshToken(refreshToken);
+                    newPerson.setAccessToken(accessToken);
+                    newPerson.setRefreshToken(refreshToken);
 
-                    return personRepository.save(newUser);
+                    return personRepository.save(newPerson);
                 });
     }
 
