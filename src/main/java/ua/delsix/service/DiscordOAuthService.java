@@ -51,10 +51,10 @@ public class DiscordOAuthService {
         }
     }
 
-    public DiscordUserDto fetchDiscordUser(String acessToken) {
+    public DiscordUserDto fetchDiscordUser(String accessToken) {
         String url = "https://discord.com/api/users/@me";
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(acessToken);
+        headers.setBearerAuth(accessToken);
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
         ResponseEntity<DiscordUserDto> response = restTemplate.exchange(url, HttpMethod.GET, entity, DiscordUserDto.class);

@@ -19,7 +19,7 @@ public interface PersonMapper {
             @Mapping(target = "accessToken", ignore = true),
             @Mapping(target = "refreshToken", ignore = true),
             @Mapping(target = "tokenExpiry", ignore = true),
-            @Mapping(target = "id", ignore = true) // Ignore ID as it is generated
+            @Mapping(target = "discordId", source="id")
     })
     Person toEntity(DiscordUserDto dto);
 

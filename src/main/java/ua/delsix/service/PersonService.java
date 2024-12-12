@@ -4,6 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ua.delsix.dto.DiscordUserDto;
 import ua.delsix.exception.UsernameAlreadyExists;
 import ua.delsix.jpa.entity.Person;
@@ -11,6 +12,7 @@ import ua.delsix.jpa.repository.DemonRepository;
 import ua.delsix.jpa.repository.DemonlistRepository;
 import ua.delsix.jpa.repository.PersonRepository;
 import ua.delsix.mapper.PersonMapper;
+import ua.delsix.security.JwtUtil;
 
 import java.time.Instant;
 
@@ -20,13 +22,15 @@ public class PersonService {
     private final DemonlistRepository demonlistRepository;
     private final DemonRepository demonRepository;
     private final PersonRepository personRepository;
+    private final JwtUtil jwtUtil;
 
     public PersonService(DemonlistRepository demonlistRepository,
                          DemonRepository demonRepository,
-                         PersonRepository personRepository) {
+                         PersonRepository personRepository, JwtUtil jwtUtil) {
         this.demonlistRepository = demonlistRepository;
         this.demonRepository = demonRepository;
         this.personRepository = personRepository;
+        this.jwtUtil = jwtUtil;
     }
 
     public Person getUserById(long id) throws EntityNotFoundException {
@@ -58,6 +62,7 @@ public class PersonService {
         log.info("New user {} created", person.getUsername());
     }
 
+    @Transactional
     public Person createUserByDiscordUser(DiscordUserDto discordUserDTO) {
         return personRepository.findById(Long.valueOf(discordUserDTO.getId()))
                 .map(existingUser -> {
@@ -65,11 +70,28 @@ public class PersonService {
                     existingUser.setEmail(discordUserDTO.getEmail());
                     existingUser.setPfpUrl(String.format("https://cdn.discordapp.com/avatars/%s/%s.png",
                             discordUserDTO.getId(), discordUserDTO.getAvatar()));
+                    existingUser = personRepository.save(existingUser);
+
+                    String accessToken = jwtUtil.generateAccessToken(existingUser);
+                    String refreshToken = jwtUtil.generateRefreshToken(existingUser);
+
+                    existingUser.setAccessToken(accessToken);
+                    existingUser.setRefreshToken(refreshToken);
+
                     return personRepository.save(existingUser);
                 })
                 .orElseGet(() -> {
-                    Person newPerson = PersonMapper.INSTANCE.toEntity(discordUserDTO);
-                    return personRepository.save(newPerson);
+                    Person newUser = PersonMapper.INSTANCE.toEntity(discordUserDTO);
+
+                    newUser = personRepository.save(newUser);
+
+                    String accessToken = jwtUtil.generateAccessToken(newUser);
+                    String refreshToken = jwtUtil.generateRefreshToken(newUser);
+
+                    newUser.setAccessToken(accessToken);
+                    newUser.setRefreshToken(refreshToken);
+
+                    return personRepository.save(newUser);
                 });
     }
 

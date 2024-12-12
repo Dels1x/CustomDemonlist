@@ -36,7 +36,9 @@ public class LoginController {
                     Map.of(
                             "message", "User successfully authenticated and created",
                             "username", createdPerson.getUsername(),
-                            "id", createdPerson.getId()));
+                            "id", createdPerson.getId(),
+                            "access-token", createdPerson.getAccessToken(),
+                            "refresh-token", createdPerson.getRefreshToken()));
         } catch (HttpClientErrorException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }

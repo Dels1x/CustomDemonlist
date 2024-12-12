@@ -6,7 +6,8 @@ CREATE TABLE IF NOT EXISTS person (
     access_token VARCHAR(255),
     refresh_token VARCHAR(255),
     token_expiry TIMESTAMP,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    discord_id VARCHAR(255) UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS demonlist (

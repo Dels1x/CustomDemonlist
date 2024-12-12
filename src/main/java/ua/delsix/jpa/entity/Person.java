@@ -57,6 +57,8 @@ public class Person {
     @Column(name = "token_expiry")
     private Instant tokenExpiry;
 
+    @Column(name = "discord_id")
+    private String discordId;
 
     @Override
     public final boolean equals(Object o) {

@@ -7,6 +7,7 @@ import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.stereotype.Component;
+import ua.delsix.jpa.entity.Person;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
@@ -14,15 +15,23 @@ import java.util.Date;
 @Component
 public class JwtUtil {
     private final String SECRET_KEY = System.getenv("JWT_SECRET_KEY");
-    private final int EXPIRATION_TIME = 1000 * 60 * 60 * 12;
+    private final int EXPIRATION_TIME = 1000 * 60 * 60;
 
-    public String generateToken(String username) {
-        System.out.println(SECRET_KEY);
-
+    public String generateAccessToken(Person person) {
         return Jwts.builder()
-                .subject(username)
+                .subject(person.getId().toString())
+                .claim("username", person.getUsername())
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME)) // 12-hour expiration
+                .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME)) // 1-hour expiration
+                .signWith(getSecretKey())
+                .compact();
+    }
+
+    public String generateRefreshToken(Person person) {
+        return Jwts.builder()
+                .subject(person.getId().toString())
+                .claim("username", person.getUsername())
+                .issuedAt(new Date())
                 .signWith(getSecretKey())
                 .compact();
     }

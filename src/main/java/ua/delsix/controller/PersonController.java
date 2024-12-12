@@ -38,7 +38,6 @@ public class PersonController {
     @PostMapping("/create")
     public ResponseEntity<String> createUser(@RequestBody Person person) {
         try {
-            System.out.println(person);
             personService.createUser(person);
             return ResponseEntity.ok(String.format("User %s was successfully created", person.getUsername()));
         } catch (UsernameAlreadyExists | EmailAlreadyExists e) {
