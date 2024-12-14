@@ -2,6 +2,7 @@ package ua.delsix.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MissingRequestValueException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,7 +27,11 @@ public class LoginController {
     }
 
     @GetMapping("/callback/discord")
-    public ResponseEntity<?> callbackDiscord(@RequestParam String code) {
+    public ResponseEntity<?> callbackDiscord(@RequestParam(required = false) String code) {
+        if (code == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Code parameter is missing.");
+        }
+
         try {
             String accessToken = discordOAuthService.fetchAccessTokenFromDiscord(code);
             DiscordUserDto discordUserDto = discordOAuthService.fetchDiscordUser(accessToken);
@@ -39,7 +44,7 @@ public class LoginController {
                             "id", createdPerson.getId(),
                             "access-token", createdPerson.getAccessToken(),
                             "refresh-token", createdPerson.getRefreshToken()));
-        } catch (HttpClientErrorException e) {
+        } catch (HttpClientErrorException | MissingRequestValueException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }

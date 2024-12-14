@@ -5,6 +5,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.MissingRequestValueException;
 import org.springframework.web.client.RestTemplate;
 import ua.delsix.dto.DiscordUserDto;
 
@@ -24,7 +25,7 @@ public class DiscordOAuthService {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public String fetchAccessTokenFromDiscord(String code) {
+    public String fetchAccessTokenFromDiscord(String code) throws MissingRequestValueException {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.put("client_id", Collections.singletonList(clientId));
         body.put("client_secret", Collections.singletonList(clientSecret));
