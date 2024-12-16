@@ -1,5 +1,7 @@
 package ua.delsix.controller;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingRequestValueException;
@@ -27,7 +29,7 @@ public class LoginController {
     }
 
     @GetMapping("/callback/discord")
-    public ResponseEntity<?> callbackDiscord(@RequestParam(required = false) String code) {
+    public ResponseEntity<?> callbackDiscord(@RequestParam(required = false) String code, HttpServletResponse response) {
         if (code == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Code parameter is missing.");
         }
@@ -37,13 +39,24 @@ public class LoginController {
             DiscordUserDto discordUserDto = discordOAuthService.fetchDiscordUser(accessToken);
             Person createdPerson = personService.createUserByDiscordUser(discordUserDto);
 
+            Cookie accessTokenCookie = new Cookie("access-token", createdPerson.getAccessToken());
+            Cookie refreshTokenCookie = new Cookie("refresh-token", createdPerson.getRefreshToken());
+
+            accessTokenCookie.setHttpOnly(true);
+            refreshTokenCookie.setHttpOnly(true);
+            accessTokenCookie.setSecure(true);
+            refreshTokenCookie.setSecure(true);
+            accessTokenCookie.setPath("/");
+            refreshTokenCookie.setPath("/");
+
+            response.addCookie(accessTokenCookie);
+            response.addCookie(refreshTokenCookie);
+
             return ResponseEntity.ok(
                     Map.of(
                             "message", "User successfully authenticated and created",
                             "username", createdPerson.getUsername(),
-                            "id", createdPerson.getId(),
-                            "access-token", createdPerson.getAccessToken(),
-                            "refresh-token", createdPerson.getRefreshToken()));
+                            "id", createdPerson.getId()));
         } catch (HttpClientErrorException | MissingRequestValueException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
