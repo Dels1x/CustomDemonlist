@@ -1,9 +1,6 @@
 package ua.delsix.security;
 
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.stereotype.Component;
@@ -36,9 +33,9 @@ public class JwtUtil {
                 .compact();
     }
 
-    public boolean validateToken(String token) {
+    public Claims validateToken(String token) {
         try {
-            Jwts.parser().verifyWith(getSecretKey()).build().parseSignedClaims(token);
+            return Jwts.parser().verifyWith(getSecretKey()).build().parseSignedClaims(token).getPayload();
         } catch(SecurityException | MalformedJwtException e) {
             throw new AuthenticationCredentialsNotFoundException("JWT was expired or incorrect");
         } catch (ExpiredJwtException e) {
@@ -47,9 +44,9 @@ public class JwtUtil {
             throw new AuthenticationCredentialsNotFoundException("Unsupported JWT token.");
         } catch (IllegalArgumentException e) {
             throw new AuthenticationCredentialsNotFoundException("JWT token compact of handler are invalid.");
+        } catch (Exception e) {
+            throw new RuntimeException("An unexpected error occurred while validating the token.", e);
         }
-
-        return false;
     }
 
     private SecretKey getSecretKey() {
