@@ -12,19 +12,21 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 import ua.delsix.dto.DiscordUserDto;
 import ua.delsix.jpa.entity.Person;
-import ua.delsix.service.DiscordOAuthService;
+import ua.delsix.security.JwtUtil;
+import ua.delsix.service.AuthService;
 import ua.delsix.service.PersonService;
+import ua.delsix.util.CookieUtil;
 
 import java.util.Map;
 
 @RestController
 @RequestMapping("/oauth2")
-public class LoginController {
-    private final DiscordOAuthService discordOAuthService;
+public class AuthController {
+    private final AuthService authService;
     private final PersonService personService;
 
-    public LoginController(DiscordOAuthService discordOAuthService, PersonService personService) {
-        this.discordOAuthService = discordOAuthService;
+    public AuthController(AuthService authService, PersonService personService) {
+        this.authService = authService;
         this.personService = personService;
     }
 
@@ -35,22 +37,12 @@ public class LoginController {
         }
 
         try {
-            String accessToken = discordOAuthService.fetchAccessTokenFromDiscord(code);
-            DiscordUserDto discordUserDto = discordOAuthService.fetchDiscordUser(accessToken);
+            String accessToken = authService.fetchAccessTokenFromDiscord(code);
+            DiscordUserDto discordUserDto = authService.fetchDiscordUser(accessToken);
             Person createdPerson = personService.createUserByDiscordUser(discordUserDto);
 
-            Cookie accessTokenCookie = new Cookie("access-token", createdPerson.getAccessToken());
-            Cookie refreshTokenCookie = new Cookie("refresh-token", createdPerson.getRefreshToken());
-
-            accessTokenCookie.setHttpOnly(true);
-            refreshTokenCookie.setHttpOnly(true);
-            accessTokenCookie.setSecure(true);
-            refreshTokenCookie.setSecure(true);
-            accessTokenCookie.setPath("/");
-            refreshTokenCookie.setPath("/");
-
-            response.addCookie(accessTokenCookie);
-            response.addCookie(refreshTokenCookie);
+            CookieUtil.addHttpOnlyCookie(response, "access-token", createdPerson.getAccessToken(), JwtUtil.EXPIRATION_TIME);
+            CookieUtil.addHttpOnlyCookie(response, "refresh-token", createdPerson.getRefreshToken(), Integer.MAX_VALUE);
 
             return ResponseEntity.ok(
                     Map.of(

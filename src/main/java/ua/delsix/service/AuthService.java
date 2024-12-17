@@ -8,12 +8,15 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.MissingRequestValueException;
 import org.springframework.web.client.RestTemplate;
 import ua.delsix.dto.DiscordUserDto;
+import ua.delsix.exception.AuthorizationException;
+import ua.delsix.jpa.entity.Demonlist;
+import ua.delsix.jpa.entity.Person;
 
 import java.util.Collections;
 import java.util.Map;
 
 @Service
-public class DiscordOAuthService {
+public class AuthService {
     @Value("${spring.security.oauth2.client.registration.discord.client-id}")
     private String clientId;
 
@@ -61,5 +64,21 @@ public class DiscordOAuthService {
         ResponseEntity<DiscordUserDto> response = restTemplate.exchange(url, HttpMethod.GET, entity, DiscordUserDto.class);
 
         return response.getBody();
+    }
+
+    public void verifyOwnershipOfTheDemonlist(Demonlist demonlist, Person person) throws AuthorizationException {
+        if (demonlist == null || !demonlist.getPerson().equals(person)) {
+            throw new AuthorizationException("You are not authorized to perform actions with the desired demonlist");
+        }
+    }
+
+    public void verifyUserAuthorization(Person person1, Person person2) throws AuthorizationException {
+        if ((!person1.equals(person2))) {
+            throw new AuthorizationException("You are not authorized to perform actions with the desired user");
+        }
+    }
+
+    public boolean isAuthorized(Person person1, Person person2) {
+        return person1.equals(person2);
     }
 }

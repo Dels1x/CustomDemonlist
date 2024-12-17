@@ -20,14 +20,14 @@ public class DemonService {
     private final DemonRepository demonRepository;
     private final DemonlistRepository demonlistRepository;
     private final DemonMapper demonMapper;
-    private final AuthorizationService authorizationService;
+    private final AuthService authService;
     private final PersonService personService;
 
-    public DemonService(AuthorizationService authorizationService,
+    public DemonService(AuthService authService,
                         DemonRepository demonRepository,
                         DemonlistRepository demonlistRepository, DemonMapper demonMapper,
                         PersonService personService) {
-        this.authorizationService = authorizationService;
+        this.authService = authService;
         this.demonRepository = demonRepository;
         this.demonMapper = demonMapper;
         this.personService = personService;
@@ -37,7 +37,7 @@ public class DemonService {
     @Transactional
     public void createDemon(Demon demon, UserDetails userDetails) throws AuthorizationException {
         Person person = personService.getUserFromUserDetails(userDetails);
-        authorizationService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), person);
+        authService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), person);
 
         int nextIndex = nextIndex(demon);
 
@@ -63,7 +63,7 @@ public class DemonService {
             EntityNotFoundException {
         Person person = personService.getUserFromUserDetails(userDetails);
         Demon demon = getDemonById(id);
-        authorizationService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), person);
+        authService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), person);
         int oldPosition = demon.getPlacement();
 
         editPlacements(demon, newPosition, oldPosition);
@@ -103,7 +103,7 @@ public class DemonService {
             IllegalArgumentException {
         Person person = personService.getUserFromUserDetails(userDetails);
         Demon demon = getDemonById(id);
-        authorizationService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), person);
+        authService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), person);
         int oldPos = demon.getPlacement();
         demonMapper.updateDemonFromDto(dto, demon);
         log.info("dto {}", dto);
@@ -134,7 +134,7 @@ public class DemonService {
     public void deleteDemon(long demonlistId, long demonId, UserDetails userDetails) throws AuthorizationException {
         Person person = personService.getUserFromUserDetails(userDetails);
         Demonlist demonlist = demonlistRepository.getReferenceById(demonlistId);
-        authorizationService.verifyOwnershipOfTheDemonlist(demonlist, person);
+        authService.verifyOwnershipOfTheDemonlist(demonlist, person);
 
         if (!demonRepository.existsById(demonId)) {
             throw new EntityNotFoundException("Demon with id " + demonId + " not found");

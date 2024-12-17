@@ -17,16 +17,16 @@ import java.util.List;
 @Service
 @Log4j2
 public class DemonlistService {
-    private final AuthorizationService authorizationService;
+    private final AuthService authService;
     private final DemonlistRepository demonlistRepository;
     private final DemonlistMapper demonlistMapper;
     private final PersonService personService;
 
-    public DemonlistService(AuthorizationService authorizationService,
+    public DemonlistService(AuthService authService,
                             DemonlistRepository demonlistRepository,
                             DemonlistMapper demonlistMapper,
                             PersonService personService) {
-        this.authorizationService = authorizationService;
+        this.authService = authService;
         this.demonlistRepository = demonlistRepository;
         this.demonlistMapper = demonlistMapper;
         this.personService = personService;
@@ -40,7 +40,7 @@ public class DemonlistService {
         Person person1 = personService.getUserById(userId);
         Person person2 = personService.getUserFromUserDetails(userDetails);
 
-        if (authorizationService.isAuthorized(person1, person2)) {
+        if (authService.isAuthorized(person1, person2)) {
             return demonlistRepository.findAllByPerson(person1);
         } else {
             return demonlistRepository.findAllByPersonAndIsPublicTrue(person1);
@@ -65,7 +65,7 @@ public class DemonlistService {
             EntityNotFoundException {
         Person person = personService.getUserFromUserDetails(userDetails);
         Demonlist demonlist = getDemonlistById(id);
-        authorizationService.verifyOwnershipOfTheDemonlist(demonlist, person);
+        authService.verifyOwnershipOfTheDemonlist(demonlist, person);
 
         demonlistRepository.deleteById(id);
         log.info("Demonlist {} of user {} has been deleted", id, person.getUsername());
@@ -76,7 +76,7 @@ public class DemonlistService {
             AuthorizationException {
         Person person = personService.getUserFromUserDetails(userDetails);
         Demonlist demonlist = getDemonlistById(id);
-        authorizationService.verifyOwnershipOfTheDemonlist(demonlist, person);
+        authService.verifyOwnershipOfTheDemonlist(demonlist, person);
         demonlistMapper.updateDemonlistFromDto(dto, demonlist);
 
         demonlistRepository.save(demonlist);

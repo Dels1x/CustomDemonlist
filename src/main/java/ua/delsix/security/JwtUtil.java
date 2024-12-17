@@ -15,7 +15,7 @@ import java.util.Date;
 @Component
 public class JwtUtil {
     private final String SECRET_KEY = System.getenv("JWT_SECRET_KEY");
-    private final int EXPIRATION_TIME = 1000 * 60 * 60;
+    public static final int EXPIRATION_TIME = 1000 * 60 * 60;
 
     public String generateAccessToken(Person person) {
         return Jwts.builder()
@@ -36,7 +36,6 @@ public class JwtUtil {
                 .compact();
     }
 
-    //TODO
     public boolean validateToken(String token) {
         try {
             Jwts.parser().verifyWith(getSecretKey()).build().parseSignedClaims(token);
