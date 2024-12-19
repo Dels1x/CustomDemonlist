@@ -3,7 +3,6 @@ package ua.delsix.security;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
@@ -12,6 +11,7 @@ import org.springframework.security.authentication.AuthenticationCredentialsNotF
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import ua.delsix.util.CookieUtil;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -36,17 +36,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         }
 
-        Cookie[] cookies = request.getCookies();
-
-        String accessToken = null;
-
-        if (cookies != null ) {
-            for (Cookie cookie : cookies) {
-                if (Objects.equals(cookie.getName(), "access-token")) {
-                    accessToken = cookie.getValue();
-                }
-            }
-        }
+        String accessToken = getAccessTokenFromRequest(request);
 
         if (accessToken != null) {
             try {
@@ -67,5 +57,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private String getAccessTokenFromRequest(HttpServletRequest request) {
+        try {
+            return Objects.requireNonNull(CookieUtil.findCookie(request, "access-token")).getValue();
+        } catch (NullPointerException e) {
+            return null;
+        }
     }
 }
