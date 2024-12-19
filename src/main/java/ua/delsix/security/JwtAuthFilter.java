@@ -6,6 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,12 +26,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(@NonNull HttpServletRequest request,
+                                    @NonNull HttpServletResponse response,
+                                    @NonNull FilterChain filterChain) throws ServletException, IOException {
         String path = request.getRequestURI();
-        log.info("path: {}", path);
-
 
         if (path.startsWith("/oauth2/callback")) {
             filterChain.doFilter(request, response);
@@ -40,14 +39,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         Cookie[] cookies = request.getCookies();
 
         String accessToken = null;
-        String refreshToken = null;
 
         if (cookies != null ) {
             for (Cookie cookie : cookies) {
                 if (Objects.equals(cookie.getName(), "access-token")) {
                     accessToken = cookie.getValue();
-                } else if (Objects.equals(cookie.getName(), "refresh-token")) {
-                    refreshToken = cookie.getValue();
                 }
             }
         }
@@ -56,26 +52,19 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             try {
                 Claims claims = jwtUtil.validateToken(accessToken);
                 String id = claims.getSubject();
-
                 SecurityContextHolder.getContext().setAuthentication(new JwtAuthentication(id));
+
+                filterChain.doFilter(request, response);
+                return;
             } catch (AuthenticationCredentialsNotFoundException e) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.getWriter().write("Invalid or expired access token: " + e.getMessage());
             }
+        } else {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Can't proceed without an access token");
+            return;
         }
-
-        // TODO
-        /* if (refreshToken != null) {
-            try {
-                Claims claims = jwtUtil.validateToken(refreshToken);
-                String id = claims.getSubject();
-
-                SecurityContextHolder.getContext().setAuthentication(new JwtAuthentication(id));
-            } catch (AuthenticationCredentialsNotFoundException e) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("Invalid refresh token: " + e.getMessage());
-            }
-        }*/
 
         filterChain.doFilter(request, response);
     }
