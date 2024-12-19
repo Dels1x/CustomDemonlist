@@ -1,6 +1,5 @@
 package ua.delsix.controller;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +40,7 @@ public class AuthController {
             DiscordUserDto discordUserDto = authService.fetchDiscordUser(accessToken);
             Person createdPerson = personService.createUserByDiscordUser(discordUserDto);
 
-            CookieUtil.addHttpOnlyCookie(response, "access-token", createdPerson.getAccessToken(), JwtUtil.EXPIRATION_TIME);
+            CookieUtil.addHttpOnlyCookie(response, "access-token", createdPerson.getAccessToken(), JwtUtil.EXPIRATION_TIME / 1000);
             CookieUtil.addHttpOnlyCookie(response, "refresh-token", createdPerson.getRefreshToken(), Integer.MAX_VALUE);
 
             return ResponseEntity.ok(

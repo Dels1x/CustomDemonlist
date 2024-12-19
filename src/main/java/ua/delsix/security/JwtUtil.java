@@ -33,7 +33,7 @@ public class JwtUtil {
                 .compact();
     }
 
-    public Claims validateToken(String token) {
+    public Claims validateToken(String token) throws AuthenticationCredentialsNotFoundException {
         try {
             return Jwts.parser().verifyWith(getSecretKey()).build().parseSignedClaims(token).getPayload();
         } catch(SecurityException | MalformedJwtException e) {
@@ -45,7 +45,7 @@ public class JwtUtil {
         } catch (IllegalArgumentException e) {
             throw new AuthenticationCredentialsNotFoundException("JWT token compact of handler are invalid.");
         } catch (Exception e) {
-            throw new RuntimeException("An unexpected error occurred while validating the token.", e);
+            throw new AuthenticationCredentialsNotFoundException("An unexpected error occurred while validating the token.", e);
         }
     }
 

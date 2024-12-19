@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import ua.delsix.jpa.entity.Person;
 import ua.delsix.jpa.repository.PersonRepository;
 
@@ -17,9 +18,11 @@ import ua.delsix.jpa.repository.PersonRepository;
 @EnableWebSecurity
 public class SecurityConfig {
     private final PersonRepository personRepository;
+    private final JwtAuthFilter jwtAuthFilter;
 
-    public SecurityConfig(PersonRepository personRepository) {
+    public SecurityConfig(PersonRepository personRepository, JwtAuthFilter jwtAuthFilter) {
         this.personRepository = personRepository;
+        this.jwtAuthFilter = jwtAuthFilter;
     }
 
     @Bean
@@ -34,6 +37,8 @@ public class SecurityConfig {
                         .loginPage("/oauth2/callback/discord")
                         .defaultSuccessUrl("/dashboard", true)
                         .failureUrl("/login?error=true"));
+
+        http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
