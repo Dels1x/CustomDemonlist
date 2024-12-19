@@ -17,13 +17,13 @@ public class CookieUtil {
         response.addCookie(cookie);
     }
 
-    public static Cookie findCookie(HttpServletRequest request, String cookieName) {
+    public static String findToken(HttpServletRequest request, String tokenName) {
         Cookie[] cookies = request.getCookies();
 
         if (cookies != null ) {
             for (Cookie cookie : cookies) {
-                if (Objects.equals(cookie.getName(), cookieName)) {
-                    return cookie;
+                if (Objects.equals(cookie.getName(), tokenName)) {
+                    return cookie.getValue();
                 }
             }
         }

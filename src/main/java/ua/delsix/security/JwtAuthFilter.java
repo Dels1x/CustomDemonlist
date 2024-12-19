@@ -14,7 +14,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import ua.delsix.util.CookieUtil;
 
 import java.io.IOException;
-import java.util.Objects;
 
 @Component
 @Log4j2
@@ -29,14 +28,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
-        String path = request.getRequestURI();
-
-        if (path.startsWith("/oauth2/callback")) {
+        if (request.getRequestURI().startsWith("/oauth2/callback")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String accessToken = getAccessTokenFromRequest(request);
+        String accessToken = CookieUtil.findToken(request, "access-token");
 
         if (accessToken != null) {
             try {
@@ -57,13 +54,5 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
-    }
-
-    private String getAccessTokenFromRequest(HttpServletRequest request) {
-        try {
-            return Objects.requireNonNull(CookieUtil.findCookie(request, "access-token")).getValue();
-        } catch (NullPointerException e) {
-            return null;
-        }
     }
 }
