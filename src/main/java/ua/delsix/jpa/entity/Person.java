@@ -48,15 +48,6 @@ public class Person {
     @Column(name = "pfp_url")
     private String pfpUrl;
 
-    @Column(name = "access_token")
-    private String accessToken;
-
-    @Column(name = "refresh_token")
-    private String refreshToken;
-
-    @Column(name = "token_expiry")
-    private Instant tokenExpiry;
-
     @Column(name = "discord_id")
     private String discordId;
 

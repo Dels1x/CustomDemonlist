@@ -3,9 +3,6 @@ CREATE TABLE IF NOT EXISTS person (
     username VARCHAR(40) NOT NULL,
     pfp_url VARCHAR(255),
     email VARCHAR(255) UNIQUE,
-    access_token VARCHAR(255),
-    refresh_token VARCHAR(255),
-    token_expiry TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     discord_id VARCHAR(255) UNIQUE
 );
