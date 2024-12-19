@@ -11,5 +11,6 @@ public class CookieUtil {
         cookie.setSecure(true);
         cookie.setAttribute("SameSite", "Strict");
         cookie.setMaxAge(maxAge);
+        response.addCookie(cookie);
     }
 }
