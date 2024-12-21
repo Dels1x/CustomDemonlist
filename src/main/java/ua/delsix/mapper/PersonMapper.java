@@ -16,9 +16,6 @@ public interface PersonMapper {
             @Mapping(target = "email", source = "email"),
             @Mapping(target = "pfpUrl", expression = "java(getPfpUrl(dto))"),
             @Mapping(target = "createdAt", expression = "java(java.time.Instant.now())"),
-            @Mapping(target = "accessToken", ignore = true),
-            @Mapping(target = "refreshToken", ignore = true),
-            @Mapping(target = "tokenExpiry", ignore = true),
             @Mapping(target = "discordId", source="id")
     })
     Person toEntity(DiscordUserDto dto);

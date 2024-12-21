@@ -1,6 +1,7 @@
 package ua.delsix.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import ua.delsix.jpa.repository.DemonlistRepository;
 import ua.delsix.jpa.repository.PersonRepository;
 import ua.delsix.mapper.PersonMapper;
 import ua.delsix.security.JwtUtil;
+import ua.delsix.util.CookieUtil;
 
 import java.time.Instant;
 
@@ -63,7 +65,7 @@ public class PersonService {
     }
 
     @Transactional
-    public Person createUserByDiscordUser(DiscordUserDto discordUserDto) {
+    public Person createUserByDiscordUser(DiscordUserDto discordUserDto, HttpServletResponse response) {
         return personRepository.findByEmail(discordUserDto.getEmail())
                 .map(existingPerson -> {
                     existingPerson.setUsername(discordUserDto.getUsername());
@@ -72,11 +74,10 @@ public class PersonService {
                             discordUserDto.getId(), discordUserDto.getAvatar()));
                     existingPerson = personRepository.save(existingPerson);
 
-                    String accessToken = jwtUtil.generateAccessToken(existingPerson);
-                    String refreshToken = jwtUtil.generateRefreshToken(existingPerson);
-
-                    existingPerson.setAccessToken(accessToken);
-                    existingPerson.setRefreshToken(refreshToken);
+                    CookieUtil.attachAuthCookies(
+                            response,
+                            jwtUtil.generateAccessToken(existingPerson),
+                            jwtUtil.generateRefreshToken(existingPerson));
 
                     return personRepository.save(existingPerson);
                 })
@@ -85,11 +86,10 @@ public class PersonService {
 
                     newPerson = personRepository.save(newPerson);
 
-                    String accessToken = jwtUtil.generateAccessToken(newPerson);
-                    String refreshToken = jwtUtil.generateRefreshToken(newPerson);
-
-                    newPerson.setAccessToken(accessToken);
-                    newPerson.setRefreshToken(refreshToken);
+                    CookieUtil.attachAuthCookies(
+                            response,
+                            jwtUtil.generateAccessToken(newPerson),
+                            jwtUtil.generateRefreshToken(newPerson));
 
                     return personRepository.save(newPerson);
                 });
