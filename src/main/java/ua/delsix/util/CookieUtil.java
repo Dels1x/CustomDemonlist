@@ -3,7 +3,6 @@ package ua.delsix.util;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import ua.delsix.security.JwtUtil;
 
 import java.util.Objects;
 
@@ -33,7 +32,15 @@ public class CookieUtil {
     }
 
     public static void attachAuthCookies(HttpServletResponse response, String accessToken, String refreshToken) {
+        attachAccessTokenCookie(response, accessToken);
+        attachRefreshTokenCookie(response, refreshToken);
+    }
+
+    public static void attachAccessTokenCookie(HttpServletResponse response, String accessToken) {
         addHttpOnlyCookie(response, "access-token", accessToken, JwtUtil.EXPIRATION_TIME / 1000);
+    }
+
+    public static void attachRefreshTokenCookie(HttpServletResponse response, String refreshToken) {
         addHttpOnlyCookie(response, "refresh-token", refreshToken, Integer.MAX_VALUE);
     }
 }

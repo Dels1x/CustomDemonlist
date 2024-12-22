@@ -1,5 +1,6 @@
 package ua.delsix.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +11,7 @@ import ua.delsix.dto.DiscordUserDto;
 import ua.delsix.jpa.entity.Person;
 import ua.delsix.service.AuthService;
 import ua.delsix.service.PersonService;
+import ua.delsix.util.CookieUtil;
 
 import java.util.Map;
 
@@ -24,6 +26,7 @@ public class AuthController {
         this.personService = personService;
     }
 
+    // Gets access token from Discord, on order to generate its own access token later via jwtUtil.generateAccessToken()
     @GetMapping("/callback/discord")
     public ResponseEntity<?> callbackDiscord(@RequestParam(required = false) String code, HttpServletResponse response) {
         if (code == null) {
@@ -45,7 +48,6 @@ public class AuthController {
         }
     }
 
-    /*TODO
     @PostMapping("/refresh-access-token")
     public ResponseEntity<?> refreshAccessToken(HttpServletResponse response, HttpServletRequest request) {
         String refreshToken = CookieUtil.findToken(request, "refresh-token");
@@ -54,8 +56,9 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh token is absent");
         }
 
-        try {
-            Claims claims = jwtUtil
-        }
-    }*/
+        String newAccessToken = authService.refreshAccessToken(refreshToken);
+        CookieUtil.attachAccessTokenCookie(response, newAccessToken);
+
+        return ResponseEntity.ok("Access token successfully refreshed");
+    }
 }

@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ua.delsix.util.CookieUtil;
+import ua.delsix.util.JwtUtil;
 
 import java.io.IOException;
 
@@ -28,7 +29,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
-        if (request.getRequestURI().startsWith("/oauth2/callback")) {
+        String path = request.getRequestURI();
+        if (path.startsWith("/oauth2/callback") || path.startsWith("/oauth2/refresh-access-token")) {
             filterChain.doFilter(request, response);
             return;
         }

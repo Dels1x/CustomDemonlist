@@ -13,7 +13,7 @@ import ua.delsix.jpa.repository.DemonRepository;
 import ua.delsix.jpa.repository.DemonlistRepository;
 import ua.delsix.jpa.repository.PersonRepository;
 import ua.delsix.mapper.PersonMapper;
-import ua.delsix.security.JwtUtil;
+import ua.delsix.util.JwtUtil;
 import ua.delsix.util.CookieUtil;
 
 import java.time.Instant;

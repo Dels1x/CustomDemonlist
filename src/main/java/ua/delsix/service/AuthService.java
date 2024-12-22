@@ -1,5 +1,6 @@
 package ua.delsix.service;
 
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,8 @@ import ua.delsix.dto.DiscordUserDto;
 import ua.delsix.exception.AuthorizationException;
 import ua.delsix.jpa.entity.Demonlist;
 import ua.delsix.jpa.entity.Person;
+import ua.delsix.jpa.repository.PersonRepository;
+import ua.delsix.util.JwtUtil;
 
 import java.util.Collections;
 import java.util.Map;
@@ -27,6 +30,13 @@ public class AuthService {
     private String redirectUri;
 
     private final RestTemplate restTemplate = new RestTemplate();
+    private final JwtUtil jwtUtil;
+    private final PersonRepository personRepository;
+
+    public AuthService(JwtUtil jwtUtil, PersonRepository personRepository) {
+        this.jwtUtil = jwtUtil;
+        this.personRepository = personRepository;
+    }
 
     public String fetchAccessTokenFromDiscord(String code) throws MissingRequestValueException {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
@@ -64,6 +74,12 @@ public class AuthService {
         ResponseEntity<DiscordUserDto> response = restTemplate.exchange(url, HttpMethod.GET, entity, DiscordUserDto.class);
 
         return response.getBody();
+    }
+
+    public String refreshAccessToken(String refreshToken) {
+        Claims claims = jwtUtil.validateToken(refreshToken);
+        String id = claims.getSubject();
+        return jwtUtil.generateAccessToken(personRepository.getReferenceById(Long.parseLong(id)));
     }
 
     public void verifyOwnershipOfTheDemonlist(Demonlist demonlist, Person person) throws AuthorizationException {

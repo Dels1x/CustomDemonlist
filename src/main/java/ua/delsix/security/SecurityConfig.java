@@ -32,11 +32,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/users/create").permitAll()
                         .requestMatchers("/oauth2/callback/**").permitAll()
-                        .anyRequest().authenticated())
-                .oauth2Login(oauth2 -> oauth2 // Discord
-                        .loginPage("/oauth2/callback/discord")
-                        .defaultSuccessUrl("/dashboard", true)
-                        .failureUrl("/login?error=true"));
+                        .requestMatchers("/oauth2/refresh-access-token").permitAll()
+                        .anyRequest().authenticated());
 
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 

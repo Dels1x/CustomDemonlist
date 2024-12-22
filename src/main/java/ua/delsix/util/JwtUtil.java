@@ -1,4 +1,4 @@
-package ua.delsix.security;
+package ua.delsix.util;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
