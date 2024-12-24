@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DiscordUserDto {
+public class UserDto {
     private String id;
     private String username;
     private String avatar;

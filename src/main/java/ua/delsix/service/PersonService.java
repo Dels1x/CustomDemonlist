@@ -6,7 +6,8 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.delsix.dto.DiscordUserDto;
+import ua.delsix.dto.UserDto;
+import ua.delsix.enums.OAuth2Type;
 import ua.delsix.exception.UsernameAlreadyExists;
 import ua.delsix.jpa.entity.Person;
 import ua.delsix.jpa.repository.DemonRepository;
@@ -65,13 +66,17 @@ public class PersonService {
     }
 
     @Transactional
-    public Person createUserByDiscordUser(DiscordUserDto discordUserDto, HttpServletResponse response) {
-        return personRepository.findByEmail(discordUserDto.getEmail())
+    public Person createUserByDto(UserDto userDto, HttpServletResponse response, final OAuth2Type type) {
+        return personRepository.findByEmail(userDto.getEmail())
                 .map(existingPerson -> {
-                    existingPerson.setUsername(discordUserDto.getUsername());
-                    existingPerson.setEmail(discordUserDto.getEmail());
-                    existingPerson.setPfpUrl(String.format("https://cdn.discordapp.com/avatars/%s/%s.png",
-                            discordUserDto.getId(), discordUserDto.getAvatar()));
+                    existingPerson.setUsername(userDto.getUsername());
+                    existingPerson.setEmail(userDto.getEmail());
+                    if (type == OAuth2Type.DISCORD) {
+                        existingPerson.setPfpUrl(String.format("https://cdn.discordapp.com/avatars/%s/%s.png",
+                                userDto.getId(), userDto.getAvatar()));
+                    } else if (type == OAuth2Type.GOOGLE) {
+                        existingPerson.setPfpUrl(userDto.getAvatar());
+                    }
                     existingPerson = personRepository.save(existingPerson);
 
                     CookieUtil.attachAuthCookies(
@@ -82,7 +87,7 @@ public class PersonService {
                     return personRepository.save(existingPerson);
                 })
                 .orElseGet(() -> {
-                    Person newPerson = PersonMapper.INSTANCE.toEntity(discordUserDto);
+                    Person newPerson = PersonMapper.INSTANCE.toEntity(userDto);
 
                     newPerson = personRepository.save(newPerson);
 

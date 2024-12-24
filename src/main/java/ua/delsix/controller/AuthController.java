@@ -7,7 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingRequestValueException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
-import ua.delsix.dto.DiscordUserDto;
+import ua.delsix.dto.UserDto;
+import ua.delsix.enums.OAuth2Type;
 import ua.delsix.jpa.entity.Person;
 import ua.delsix.service.AuthService;
 import ua.delsix.service.PersonService;
@@ -33,13 +34,25 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Code parameter is missing.");
         }
 
-        try {
-            String accessToken = authService.fetchAccessTokenFromDiscord(code);
-            DiscordUserDto discordUserDto = authService.fetchDiscordUser(accessToken);
-            Person createdPerson = personService.createUserByDiscordUser(discordUserDto, response);
+        return getCallbackResponseEntity(code, response, OAuth2Type.DISCORD);
+    }
 
-            return ResponseEntity.ok(
-                    Map.of(
+    @GetMapping("/callback/google")
+    public ResponseEntity<?> callbackGoogle(@RequestParam(required = false) String code, HttpServletResponse response) {
+        if (code == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Code parameter is missing.");
+        }
+
+        return getCallbackResponseEntity(code, response, OAuth2Type.GOOGLE);
+    }
+
+    private ResponseEntity<?> getCallbackResponseEntity(String code, HttpServletResponse response, OAuth2Type type) {
+        try {
+            String accessToken = authService.fetchAccessToken(code, type);
+            UserDto userDto = authService.fetchUser(accessToken, type);
+            Person createdPerson = personService.createUserByDto(userDto, response, type);
+
+            return ResponseEntity.ok(Map.of(
                             "message", "User successfully authenticated and created",
                             "username", createdPerson.getUsername(),
                             "id", createdPerson.getId()));

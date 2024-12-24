@@ -4,7 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
-import ua.delsix.dto.DiscordUserDto;
+import ua.delsix.dto.UserDto;
 import ua.delsix.jpa.entity.Person;
 
 @Mapper(componentModel = "spring")
@@ -18,9 +18,9 @@ public interface PersonMapper {
             @Mapping(target = "createdAt", expression = "java(java.time.Instant.now())"),
             @Mapping(target = "discordId", source="id")
     })
-    Person toEntity(DiscordUserDto dto);
+    Person toEntity(UserDto dto);
 
-    default String getPfpUrl(DiscordUserDto dto) {
+    default String getPfpUrl(UserDto dto) {
         return String.format("https://cdn.discordapp.com/avatars/%s/%s.png", dto.getId(), dto.getAvatar());
     }
 }
