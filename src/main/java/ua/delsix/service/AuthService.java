@@ -1,6 +1,7 @@
 package ua.delsix.service;
 
 import io.jsonwebtoken.Claims;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -16,10 +17,10 @@ import ua.delsix.jpa.entity.Person;
 import ua.delsix.jpa.repository.PersonRepository;
 import ua.delsix.util.JwtUtil;
 
-import java.util.Collections;
 import java.util.Map;
 
 @Service
+@Log4j2
 public class AuthService {
     @Value("${spring.security.oauth2.client.registration.discord.client-id}")
     private String clientId;
@@ -65,16 +66,17 @@ public class AuthService {
 
     private HttpEntity<MultiValueMap<String, String>> getRequestHttpEntity(String code) {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.put("client_id", Collections.singletonList(clientId));
-        body.put("client_secret", Collections.singletonList(clientSecret));
-        body.put("code", Collections.singletonList(code));
-        body.put("redirect_uri", Collections.singletonList(redirectUri));
-        body.put("grant_type", Collections.singletonList("authorization_code"));
+        body.add("client_id", clientId);
+        body.add("client_secret", clientSecret);
+        body.add("code", code);
+        body.add("redirect_uri", redirectUri);
+        body.add("grant_type", "authorization_code");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         return new HttpEntity<>(body, headers);
     }
+
 
     public UserDto fetchUser(String accessToken, OAuth2Type type) {
         String url;
