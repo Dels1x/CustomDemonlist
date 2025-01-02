@@ -51,6 +51,10 @@ public class Person {
     @Column(name = "discord_id")
     private String discordId;
 
+    @Column(name = "google_id")
+    private String googleId;
+
+
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;

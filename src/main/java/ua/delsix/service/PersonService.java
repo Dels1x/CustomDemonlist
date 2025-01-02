@@ -6,7 +6,8 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.delsix.dto.UserDto;
+import ua.delsix.dto.DiscordUserDto;
+import ua.delsix.dto.GoogleUserDto;
 import ua.delsix.enums.OAuth2Type;
 import ua.delsix.exception.UsernameAlreadyExists;
 import ua.delsix.jpa.entity.Person;
@@ -66,17 +67,45 @@ public class PersonService {
     }
 
     @Transactional
-    public Person createUserByDto(UserDto userDto, HttpServletResponse response, final OAuth2Type type) {
+    public Person createUserByDiscordDto(DiscordUserDto userDto, HttpServletResponse response, final OAuth2Type type) {
         return personRepository.findByEmail(userDto.getEmail())
                 .map(existingPerson -> {
                     existingPerson.setUsername(userDto.getUsername());
                     existingPerson.setEmail(userDto.getEmail());
-                    if (type == OAuth2Type.DISCORD) {
-                        existingPerson.setPfpUrl(String.format("https://cdn.discordapp.com/avatars/%s/%s.png",
-                                userDto.getId(), userDto.getAvatar()));
-                    } else if (type == OAuth2Type.GOOGLE) {
-                        existingPerson.setPfpUrl(userDto.getAvatar());
-                    }
+                    existingPerson.setPfpUrl(String.format("https://cdn.discordapp.com/avatars/%s/%s.png",
+                            userDto.getId(), userDto.getAvatar()));
+                    existingPerson = personRepository.save(existingPerson);
+
+                    CookieUtil.attachAuthCookies(
+                            response,
+                            jwtUtil.generateAccessToken(existingPerson),
+                            jwtUtil.generateRefreshToken(existingPerson));
+
+                    return personRepository.save(existingPerson);
+                })
+                .orElseGet(() -> {
+                    Person newPerson = PersonMapper.INSTANCE.toEntity(userDto);
+
+                    newPerson = personRepository.save(newPerson);
+
+                    CookieUtil.attachAuthCookies(
+                            response,
+                            jwtUtil.generateAccessToken(newPerson),
+                            jwtUtil.generateRefreshToken(newPerson));
+
+                    return personRepository.save(newPerson);
+                });
+    }
+
+    @Transactional
+    public Person createUserByGoogleDto(GoogleUserDto userDto, HttpServletResponse response, final OAuth2Type type) {
+        return personRepository.findByEmail(userDto.getEmail())
+                .map(existingPerson -> {
+                    existingPerson.setUsername(userDto.getName());
+                    existingPerson.setEmail(userDto.getEmail());
+
+                    existingPerson.setPfpUrl(userDto.getPicture());
+
                     existingPerson = personRepository.save(existingPerson);
 
                     CookieUtil.attachAuthCookies(

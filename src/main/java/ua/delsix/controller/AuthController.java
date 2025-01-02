@@ -2,12 +2,14 @@ package ua.delsix.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingRequestValueException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
-import ua.delsix.dto.UserDto;
+import ua.delsix.dto.DiscordUserDto;
+import ua.delsix.dto.GoogleUserDto;
 import ua.delsix.enums.OAuth2Type;
 import ua.delsix.jpa.entity.Person;
 import ua.delsix.service.AuthService;
@@ -17,6 +19,7 @@ import ua.delsix.util.CookieUtil;
 import java.util.Map;
 
 @RestController
+@Log4j2
 @RequestMapping("/oauth2")
 public class AuthController {
     private final AuthService authService;
@@ -33,29 +36,39 @@ public class AuthController {
         if (code == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Code parameter is missing.");
         }
+        OAuth2Type type = OAuth2Type.DISCORD;
 
-        return getCallbackResponseEntity(code, response, OAuth2Type.DISCORD);
+        try {
+            String accessToken = authService.fetchAccessToken(code, type);
+            DiscordUserDto userDto = authService.fetchUserDiscord(accessToken);
+            Person person = personService.createUserByDiscordDto(userDto, response, type);
+
+            return ResponseEntity.ok(Map.of(
+                    "message", "User successfully authenticated and created",
+                    "username", person.getUsername(),
+                    "id", person.getId()));
+        } catch (HttpClientErrorException | MissingRequestValueException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @GetMapping("/callback/google")
-    public ResponseEntity<?> callbackGoogle(@RequestParam(required = false) String code, HttpServletResponse response) {
+    public ResponseEntity<?> callbackGoogle(
+            @RequestParam(required = false) String code,
+            HttpServletResponse response) {
         if (code == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Code parameter is missing.");
         }
+        OAuth2Type type = OAuth2Type.GOOGLE;
 
-        return getCallbackResponseEntity(code, response, OAuth2Type.GOOGLE);
-    }
-
-    private ResponseEntity<?> getCallbackResponseEntity(String code, HttpServletResponse response, OAuth2Type type) {
         try {
             String accessToken = authService.fetchAccessToken(code, type);
-            UserDto userDto = authService.fetchUser(accessToken, type);
-            Person createdPerson = personService.createUserByDto(userDto, response, type);
-
+            GoogleUserDto userDto = authService.fetchUserGoogle(accessToken);
+            Person person = personService.createUserByGoogleDto(userDto, response, type);
             return ResponseEntity.ok(Map.of(
-                            "message", "User successfully authenticated and created",
-                            "username", createdPerson.getUsername(),
-                            "id", createdPerson.getId()));
+                    "message", "User successfully authenticated and created",
+                    "username", person.getUsername(),
+                    "id", person.getId()));
         } catch (HttpClientErrorException | MissingRequestValueException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }

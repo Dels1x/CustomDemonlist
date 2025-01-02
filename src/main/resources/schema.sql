@@ -4,7 +4,8 @@ CREATE TABLE IF NOT EXISTS person (
     pfp_url VARCHAR(255),
     email VARCHAR(255) UNIQUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    discord_id VARCHAR(255) UNIQUE
+    discord_id VARCHAR(255) UNIQUE,
+    google_id VARCHAR(255) UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS demonlist (
