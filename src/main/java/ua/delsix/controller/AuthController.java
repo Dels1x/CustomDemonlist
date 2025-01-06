@@ -16,6 +16,7 @@ import ua.delsix.service.AuthService;
 import ua.delsix.service.PersonService;
 import ua.delsix.util.CookieUtil;
 
+import java.io.IOException;
 import java.util.Map;
 
 @RestController
@@ -24,6 +25,7 @@ import java.util.Map;
 public class AuthController {
     private final AuthService authService;
     private final PersonService personService;
+    private static final String FRONTEND_URL = "http://localhost:3000";
 
     public AuthController(AuthService authService, PersonService personService) {
         this.authService = authService;
@@ -37,6 +39,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Code parameter is missing.");
         }
         OAuth2Type type = OAuth2Type.DISCORD;
+        addFrontendRedirect(response);
 
         try {
             String accessToken = authService.fetchAccessToken(code, type);
@@ -60,6 +63,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Code parameter is missing.");
         }
         OAuth2Type type = OAuth2Type.GOOGLE;
+        addFrontendRedirect(response);
 
         try {
             String accessToken = authService.fetchAccessToken(code, type);
@@ -86,5 +90,13 @@ public class AuthController {
         CookieUtil.attachAccessTokenCookie(response, newAccessToken);
 
         return ResponseEntity.ok("Access token successfully refreshed");
+    }
+
+    private void addFrontendRedirect(HttpServletResponse httpServletResponse) {
+        try {
+            httpServletResponse.sendRedirect(FRONTEND_URL);
+        } catch (IOException e) {
+            log.error(e);
+        }
     }
 }
