@@ -11,10 +11,6 @@ import java.util.Date;
 
 @Component
 public class JwtUtil {
-    private JwtUtil() {
-        throw new AssertionError("Should not be instantiated");
-    }
-
     private final String SECRET_KEY = System.getenv("JWT_SECRET_KEY");
     public static final int EXPIRATION_TIME = 1000 * 60 * 60;
 
