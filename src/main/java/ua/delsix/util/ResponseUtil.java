@@ -25,10 +25,6 @@ public class ResponseUtil {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You have exceeded the allowed amount of demonlists");
     }
 
-    public static ResponseEntity<String> samePasswordReset() {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User tried to reset password with the same password they had before");
-    }
-
     public static ResponseEntity<String> illegalArgument(String message) {
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(message);
     }
