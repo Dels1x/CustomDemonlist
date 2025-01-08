@@ -1,5 +1,7 @@
 import Head from "next/head";
 import GoogleButton from "react-google-button";
+import React from "react";
+import DiscordButton from "@/components/DiscordButton";
 
 require('dotenv').config();
 
@@ -20,6 +22,7 @@ export default function Home() {
                     label='Sign in with Google'
                     onClick={handleGoogleSignIn}
                 />
+                <DiscordButton />
             </main>
         </>
     );
