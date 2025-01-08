@@ -7,6 +7,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.Objects;
 
 public class CookieUtil {
+    private CookieUtil() {
+        throw new AssertionError("Should not be instantiated");
+    }
+
     public static void addHttpOnlyCookie(HttpServletResponse response, String name, String value, int maxAge) {
         Cookie cookie = new Cookie(name, value);
         cookie.setPath("/");

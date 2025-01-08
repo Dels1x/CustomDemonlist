@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 // messages for API calls
 public class ResponseUtil {
     private ResponseUtil() {
-        throw new AssertionError();
+        throw new AssertionError("Should not be instantiated");
     }
 
     public static ResponseEntity<String> demonlistDoesntExistMessage() {
