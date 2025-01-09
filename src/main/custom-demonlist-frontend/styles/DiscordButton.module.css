@@ -1,5 +1,13 @@
 .button {
-    background: #7289da;
-    padding: 5px;
-    border-radius: 5px;
+    background: #5865F2;
+    padding: 4px;
+    border: #5865F2 1px solid;
+    border-radius: 7px;
+    width: 160px;
+
+    button {
+        padding-left: 8px;
+        background: #5865F2;
+        border: 0;
+    }
 }
