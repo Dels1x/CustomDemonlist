@@ -1,0 +1,12 @@
+.nav {
+    position: fixed;         /* Fix the nav to the left side */
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 20%;
+    background-color: #070707;
+    color: white;
+    padding: 1rem;
+    box-sizing: border-box;  /* Include padding in the width and height */
+    overflow-y: auto;        /* Scroll if content overflows vertically */
+}
