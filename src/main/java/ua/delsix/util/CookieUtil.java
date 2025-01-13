@@ -16,7 +16,7 @@ public class CookieUtil {
         cookie.setPath("/");
         cookie.setHttpOnly(true);
         cookie.setDomain("localhost");
-        cookie.setSecure(false); // Set to true if using HTTPS. currently kept false for development purposes (localhost)
+        cookie.setSecure(true);
         cookie.setAttribute("SameSite", "None"); // Set to Strict when in production
         cookie.setMaxAge(maxAge);
         response.addCookie(cookie);
