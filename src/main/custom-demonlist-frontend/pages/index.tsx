@@ -1,9 +1,12 @@
-import GoogleButton from "react-google-button";
 import React from "react";
-import DiscordButton from "@/components/DiscordButton";
 import Layout from "@/layout/Layout";
+import {extractTokenData} from "@/api/auth";
 
-export default function Home() {
+interface HomeProps {
+    user: string;
+}
+
+const Home: React.FC<HomeProps> = ({user}) => {
     return (
         <Layout>
             <main>
@@ -11,3 +14,15 @@ export default function Home() {
         </Layout>
     );
 };
+
+export async function getServerSideProps(context: any) {
+    console.log(extractTokenData(context.req));
+
+    return {
+        props: {
+            user: "0",
+        },
+    }
+}
+
+export default Home;
