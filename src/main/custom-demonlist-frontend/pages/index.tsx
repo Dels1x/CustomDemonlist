@@ -1,26 +1,27 @@
 import React from "react";
 import Layout from "@/layout/Layout";
-import {extractTokenData} from "@/api/auth";
+import {AuthTokenPayload, extractTokenData} from "@/api/auth";
 
 interface HomeProps {
-    user: string;
+    user: AuthTokenPayload;
 }
 
 const Home: React.FC<HomeProps> = ({user}) => {
     return (
         <Layout>
             <main>
+                {user ? "Welcome, " + user.username : ""}
             </main>
         </Layout>
     );
 };
 
 export async function getServerSideProps(context: any) {
-    console.log(extractTokenData(context.req));
+    let user = extractTokenData(context.req);
 
     return {
         props: {
-            user: "0",
+            user,
         },
     }
 }

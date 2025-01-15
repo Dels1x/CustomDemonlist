@@ -1,9 +1,9 @@
 import cookie from "cookie";
 import jwt from 'jsonwebtoken'
 
-interface AuthTokenPayload {
+export interface AuthTokenPayload {
     id: string;
-    name: string
+    username: string
 }
 
 export const extractTokenData = (req: any): AuthTokenPayload | null => {
