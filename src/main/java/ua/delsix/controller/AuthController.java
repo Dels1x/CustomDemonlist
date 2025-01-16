@@ -79,17 +79,17 @@ public class AuthController {
     }
 
     @PostMapping("/refresh-access-token")
-    public ResponseEntity<?> refreshAccessToken(HttpServletResponse response, HttpServletRequest request) {
+    public ResponseEntity<Map<String, String>> refreshAccessToken(HttpServletRequest request) {
+        log.info("Request to refresh access token");
         String refreshToken = CookieUtil.findToken(request, "refresh-token");
 
         if (refreshToken == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh token is absent");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Refresh token is absent"));
         }
 
         String newAccessToken = authService.refreshAccessToken(refreshToken);
-        CookieUtil.attachAccessTokenCookie(response, newAccessToken);
 
-        return ResponseEntity.ok("Access token successfully refreshed");
+        return ResponseEntity.ok(Map.of("access-token", newAccessToken));
     }
 
     private void addFrontendRedirect(HttpServletResponse httpServletResponse) {
