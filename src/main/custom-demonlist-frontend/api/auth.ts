@@ -3,7 +3,8 @@ import jwt from 'jsonwebtoken'
 
 export interface AuthTokenPayload {
     id: string;
-    username: string
+    username: string,
+    sub: string,
 }
 
 export const extractTokenData = (req: any): AuthTokenPayload | null => {

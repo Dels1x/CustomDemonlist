@@ -11,7 +11,7 @@ const Home: React.FC<HomeProps> = ({user}) => {
     return (
         <Layout>
             <main>
-                {user ? "Welcome, " + user.username : ""}
+                {user ? "Welcome, #" + user.sub + " - " + user.username : ""}
             </main>
         </Layout>
     );
@@ -31,6 +31,7 @@ export async function getServerSideProps(context: any) {
         }
     }
 
+    console.log("user: " + JSON.stringify(user));
     return {
         props: {
             user,

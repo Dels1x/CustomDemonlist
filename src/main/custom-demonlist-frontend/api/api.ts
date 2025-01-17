@@ -27,10 +27,7 @@ export async function refreshToken(refreshToken: string) {
                 },
             });
 
-        console.log(response);
-        const newAccessToken = response.data.accessToken;
-        console.log(newAccessToken)
-        return newAccessToken;
+        return response.data.accessToken;
     } catch (error) {
         console.error("Error refresh a token: ", error);
         throw error;

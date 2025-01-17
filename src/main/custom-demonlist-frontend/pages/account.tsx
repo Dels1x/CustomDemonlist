@@ -3,6 +3,8 @@ import GoogleButton from "react-google-button";
 import DiscordButton from "@/components/DiscordButton";
 import React from "react";
 import styles from "@/styles/Account.module.css";
+import {extractTokenData} from "@/api/auth";
+import {getCookie, refreshToken} from "@/api/api";
 
 export default function Account() {
     const handleGoogleSignIn = () => {
@@ -24,3 +26,33 @@ export default function Account() {
         </Layout>
     );
 };
+
+export async function getServerSideProps(context: any) {
+    let user = extractTokenData(context.req);
+
+    if (!user) {
+        let token = getCookie("refresh-token", context.req);
+        console.info("token: ", token);
+
+        if (token != '') {
+            let accessToken = await refreshToken(token);
+            context.res.setHeader('Set-Cookie', `access-token=${accessToken}; HttpOnly; Path=/; Max-Age=3600; Secure`);
+            user = extractTokenData(context.req);
+        }
+    }
+
+    if (user) {
+        return {
+            redirect: {
+                destination: "/",
+                permanent: false,
+            }
+        }
+    } else {
+        return {
+            props: {
+
+            },
+        };
+    }
+}
