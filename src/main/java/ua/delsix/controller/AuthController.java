@@ -1,6 +1,5 @@
 package ua.delsix.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -14,7 +13,6 @@ import ua.delsix.enums.OAuth2Type;
 import ua.delsix.jpa.entity.Person;
 import ua.delsix.service.AuthService;
 import ua.delsix.service.PersonService;
-import ua.delsix.util.CookieUtil;
 
 import java.io.IOException;
 import java.util.Map;
@@ -79,17 +77,16 @@ public class AuthController {
     }
 
     @PostMapping("/refresh-access-token")
-    public ResponseEntity<Map<String, String>> refreshAccessToken(HttpServletRequest request) {
-        log.info("Request to refresh access token");
-        String refreshToken = CookieUtil.findToken(request, "refresh-token");
-
+    public ResponseEntity<Map<String, String>> refreshAccessToken(@RequestHeader("Refresh-Token") String refreshToken) {
         if (refreshToken == null) {
+            log.info("No refresh token was found");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Refresh token is absent"));
         }
 
         String newAccessToken = authService.refreshAccessToken(refreshToken);
+        log.info("Request to refresh access token: {}", newAccessToken);
 
-        return ResponseEntity.ok(Map.of("access-token", newAccessToken));
+        return ResponseEntity.ok(Map.of("accessToken", newAccessToken));
     }
 
     private void addFrontendRedirect(HttpServletResponse httpServletResponse) {
