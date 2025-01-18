@@ -1,5 +1,6 @@
 import cookie from "cookie";
 import jwt from 'jsonwebtoken'
+import {getCookie, refreshToken} from "@/api/api";
 
 export interface AuthTokenPayload {
     id: string;
@@ -21,3 +22,20 @@ export const extractTokenData = (req: any): AuthTokenPayload | null => {
         return null;
     }
 };
+
+export const getUserAndRefreshToken = async (context: any) => {
+    let user = extractTokenData(context.req);
+
+    if (!user) {
+        let token = getCookie("refresh-token", context.req);
+        console.info("token: ", token);
+
+        if (token != '') {
+            let accessToken = await refreshToken(token);
+            context.res.setHeader('Set-Cookie', `access-token=${accessToken}; HttpOnly; Path=/; Max-Age=3600; Secure`);
+            user = extractTokenData(context.req);
+        }
+    }
+
+    return user;
+}
