@@ -14,6 +14,10 @@ export const extractTokenData = (req: any): AuthTokenPayload | null => {
     const cookies = cookie.parse(req.headers.cookie);
     const token = cookies['access-token'];
 
+    return extractFromAccessToken(token);
+};
+
+const extractFromAccessToken = (token: string | undefined): AuthTokenPayload | null => {
     if (!token) return null;
 
     try {
@@ -33,9 +37,9 @@ export const getUserAndRefreshToken = async (context: any) => {
         if (token != '') {
             let accessToken = await refreshToken(token);
             context.res.setHeader('Set-Cookie', `access-token=${accessToken}; HttpOnly; Path=/; Max-Age=3600; Secure`);
-            user = extractTokenData(context.req);
+            user = extractFromAccessToken(accessToken);
         }
     }
 
     return user;
-}
+};
