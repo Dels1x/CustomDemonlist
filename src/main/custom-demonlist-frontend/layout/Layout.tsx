@@ -5,9 +5,10 @@ import Link from "next/link";
 
 interface LayoutProps {
     children: ReactNode;
+    isAuthenticated: boolean;
 }
 
-const Layout: React.FC<LayoutProps> = ({children}) => {
+const Layout: React.FC<LayoutProps> = ({children, isAuthenticated}) => {
     return (
         <div>
             <Head>
@@ -16,9 +17,10 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
                 <meta name="viewport" content="width=device-width, initial-scale=1"/>
             </Head>
             <nav className={styles.nav}>
-                <Link href="/account">
-                    Sign up
-                </Link>
+                {isAuthenticated ? (
+                    <Link href="/profile">Profile</Link>
+                ) : (
+                    <Link href="/account">Sign up</Link>)}
             </nav>
             <main>
                 {children}

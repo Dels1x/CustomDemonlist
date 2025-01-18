@@ -8,7 +8,7 @@ interface HomeProps {
 
 const Home: React.FC<HomeProps> = ({user}) => {
     return (
-        <Layout>
+        <Layout isAuthenticated={user !== null}>
             <main>
                 {user ? "Welcome, #" + user.sub + " - " + user.username : ""}
             </main>
