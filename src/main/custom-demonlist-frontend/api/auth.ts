@@ -8,7 +8,7 @@ export interface AuthTokenPayload {
     sub: string,
 }
 
-export const extractTokenData = (req: any): AuthTokenPayload | null => {
+export const extractAccessTokenData = (req: any): AuthTokenPayload | null => {
     if (!req.headers.cookie) return null;
 
     const cookies = cookie.parse(req.headers.cookie);
@@ -28,7 +28,7 @@ const extractFromAccessToken = (token: string | undefined): AuthTokenPayload | n
 };
 
 export const getUserAndRefreshToken = async (context: any) => {
-    let user = extractTokenData(context.req);
+    let user = extractAccessTokenData(context.req);
 
     if (!user) {
         let token = getCookie("refresh-token", context.req);
