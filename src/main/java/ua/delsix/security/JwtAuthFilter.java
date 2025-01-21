@@ -11,7 +11,6 @@ import org.springframework.security.authentication.AuthenticationCredentialsNotF
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import ua.delsix.util.CookieUtil;
 import ua.delsix.util.JwtUtil;
 
 import java.io.IOException;
@@ -30,14 +29,17 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
         String path = request.getRequestURI();
+        log.info("New request incoming on path: {}", path);
         if (path.startsWith("/oauth2/callback") || path.startsWith("/oauth2/refresh-access-token")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String accessToken = CookieUtil.findToken(request, "access-token");
+        String authorizationHeader = request.getHeader("Authorization");
 
-        if (accessToken != null) {
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String accessToken = authorizationHeader.substring(7);
+
             try {
                 Claims claims = jwtUtil.validateToken(accessToken);
                 String id = claims.getSubject();
