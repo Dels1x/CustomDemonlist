@@ -2,13 +2,19 @@ import React, {ReactNode} from "react";
 import styles from "@/styles/Layout.module.css";
 import Head from "next/head";
 import Link from "next/link";
+import ListOfDemonlists from "@/components/ListOfDemonlists";
+import {AuthTokenPayload} from "@/api/auth";
 
 interface LayoutProps {
     children: ReactNode;
-    isAuthenticated: boolean;
+    user: AuthTokenPayload | null;
+    list: any;
 }
 
-const Layout: React.FC<LayoutProps> = ({children, isAuthenticated}) => {
+const Layout: React.FC<LayoutProps> = ({children, user, list}) => {
+    const isAuthenticated = user !== null;
+    console.log(JSON.stringify(user));
+
     return (
         <div>
             <Head>
@@ -17,10 +23,17 @@ const Layout: React.FC<LayoutProps> = ({children, isAuthenticated}) => {
                 <meta name="viewport" content="width=device-width, initial-scale=1"/>
             </Head>
             <nav className={styles.nav}>
-                {isAuthenticated ? (
-                    <Link href="/profile">Profile</Link>
-                ) : (
-                    <Link href="/account">Sign up</Link>)}
+                {
+                    isAuthenticated ? (
+                        <Link href="/profile">Profile</Link>
+                    ) : (
+                        <Link href="/account">Sign up</Link>)
+                }
+                {
+                    isAuthenticated ? (
+                        <ListOfDemonlists list={list} />
+                    ) : null
+                }
             </nav>
             <main>
                 {children}
