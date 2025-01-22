@@ -13,8 +13,8 @@ export function getCookie(name: string, req: any): string {
 }
 
 const api = axios.create({
-        baseURL: API_URL,
-    });
+    baseURL: API_URL,
+});
 
 export async function refreshToken(refreshToken: string) {
     try {
@@ -47,6 +47,29 @@ export async function getDemonlistsForUserId(id: string, accessToken: string) {
         return response.data;
     } catch (error) {
         console.error('Error fetching demonlists', error);
+        throw error;
+    }
+}
+
+export async function addDemonlist(demonlist: {
+    name: string;
+    isPublic: boolean;
+    isMulti: boolean
+}, accessToken: string) {
+    try {
+        const response = await api.post(
+            'demonlists/create',
+            demonlist,
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                },
+            }
+        );
+
+        return response.data;
+    } catch (error) {
+        console.error('Error adding demonlist', error);
         throw error;
     }
 }
