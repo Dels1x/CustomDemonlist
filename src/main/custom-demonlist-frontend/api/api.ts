@@ -1,5 +1,4 @@
 import axios from "axios";
-import {extractAccessTokenData} from "@/api/auth";
 
 const API_URL: string = "http://localhost:8080/";
 
@@ -35,17 +34,17 @@ export async function refreshToken(refreshToken: string) {
     }
 }
 
-export async function getDemonlistsForUserId(id: number, req: any) {
+export async function getDemonlistsForUserId(id: string, accessToken: string) {
     try {
-        const token = extractAccessTokenData(req);
-
-        return await api.post(
-            'demonlists/demonlsits', {
+        const response = await api.get(
+            'demonlists/demonlists', {
                 params: {userId: id},
                 headers: {
-                    Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${accessToken}`,
                 }
             });
+
+        return response.data;
     } catch (error) {
         console.error('Error fetching demonlists', error);
         throw error;

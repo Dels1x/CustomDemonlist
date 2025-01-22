@@ -8,6 +8,14 @@ export interface AuthTokenPayload {
     sub: string,
 }
 
+export const getAccessToken = (req: any): string | null => {
+    if (!req.headers.cookie) return null;
+
+    const cookies = cookie.parse(req.headers.cookie);
+    const token = cookies['access-token'];
+    return token === undefined ? null : token;
+}
+
 export const extractAccessTokenData = (req: any): AuthTokenPayload | null => {
     if (!req.headers.cookie) return null;
 
