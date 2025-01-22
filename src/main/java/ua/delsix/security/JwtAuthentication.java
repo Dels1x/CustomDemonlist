@@ -2,16 +2,17 @@ package ua.delsix.security;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
 
 public class JwtAuthentication implements Authentication {
-    private final String id;
+    private final UserDetails userDetails;
     private boolean authenticated = true;
 
-    public JwtAuthentication(String id) {
-        this.id = id;
+    public JwtAuthentication(UserDetails userDetails) {
+        this.userDetails = userDetails;
     }
 
     @Override
@@ -30,8 +31,8 @@ public class JwtAuthentication implements Authentication {
     }
 
     @Override
-    public Object getPrincipal() {
-        return id;
+    public UserDetails getPrincipal() {
+        return userDetails;
     }
 
     @Override
@@ -46,6 +47,6 @@ public class JwtAuthentication implements Authentication {
 
     @Override
     public String getName() {
-        return id;
+        return userDetails.getUsername();
     }
 }

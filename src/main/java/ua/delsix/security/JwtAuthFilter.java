@@ -9,8 +9,10 @@ import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import ua.delsix.service.PersonService;
 import ua.delsix.util.JwtUtil;
 
 import java.io.IOException;
@@ -19,9 +21,11 @@ import java.io.IOException;
 @Log4j2
 public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
+    private final PersonService personService;
 
-    public JwtAuthFilter(JwtUtil jwtUtil) {
+    public JwtAuthFilter(JwtUtil jwtUtil, PersonService personService) {
         this.jwtUtil = jwtUtil;
+        this.personService = personService;
     }
 
     @Override
@@ -43,7 +47,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             try {
                 Claims claims = jwtUtil.validateToken(accessToken);
                 String id = claims.getSubject();
-                SecurityContextHolder.getContext().setAuthentication(new JwtAuthentication(id));
+                UserDetails userDetails = new CustomUserDetails(personService.getUserById(Long.parseLong(id)));
+                SecurityContextHolder.getContext().setAuthentication(new JwtAuthentication(userDetails));
 
                 filterChain.doFilter(request, response);
                 return;

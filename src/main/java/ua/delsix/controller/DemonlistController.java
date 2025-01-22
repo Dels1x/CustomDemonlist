@@ -2,6 +2,7 @@ package ua.delsix.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,6 +17,7 @@ import ua.delsix.util.Views;
 
 @RestController
 @RequestMapping("/demonlists")
+@Log4j2
 public class DemonlistController {
     private final DemonlistService demonlistService;
 
@@ -36,6 +38,7 @@ public class DemonlistController {
     @GetMapping("/demonlists")
     @JsonView(Views.Superficial.class)
     public ResponseEntity<?> getDemonlists(@RequestParam long userId, @AuthenticationPrincipal UserDetails userDetails) {
+        log.info("New request to get demonlists for user id {}", userId);
         try {
             return ResponseEntity.ok(demonlistService.getDemonlistsByUserId(userId, userDetails));
         } catch (EntityNotFoundException e) {
