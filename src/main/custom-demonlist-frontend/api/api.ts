@@ -51,7 +51,7 @@ export async function getDemonlistsForUserId(id: string, accessToken: string) {
     }
 }
 
-export async function addDemonlist(demonlist: {
+export async function createNewDemonlist(demonlist: {
     name: string;
     isPublic: boolean;
     isMulti: boolean

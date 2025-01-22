@@ -4,7 +4,7 @@ import Head from "next/head";
 import Link from "next/link";
 import ListOfDemonlists from "@/components/ListOfDemonlists";
 import {AuthTokenPayload} from "@/api/auth";
-import AddDemonlistButton from "@/components/AddDemonlistButton";
+import CreateDemonlistButton from "@/components/CreateDemonlistButton";
 
 interface LayoutProps {
     children: ReactNode;
@@ -33,12 +33,8 @@ const Layout: React.FC<LayoutProps> = ({children, user, accessToken, list}) => {
                     ) : (
                         <Link href="/account">Sign up</Link>)
                 }
-                <AddDemonlistButton/>
-                {
-                    isAuthenticated ? (
-                        <ListOfDemonlists list={list}/>
-                    ) : null
-                }
+                {accessToken && <CreateDemonlistButton accessToken={accessToken}/>}
+                {isAuthenticated && <ListOfDemonlists list={list}/>}
             </nav>
             <main>
                 {children}

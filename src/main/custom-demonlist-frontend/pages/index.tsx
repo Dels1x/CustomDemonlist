@@ -6,11 +6,12 @@ import {getDemonlistsForUserId} from "@/api/api";
 interface HomeProps {
     user: AuthTokenPayload;
     list: any;
+    accessToken: string;
 }
 
-const Home: React.FC<HomeProps> = ({user, list}) => {
+const Home: React.FC<HomeProps> = ({user, list, accessToken}) => {
     return (
-        <Layout user={user} list={list}>
+        <Layout user={user} list={list} accessToken={accessToken}>
             <main>
                 {user ? "Welcome, #" + user.sub + " - " + user.username : ""}
             </main>
@@ -30,6 +31,7 @@ export async function getServerSideProps(context: any) {
         props: {
             user,
             list,
+            accessToken,
         },
     }
 }
