@@ -9,6 +9,9 @@ interface ListItem {
 }
 
 const ListOfDemonlists: React.FC<ListOfDemonlistsProps> = ({list})=> {
+    if (!list || list.length === 0) {
+        return <div>No demonlists yet.</div>;
+    }
 
     return (
         <div>
