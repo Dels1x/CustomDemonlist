@@ -8,13 +8,16 @@ import AddDemonlistButton from "@/components/AddDemonlistButton";
 
 interface LayoutProps {
     children: ReactNode;
-    user: AuthTokenPayload | null;
-    list: any;
+    user?: AuthTokenPayload
+    accessToken?: string
+    list?: any;
 }
 
-const Layout: React.FC<LayoutProps> = ({children, user, list}) => {
-    const isAuthenticated = user !== null;
-    console.log(JSON.stringify(user));
+const Layout: React.FC<LayoutProps> = ({children, user, accessToken, list}) => {
+    const isAuthenticated = user !== undefined;
+    if (isAuthenticated) {
+        console.log(JSON.stringify(user));
+    }
 
     return (
         <div>

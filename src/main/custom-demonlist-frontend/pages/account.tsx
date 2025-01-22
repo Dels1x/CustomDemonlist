@@ -15,7 +15,7 @@ const Account: React.FC<HomeProps> = () => {
     }
 
     return (
-        <Layout user={null} list={null}>
+        <Layout>
             <div className={styles.authorizationBox}>
                 <div>
                     Sign in / Create account
