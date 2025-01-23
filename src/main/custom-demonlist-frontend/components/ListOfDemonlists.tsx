@@ -4,7 +4,7 @@ interface ListOfDemonlistsProps {
     list: ListItem[];
 }
 
-interface ListItem {
+export interface ListItem {
     name: string;
 }
 

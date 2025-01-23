@@ -1,12 +1,14 @@
 import Image from "next/image";
 import React from "react";
 import {createNewDemonlist} from "@/api/api";
+import {ListItem} from "@/components/ListOfDemonlists";
 
 interface CreateDemonlistButtonProps {
     accessToken: string;
+    onDemonlistCreated: (demonlist: ListItem) => void;
 }
 
-const CreateDemonlistButton: React.FC<CreateDemonlistButtonProps> = ({accessToken}) => {
+const CreateDemonlistButton: React.FC<CreateDemonlistButtonProps> = ({accessToken, onDemonlistCreated}) => {
      const handleClick = async () => {
         const demonlist = {
             name: "New Demonlist",
