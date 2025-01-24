@@ -17,6 +17,7 @@ const CreateDemonlistButton: React.FC<CreateDemonlistButtonProps> = ({accessToke
         };
 
          await createNewDemonlist(demonlist, accessToken);
+         onDemonlistCreated(demonlist);
     };
 
     return (

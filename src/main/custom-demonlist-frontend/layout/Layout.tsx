@@ -2,18 +2,16 @@ import React, {ReactNode} from "react";
 import styles from "@/styles/Layout.module.css";
 import Head from "next/head";
 import Link from "next/link";
-import ListOfDemonlists from "@/components/ListOfDemonlists";
 import {AuthTokenPayload} from "@/api/auth";
-import CreateDemonlistButton from "@/components/CreateDemonlistButton";
+import DemonlistManager from "@/components/DemonlistManager";
 
 interface LayoutProps {
     children: ReactNode;
     user?: AuthTokenPayload
     accessToken?: string
-    list?: any;
 }
 
-const Layout: React.FC<LayoutProps> = ({children, user, accessToken, list}) => {
+const Layout: React.FC<LayoutProps> = ({children, user, accessToken}) => {
     const isAuthenticated = user !== undefined;
     if (isAuthenticated) {
         console.log(JSON.stringify(user));
@@ -33,8 +31,7 @@ const Layout: React.FC<LayoutProps> = ({children, user, accessToken, list}) => {
                     ) : (
                         <Link href="/account">Sign up</Link>)
                 }
-                {accessToken && <CreateDemonlistButton accessToken={accessToken}/>}
-                {isAuthenticated && <ListOfDemonlists list={list}/>}
+                {accessToken && isAuthenticated && <DemonlistManager userId={user.sub} accessToken={accessToken}/>}
             </nav>
             <main>
                 {children}
