@@ -80,8 +80,8 @@ public class DemonController {
 
     @PatchMapping("/update-position")
     public ResponseEntity<String> updateDemonPosition(@RequestParam long id,
-                                              @RequestParam int position,
-                                              @AuthenticationPrincipal UserDetails userDetails) {
+                                                      @RequestParam int position,
+                                                      @AuthenticationPrincipal UserDetails userDetails) {
         try {
             demonService.updateDemonPosition(id, position, userDetails);
             return ResponseEntity.ok(String.format("%s demon #%s position has been updated", userDetails.getUsername(), id));
@@ -90,5 +90,11 @@ public class DemonController {
         } catch (EntityNotFoundException e) {
             return ResponseUtil.notFoundMessage(e.getMessage());
         }
+    }
+
+    @GetMapping("/count")
+    public ResponseEntity<Integer> countByDemonlist(@RequestParam long demonlistId) {
+        int count = demonService.countByDemonlist(demonlistId);
+        return ResponseEntity.ok(count);
     }
 }

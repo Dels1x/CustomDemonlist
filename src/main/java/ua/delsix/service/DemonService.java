@@ -72,7 +72,7 @@ public class DemonService {
     private void editPlacements(Demon demon, int newPos, int oldPos) {
         log.debug("old position: {}; new position: {}", oldPos, newPos);
 
-        int max = countByDemonlist(demon.getDemonlist());
+        int max = countByDemonlist(demon.getDemonlist().getId());
 
         if (newPos > max) {
             newPos = max;
@@ -124,11 +124,11 @@ public class DemonService {
     }
 
     private int nextIndex(Demon demon) {
-        return countByDemonlist(demon.getDemonlist()) + 1;
+        return countByDemonlist(demon.getDemonlist().getId()) + 1;
     }
 
-    private int countByDemonlist(Demonlist demonlist) {
-        return demonRepository.countByDemonlistId(demonlist.getId());
+    public int countByDemonlist(long id) {
+        return demonRepository.countByDemonlistId(id);
     }
 
     public void deleteDemon(long demonlistId, long demonId, UserDetails userDetails) throws AuthorizationException {
