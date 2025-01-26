@@ -64,12 +64,28 @@ export async function createNewDemonlist(demonlist: {
                 headers: {
                     Authorization: `Bearer ${accessToken}`
                 },
-            }
-        );
+            });
 
         return response.data;
     } catch (error) {
         console.error('Error adding demonlist', error);
+        throw error;
+    }
+}
+
+export async function countDemonsInDemonlist(id: number, accessToken: string) {
+    try {
+        const response = await api.get(
+            'demons/count', {
+                params: {demonlistId: id},
+                headers: {
+                    Authorization: `Bearer: ${accessToken}`
+                }
+            });
+
+        return response.data;
+    } catch (error) {
+        console.error('Error getting demonlist count', error);
         throw error;
     }
 }
