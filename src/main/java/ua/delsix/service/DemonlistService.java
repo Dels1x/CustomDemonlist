@@ -82,4 +82,16 @@ public class DemonlistService {
         demonlistRepository.save(demonlist);
         log.info("Demonlist {} of user {} has been updated", demonlist.getId(), person.getUsername());
     }
+
+    public int countByPersonId(long id, UserDetails userDetails) throws
+            EntityNotFoundException,
+            AuthorizationException {
+        if (!String.valueOf(id).equals(userDetails.getUsername())) {
+            throw new AuthorizationException(String.format("User %s has not authority on user %d",
+                    userDetails.getUsername(),
+                    id));
+        }
+
+        return demonlistRepository.countByPersonId(id);
+    }
 }

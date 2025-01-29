@@ -83,4 +83,16 @@ public class DemonlistController {
             return ResponseUtil.notFoundMessage(e.getMessage());
         }
     }
+
+    @GetMapping("/count")
+    public ResponseEntity<String> countDemonlists(@RequestParam long userId,
+                                                   @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            return ResponseEntity.ok(String.valueOf(demonlistService.countByPersonId(userId, userDetails)));
+        } catch (AuthorizationException e) {
+            return ResponseUtil.authorizationExceptionMessage(e.getMessage());
+        } catch (EntityNotFoundException e) {
+            return ResponseUtil.notFoundMessage(e.getMessage());
+        }
+    }
 }

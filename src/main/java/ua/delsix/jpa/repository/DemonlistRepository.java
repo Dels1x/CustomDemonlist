@@ -15,6 +15,7 @@ public interface DemonlistRepository extends JpaRepository<Demonlist, Long> {
     @Transactional
     void deleteByPersonId(long personId);
     int countByPerson(Person person);
+    int countByPersonId(long id);
     List<Demonlist> findAllByPerson(Person person);
     List<Demonlist> findAllByPersonAndIsPublicTrue(Person person);
 }
