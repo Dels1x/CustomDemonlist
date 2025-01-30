@@ -42,6 +42,7 @@ public class DemonlistController {
         try {
             return ResponseEntity.ok(demonlistService.getDemonlistsByUserId(userId, userDetails));
         } catch (EntityNotFoundException e) {
+            log.info("EntityNotFoundException: {}", e.getMessage());
             return ResponseUtil.notFoundMessage(String.format("User %s not found", userId));
         }
     }
@@ -64,8 +65,10 @@ public class DemonlistController {
             demonlistService.deleteDemonlist(id, userDetails);
             return ResponseEntity.ok(String.format("Demonlist %s has been deleted", id));
         } catch (AuthorizationException e) {
+            log.info("AuthorizationException: {}", e.getMessage());
             return ResponseUtil.authorizationExceptionMessage(e.getMessage());
         } catch (EntityNotFoundException e) {
+            log.info("EntityNotFoundException: {}", e.getMessage());
             return ResponseUtil.notFoundMessage(e.getMessage());
         }
     }
@@ -87,11 +90,15 @@ public class DemonlistController {
     @GetMapping("/count")
     public ResponseEntity<String> countDemonlists(@RequestParam long userId,
                                                    @AuthenticationPrincipal UserDetails userDetails) {
+        log.info("New request to count the amount of demonlists of user with an id of {}", userId);
+
         try {
             return ResponseEntity.ok(String.valueOf(demonlistService.countByPersonId(userId, userDetails)));
         } catch (AuthorizationException e) {
+            log.info("AuthorizationException: {}", e.getMessage());
             return ResponseUtil.authorizationExceptionMessage(e.getMessage());
         } catch (EntityNotFoundException e) {
+            log.info("EntityNotFoundException: {}", e.getMessage());
             return ResponseUtil.notFoundMessage(e.getMessage());
         }
     }

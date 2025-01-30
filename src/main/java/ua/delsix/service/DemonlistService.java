@@ -86,7 +86,9 @@ public class DemonlistService {
     public int countByPersonId(long id, UserDetails userDetails) throws
             EntityNotFoundException,
             AuthorizationException {
-        if (!String.valueOf(id).equals(userDetails.getUsername())) {
+        long id2 = personService.getUserFromUserDetails(userDetails).getId();
+
+        if (id != id2) {
             throw new AuthorizationException(String.format("User %s has not authority on user %d",
                     userDetails.getUsername(),
                     id));

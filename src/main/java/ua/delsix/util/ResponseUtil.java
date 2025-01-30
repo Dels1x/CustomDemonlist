@@ -13,12 +13,12 @@ public class ResponseUtil {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Provided demonlist doesn't exist");
     }
 
-    public static ResponseEntity<String> authorizationExceptionMessage(String s){
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(s);
+    public static ResponseEntity<String> authorizationExceptionMessage(String message){
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
     }
 
-    public static ResponseEntity<String> notFoundMessage(String s) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(s);
+    public static ResponseEntity<String> notFoundMessage(String message) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
     }
 
     public static ResponseEntity<String> moreDemonlistsThanAllowed() {

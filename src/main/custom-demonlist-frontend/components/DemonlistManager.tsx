@@ -24,7 +24,7 @@ const DemonlistManager: React.FC<{ userId: string; accessToken: string }> = ({us
 
     return (
         <div>
-            <CreateDemonlistButton accessToken={accessToken} onDemonlistCreated={addDemonlistToState}/>
+            <CreateDemonlistButton userId={userId} accessToken={accessToken} onDemonlistCreated={addDemonlistToState}/>
             <ListOfDemonlists list={demonlists}/>
         </div>
     );
