@@ -79,7 +79,7 @@ export async function countDemonsInDemonlist(id: number, accessToken: string) {
             'demons/count', {
                 params: {demonlistId: id},
                 headers: {
-                    Authorization: `Bearer: ${accessToken}`
+                    Authorization: `Bearer ${accessToken}`
                 }
             });
 
@@ -90,13 +90,13 @@ export async function countDemonsInDemonlist(id: number, accessToken: string) {
     }
 }
 
-export async function countDemonlistsByUser(id: number, accessToken: string) {
+export async function countDemonlistsByUser(id: string, accessToken: string) {
     try {
         const response = await api.get(
             'demonlists/count', {
                 params: {userId: id},
                 headers: {
-                    Authorization: `Bearer: ${accessToken}`
+                    Authorization: `Bearer ${accessToken}`
                 }
             });
 
