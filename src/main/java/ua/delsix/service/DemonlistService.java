@@ -21,6 +21,7 @@ public class DemonlistService {
     private final DemonlistRepository demonlistRepository;
     private final DemonlistMapper demonlistMapper;
     private final PersonService personService;
+    private static final int DEMONLISTS_AMOUNT_LIMIT = 100;
 
     public DemonlistService(AuthService authService,
                             DemonlistRepository demonlistRepository,
@@ -52,7 +53,10 @@ public class DemonlistService {
 
         demonlist.setPerson(person);
 
-        if (demonlistRepository.countByPerson(person) >= 25) {
+        if (demonlistRepository.countByPerson(person) >= DEMONLISTS_AMOUNT_LIMIT) {
+            log.info("User {} has more demonlists than {}",
+                    person.getUsername(),
+                    DEMONLISTS_AMOUNT_LIMIT);
             throw new MoreDemonlistsThanAllowed();
         }
 
