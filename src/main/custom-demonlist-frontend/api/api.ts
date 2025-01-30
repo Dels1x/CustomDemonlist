@@ -85,7 +85,24 @@ export async function countDemonsInDemonlist(id: number, accessToken: string) {
 
         return response.data;
     } catch (error) {
-        console.error('Error getting demonlist count', error);
+        console.error('Error getting demons count', error);
+        throw error;
+    }
+}
+
+export async function countDemonlistsByUser(id: number, accessToken: string) {
+    try {
+        const response = await api.get(
+            'demonlists/count', {
+                params: {userId: id},
+                headers: {
+                    Authorization: `Bearer: ${accessToken}`
+                }
+            });
+
+        return response.data;
+    } catch (error) {
+        console.error('Error geting demonlists count', error)
         throw error;
     }
 }
