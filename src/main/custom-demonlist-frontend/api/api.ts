@@ -111,7 +111,7 @@ export async function getDemonlist(id: string) {
     try {
         const response = await api.get(
             'demonlists/demonlist', {
-                params: {userId: id}
+                params: {id: id}
             });
 
         return response.data;
