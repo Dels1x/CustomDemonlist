@@ -33,11 +33,26 @@ public class DemonlistService {
         this.personService = personService;
     }
 
-    public Demonlist getDemonlistById(long id) throws EntityNotFoundException {
+    public Demonlist getDemonlistByIdAuth(long id, UserDetails userDetails)
+            throws EntityNotFoundException, AuthorizationException {
+        Demonlist demonlist = demonlistRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Demonlist with id " + id + " not found"));
+        Person person1 = demonlist.getPerson();
+        Person person2 = personService.getUserFromUserDetails(userDetails);
+
+        if (authService.isAuthorized(person1, person2) || demonlist.getIsPublic()) {
+            return demonlist;
+        }
+
+        throw new AuthorizationException("User isn't authorized not the demonlist is public");
+    }
+
+    public Demonlist getDemonlistById(long id)
+            throws EntityNotFoundException {
         return demonlistRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Demonlist with id " + id + " not found"));
     }
 
-    public List<Demonlist> getDemonlistsByUserId(long userId, UserDetails userDetails) throws EntityNotFoundException {
+    public List<Demonlist> getDemonlistsByUserId(long userId, UserDetails userDetails)
+            throws EntityNotFoundException {
         Person person1 = personService.getUserById(userId);
         Person person2 = personService.getUserFromUserDetails(userDetails);
 

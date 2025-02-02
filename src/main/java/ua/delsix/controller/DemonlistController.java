@@ -27,17 +27,21 @@ public class DemonlistController {
 
     @GetMapping("/demonlist")
     @JsonView(Views.Public.class)
-    public ResponseEntity<?> getDemonlist(@RequestParam long id) {
+    public ResponseEntity<?> getDemonlist(@RequestParam long id,
+                                          @AuthenticationPrincipal UserDetails userDetails) {
         try {
-            return ResponseEntity.ok(demonlistService.getDemonlistById(id));
+            return ResponseEntity.ok(demonlistService.getDemonlistByIdAuth(id, userDetails));
         } catch (EntityNotFoundException e) {
             return ResponseUtil.notFoundMessage(e.getMessage());
+        } catch (AuthorizationException e) {
+            return ResponseUtil.authorizationExceptionMessage(e.getMessage());
         }
     }
 
     @GetMapping("/demonlists")
     @JsonView(Views.Superficial.class)
-    public ResponseEntity<?> getDemonlists(@RequestParam long userId, @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<?> getDemonlists(@RequestParam long userId,
+                                           @AuthenticationPrincipal UserDetails userDetails) {
         log.info("New request to get demonlists for user id {}", userId);
         try {
             return ResponseEntity.ok(demonlistService.getDemonlistsByUserId(userId, userDetails));
@@ -65,10 +69,8 @@ public class DemonlistController {
             demonlistService.deleteDemonlist(id, userDetails);
             return ResponseEntity.ok(String.format("Demonlist %s has been deleted", id));
         } catch (AuthorizationException e) {
-            log.info("AuthorizationException: {}", e.getMessage());
             return ResponseUtil.authorizationExceptionMessage(e.getMessage());
         } catch (EntityNotFoundException e) {
-            log.info("EntityNotFoundException: {}", e.getMessage());
             return ResponseUtil.notFoundMessage(e.getMessage());
         }
     }
@@ -95,10 +97,8 @@ public class DemonlistController {
         try {
             return ResponseEntity.ok(String.valueOf(demonlistService.countByPersonId(userId, userDetails)));
         } catch (AuthorizationException e) {
-            log.info("AuthorizationException: {}", e.getMessage());
             return ResponseUtil.authorizationExceptionMessage(e.getMessage());
         } catch (EntityNotFoundException e) {
-            log.info("EntityNotFoundException: {}", e.getMessage());
             return ResponseUtil.notFoundMessage(e.getMessage());
         }
     }
