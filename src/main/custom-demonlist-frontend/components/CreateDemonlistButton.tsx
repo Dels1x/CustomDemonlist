@@ -17,6 +17,7 @@ const CreateDemonlistButton: React.FC<CreateDemonlistButtonProps> = ({userId, ac
             name: "Demonlist #" + (Number(demonlistCount) + 1),
             isPublic: true,
             isMulti: false,
+            id: null,
         };
 
         await createNewDemonlist(demonlist, accessToken);
@@ -27,7 +28,7 @@ const CreateDemonlistButton: React.FC<CreateDemonlistButtonProps> = ({userId, ac
         <div>
             <button onClick={handleClick}>
                 <Image
-                    src={"addplus.svg"}
+                    src={"/addplus.svg"}
                     alt={"Create"}
                     width={25}
                     height={25}/>

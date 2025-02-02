@@ -7,15 +7,13 @@ interface ListOfDemonlistsProps {
 
 export interface ListItem {
     name: string;
-    id: number;
+    id: number | null;
 }
 
 const ListOfDemonlists: React.FC<ListOfDemonlistsProps> = ({list})=> {
     if (!list || list.length === 0) {
         return <div>No demonlists yet.</div>;
     }
-
-    console.log("id: " + list[0].id);
 
     return (
         <div>

@@ -1,22 +1,28 @@
 import React from "react";
 import {getDemonlist} from "@/api/api";
-import {getAccessToken} from "@/api/auth";
+import {getAccessToken, getUserAndRefreshToken} from "@/api/auth";
+import Layout from "@/layout/Layout";
 
 interface DemonlistProps {
     demonlist: any;
+    user: any;
+    accessToken: any;
 }
 
-const DemonlistPage: React.FC<DemonlistProps> = ({demonlist}) => {
+const DemonlistPage: React.FC<DemonlistProps> = ({demonlist, user, accessToken}) => {
     console.log("Demonlist: " + JSON.stringify(demonlist));
 
     return (
-        <div>
-            {`#${demonlist.id} - ${demonlist.name}`}
-        </div>
+        <Layout user={user} accessToken={accessToken}>
+            <main>
+                {`#${demonlist.id} - ${demonlist.name}`}
+            </main>
+        </Layout>
     );
 }
 
 export async function getServerSideProps(context: any) {
+    const user = await getUserAndRefreshToken(context);
     const id = context.params!.id;
     const accessToken = getAccessToken(context.req);
 
@@ -27,6 +33,8 @@ export async function getServerSideProps(context: any) {
         return {
             props: {
                 demonlist,
+                user,
+                accessToken,
             }
         }
 
