@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +29,7 @@ public class DemonlistController {
     @GetMapping("/demonlist")
     @JsonView(Views.Public.class)
     public ResponseEntity<?> getDemonlist(@RequestParam long id,
-                                          @AuthenticationPrincipal UserDetails userDetails) {
+                                          @AuthenticationPrincipal @Nullable UserDetails userDetails) {
         try {
             return ResponseEntity.ok(demonlistService.getDemonlistByIdAuth(id, userDetails));
         } catch (EntityNotFoundException e) {

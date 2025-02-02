@@ -55,7 +55,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             } catch (AuthenticationCredentialsNotFoundException e) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.getWriter().write("Invalid or expired access token: " + e.getMessage());
-                log.info("User's access token is either invalid or expired: {}", e.getMessage());
+                log.warn("User's access token is either invalid or expired: {}", e.getMessage());
             }
         } else {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

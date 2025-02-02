@@ -37,7 +37,7 @@ public class DemonlistService {
             throws EntityNotFoundException, AuthorizationException {
         Demonlist demonlist = demonlistRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Demonlist with id " + id + " not found"));
         Person person1 = demonlist.getPerson();
-        Person person2 = personService.getUserFromUserDetails(userDetails);
+        Person person2 = userDetails == null ? null : personService.getUserFromUserDetails(userDetails);
 
         if (authService.isAuthorized(person1, person2) || demonlist.getIsPublic()) {
             return demonlist;
