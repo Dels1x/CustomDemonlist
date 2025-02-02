@@ -107,16 +107,16 @@ export async function countDemonlistsByUser(id: string, accessToken: string) {
     }
 }
 
-export async function getDemonlist(id: string) {
+export async function getDemonlist(demonlistId: string) {
     try {
         const response = await api.get(
             'demonlists/demonlist', {
-                params: {id: id}
+                params: {id: demonlistId}
             });
 
         return response.data;
     } catch (error) {
-        console.error(`Error getting demonlist by id ${id}`, error);
+        console.error(`Error getting demonlist by id ${demonlistId}`, error);
         throw error;
     }
 }

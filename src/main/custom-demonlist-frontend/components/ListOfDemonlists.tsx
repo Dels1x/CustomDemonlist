@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 
 interface ListOfDemonlistsProps {
     list: ListItem[];
@@ -6,6 +7,7 @@ interface ListOfDemonlistsProps {
 
 export interface ListItem {
     name: string;
+    id: number;
 }
 
 const ListOfDemonlists: React.FC<ListOfDemonlistsProps> = ({list})=> {
@@ -13,10 +15,14 @@ const ListOfDemonlists: React.FC<ListOfDemonlistsProps> = ({list})=> {
         return <div>No demonlists yet.</div>;
     }
 
+    console.log("id: " + list[0].id);
+
     return (
         <div>
             {list.map((item, index) => (
-                    <div key={index}>{item.name}</div>
+                    <Link href={`/demonlists/${item.id}`}>
+                        <div key={index}>#{item.id} - {item.name}</div>
+                    </Link>
             ))}
         </div>
     );
