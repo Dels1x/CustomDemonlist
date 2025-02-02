@@ -2,27 +2,16 @@ import React from "react";
 import {getDemonlist} from "@/api/api";
 import {getAccessToken} from "@/api/auth";
 
-interface Demon {
-    id: number;
-    name: string;
-    difficulty: string;
-    placement: number;
-    initial_placement: number;
-}
-
 interface DemonlistProps {
-    demonlist: Demon[];
-    demonlistName: string;
-    id: number;
-    person_id: number;
-    is_public: boolean;
-    is_multi: boolean;
+    demonlist: any;
 }
 
-const DemonlistPage: React.FC<DemonlistProps> = ({demonlist, demonlistName, id, person_id, is_public, is_multi}) => {
+const DemonlistPage: React.FC<DemonlistProps> = ({demonlist}) => {
+    console.log("Demonlist: " + JSON.stringify(demonlist));
+
     return (
         <div>
-            {`#${id} - ${demonlistName}`}
+            {`#${demonlist.id} - ${demonlist.name}`}
         </div>
     );
 }
@@ -33,6 +22,7 @@ export async function getServerSideProps(context: any) {
 
     try {
         const demonlist = await getDemonlist(id, accessToken);
+        console.log("Demonlist: " + JSON.stringify(demonlist));
 
         return {
             props: {
