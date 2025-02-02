@@ -1,5 +1,6 @@
 import React from "react";
 import {getDemonlist} from "@/api/api";
+import {getAccessToken} from "@/api/auth";
 
 interface Demon {
     id: number;
@@ -28,9 +29,10 @@ const DemonlistPage: React.FC<DemonlistProps> = ({demonlist, demonlistName, id, 
 
 export async function getServerSideProps(context: any) {
     const id = context.params!.id;
+    const accessToken = getAccessToken(context.req);
 
     try {
-        const demonlist = await getDemonlist(id);
+        const demonlist = await getDemonlist(id, accessToken);
 
         return {
             props: {
