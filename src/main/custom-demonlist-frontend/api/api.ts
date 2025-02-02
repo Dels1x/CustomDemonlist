@@ -107,17 +107,26 @@ export async function countDemonlistsByUser(id: string, accessToken: string) {
     }
 }
 
-export async function getDemonlist(demonlistId: string, accessToken: string) {
+export async function getDemonlist(demonlistId: string, accessToken: string | null) {
     try {
-        const response = await api.get(
-            'demonlists/demonlist', {
-                params: {id: demonlistId},
-                headers: {
-                    Authorization: `Bearer ${accessToken}`
-                }
-            });
+        if (accessToken === null) {
+            const response = await api.get(
+                'demonlists/demonlist', {
+                    params: {id: demonlistId}
+                });
 
-        return response.data;
+            return response.data;
+        } else {
+            const response = await api.get(
+                'demonlists/demonlist', {
+                    params: {id: demonlistId},
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`
+                    }
+                });
+
+            return response.data;
+        }
     } catch (error) {
         console.error(`Error getting demonlist by id ${demonlistId}`, error);
         throw error;
