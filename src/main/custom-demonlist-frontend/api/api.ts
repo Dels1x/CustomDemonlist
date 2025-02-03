@@ -132,3 +132,30 @@ export async function getDemonlist(demonlistId: string, accessToken: string | nu
         throw error;
     }
 }
+
+export async function createNewDemon(
+    demon: {
+        name: string;
+        author: string;
+    },
+    id: string,
+    accessToken: string) {
+
+    try {
+        const response = await api.post(
+            'demons/create',
+            demon,
+            {
+                params: {demonlistId: id},
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                }
+            }
+        );
+
+        return response.data;
+    } catch (error) {
+        console.error('Error geting demonlists count', error)
+        throw error;
+    }
+}
