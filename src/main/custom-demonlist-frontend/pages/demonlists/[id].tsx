@@ -5,6 +5,7 @@ import {
     getAccessTokenAndRefreshToken,
 } from "@/api/auth";
 import Layout from "@/layout/Layout";
+import Image from "next/image";
 
 interface DemonlistProps {
     demonlist: any;
@@ -15,10 +16,25 @@ interface DemonlistProps {
 const DemonlistPage: React.FC<DemonlistProps> = ({demonlist, user, accessToken}) => {
     console.log("Demonlist: " + JSON.stringify(demonlist));
 
+    function handleClick() {
+
+    }
+
     return (
         <Layout user={user} accessToken={accessToken}>
             <main>
-                {`#${demonlist.id} - ${demonlist.name}`}
+                <div>
+                    {`#${demonlist.id} - ${demonlist.name}`}
+                </div>
+
+                <button onClick={handleClick}>
+                    <Image
+                        src={"/addplus.svg"}
+                        alt={"Create"}
+                        width={25}
+                        height={25}/>
+                    New Demon
+                </button>
             </main>
         </Layout>
     );
@@ -42,7 +58,7 @@ export async function getServerSideProps(context: any) {
         }
 
     } catch (error) {
-        throw  error;
+        throw error;
     }
 }
 
