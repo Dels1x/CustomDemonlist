@@ -3,7 +3,7 @@ import styles from "@/styles/Layout.module.css";
 import Head from "next/head";
 import Link from "next/link";
 import {AuthTokenPayload} from "@/api/auth";
-import DemonlistManager from "@/components/DemonlistManager";
+import DemonlistListManager from "@/components/DemonlistListManager";
 
 interface LayoutProps {
     children: ReactNode;
@@ -31,7 +31,7 @@ const Layout: React.FC<LayoutProps> = ({children, user, accessToken}) => {
                     ) : (
                         <Link href="/account">Sign up</Link>)
                 }
-                {accessToken && isAuthenticated && <DemonlistManager userId={user.sub} accessToken={accessToken}/>}
+                {accessToken && isAuthenticated && <DemonlistListManager userId={user.sub} accessToken={accessToken}/>}
             </nav>
             <main>
                 {children}

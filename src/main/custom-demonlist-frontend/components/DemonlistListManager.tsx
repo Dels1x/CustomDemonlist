@@ -3,7 +3,7 @@ import ListOfDemonlists, {ListItem} from "@/components/ListOfDemonlists";
 import {useEffect, useState} from "react";
 import {getDemonlistsForUserId} from "@/api/api";
 
-const DemonlistManager: React.FC<{ userId: string; accessToken: string }> = ({userId, accessToken}) => {
+const DemonlistListManager: React.FC<{ userId: string; accessToken: string }> = ({userId, accessToken}) => {
     const [demonlists, setDemonlists] = useState<ListItem[]>([]);
 
      useEffect(() => {
@@ -30,4 +30,4 @@ const DemonlistManager: React.FC<{ userId: string; accessToken: string }> = ({us
     );
 }
 
-export default DemonlistManager;
+export default DemonlistListManager;
