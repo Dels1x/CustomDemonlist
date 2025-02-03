@@ -25,7 +25,7 @@ export const extractAccessTokenData = (req: any): AuthTokenPayload | null => {
     return extractFromAccessToken(token);
 };
 
-const extractFromAccessToken = (token: string | undefined): AuthTokenPayload | null => {
+export const extractFromAccessToken = (token: string | undefined): AuthTokenPayload | null => {
     if (!token) return null;
 
     try {
@@ -40,7 +40,7 @@ export const getUserAndRefreshToken = async (context: any) => {
 
     if (!user) {
         let token = getCookie("refresh-token", context.req);
-        console.info("token: ", token);
+        console.info("refresh-token: ", token);
 
         if (token != '') {
             let accessToken = await refreshToken(token);
@@ -50,4 +50,20 @@ export const getUserAndRefreshToken = async (context: any) => {
     }
 
     return user;
+};
+
+export const getAccessTokenAndRefreshToken = async (context: any) => {
+    let accessToken = getAccessToken(context.req);
+
+    if (!accessToken) {
+        let token = getCookie("refresh-token", context.req);
+        console.info("refresh-token: ", token);
+
+        if (token != '') {
+            accessToken = await refreshToken(token);
+            context.res.setHeader('Set-Cookie', `access-token=${accessToken}; HttpOnly; Path=/; Max-Age=3600; Secure`);
+        }
+    }
+
+    return accessToken;
 };

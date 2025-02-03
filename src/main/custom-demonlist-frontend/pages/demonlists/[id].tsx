@@ -1,6 +1,9 @@
 import React from "react";
 import {getDemonlist} from "@/api/api";
-import {getAccessToken, getUserAndRefreshToken} from "@/api/auth";
+import {
+    extractFromAccessToken,
+    getAccessTokenAndRefreshToken,
+} from "@/api/auth";
 import Layout from "@/layout/Layout";
 
 interface DemonlistProps {
@@ -22,9 +25,9 @@ const DemonlistPage: React.FC<DemonlistProps> = ({demonlist, user, accessToken})
 }
 
 export async function getServerSideProps(context: any) {
-    const user = await getUserAndRefreshToken(context);
+    const accessToken = await getAccessTokenAndRefreshToken(context);
+    const user = accessToken ? extractFromAccessToken(accessToken) : null;
     const id = context.params!.id;
-    const accessToken = getAccessToken(context.req);
 
     try {
         const demonlist = await getDemonlist(id, accessToken);

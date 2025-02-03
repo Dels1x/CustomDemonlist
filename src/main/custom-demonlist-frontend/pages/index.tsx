@@ -1,6 +1,10 @@
 import React from "react";
 import Layout from "@/layout/Layout";
-import {AuthTokenPayload, getAccessToken, getUserAndRefreshToken} from "@/api/auth";
+import {
+    AuthTokenPayload,
+    extractFromAccessToken,
+    getAccessTokenAndRefreshToken,
+} from "@/api/auth";
 
 interface HomeProps {
     user: AuthTokenPayload;
@@ -19,8 +23,8 @@ const Home: React.FC<HomeProps> = ({user, accessToken}) => {
 };
 
 export async function getServerSideProps(context: any) {
-    const user = await getUserAndRefreshToken(context);
-    const accessToken = getAccessToken(context.req);
+    const accessToken = await getAccessTokenAndRefreshToken(context);
+    const user = accessToken ? extractFromAccessToken(accessToken) : null;
     console.log("accessToken: ", JSON.stringify(accessToken));
     console.log("user: " + JSON.stringify(user));
     
