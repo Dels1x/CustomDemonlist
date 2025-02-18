@@ -5,6 +5,7 @@ import {
     getAccessTokenAndRefreshToken,
 } from "@/api/auth";
 import Layout from "@/layout/Layout";
+import DemonlistManager from "@/components/DemonlistManager";
 
 interface DemonlistProps {
     demonlist: any;
@@ -20,6 +21,8 @@ const DemonlistPage: React.FC<DemonlistProps> = ({demonlist, user, accessToken})
             <main>
                 <div>
                     {`#${demonlist.id} - ${demonlist.name}`}
+
+                    <DemonlistManager accessToken={accessToken} demonlist={demonlist} />
                 </div>
             </main>
         </Layout>

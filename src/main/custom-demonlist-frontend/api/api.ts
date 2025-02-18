@@ -73,7 +73,7 @@ export async function createNewDemonlist(demonlist: {
     }
 }
 
-export async function countDemonsInDemonlist(id: number, accessToken: string) {
+export async function countDemonsInDemonlist(id: string, accessToken: string) {
     try {
         const response = await api.get(
             'demons/count', {
