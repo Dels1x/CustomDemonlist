@@ -12,7 +12,7 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = ({children, user, accessToken}) => {
-    const isAuthenticated = user !== undefined;
+    const isAuthenticated = user !== null;
     if (isAuthenticated) {
         console.log(JSON.stringify(user));
     }
