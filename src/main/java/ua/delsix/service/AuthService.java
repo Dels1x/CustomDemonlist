@@ -19,6 +19,7 @@ import ua.delsix.jpa.repository.PersonRepository;
 import ua.delsix.util.JwtUtil;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @Log4j2
@@ -123,10 +124,19 @@ public class AuthService {
         return response.getBody();
     }
 
-    public String refreshAccessToken(String refreshToken) {
+    public String refreshAccessToken(String refreshToken) throws AuthorizationException{
         Claims claims = jwtUtil.validateToken(refreshToken);
         String id = claims.getSubject();
-        return jwtUtil.generateAccessToken(personRepository.getReferenceById(Long.parseLong(id)));
+        log.info("id: {}", id);
+
+        Optional<Person> person = personRepository.findById(Long.parseLong(id));
+        if (person.isPresent()) {
+            log.info("person: {}", person.get());
+
+            return jwtUtil.generateAccessToken(person.get());
+        } else {
+            throw new AuthorizationException(String.format("User with id of %s doesn't exist", id));
+        }
     }
 
     public void verifyOwnershipOfTheDemonlist(Demonlist demonlist, Person person) throws AuthorizationException {

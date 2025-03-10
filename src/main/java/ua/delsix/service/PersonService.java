@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ua.delsix.dto.DiscordUserDto;
 import ua.delsix.dto.GoogleUserDto;
 import ua.delsix.enums.OAuth2Type;
+import ua.delsix.exception.EmailAlreadyExists;
 import ua.delsix.exception.UsernameAlreadyExists;
 import ua.delsix.jpa.entity.Person;
 import ua.delsix.jpa.repository.DemonRepository;

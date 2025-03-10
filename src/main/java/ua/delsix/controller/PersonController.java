@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import ua.delsix.exception.UsernameAlreadyExists;
 import ua.delsix.jpa.entity.Person;
-import ua.delsix.service.EmailAlreadyExists;
+import ua.delsix.exception.EmailAlreadyExists;
 import ua.delsix.service.PersonService;
 import ua.delsix.util.ResponseUtil;
 import ua.delsix.util.Views;

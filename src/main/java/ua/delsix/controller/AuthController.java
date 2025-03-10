@@ -10,9 +10,11 @@ import org.springframework.web.client.HttpClientErrorException;
 import ua.delsix.dto.DiscordUserDto;
 import ua.delsix.dto.GoogleUserDto;
 import ua.delsix.enums.OAuth2Type;
+import ua.delsix.exception.AuthorizationException;
 import ua.delsix.jpa.entity.Person;
 import ua.delsix.service.AuthService;
 import ua.delsix.service.PersonService;
+import ua.delsix.util.ResponseUtil;
 
 import java.io.IOException;
 import java.util.Map;
@@ -77,16 +79,19 @@ public class AuthController {
     }
 
     @PostMapping("/refresh-access-token")
-    public ResponseEntity<Map<String, String>> refreshAccessToken(@RequestHeader("Refresh-Token") String refreshToken) {
+    public ResponseEntity<?> refreshAccessToken(@RequestHeader("Refresh-Token") String refreshToken) {
+        log.info("Request to refresh access token: {}", refreshToken);
+
         if (refreshToken == null) {
             log.info("No refresh token was found");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Refresh token is absent"));
         }
-
-        String newAccessToken = authService.refreshAccessToken(refreshToken);
-        log.info("Request to refresh access token: {}", newAccessToken);
-
-        return ResponseEntity.ok(Map.of("accessToken", newAccessToken));
+        try {
+            String newAccessToken = authService.refreshAccessToken(refreshToken);
+            return ResponseEntity.ok(Map.of("accessToken", newAccessToken));
+        } catch (AuthorizationException e) {
+            return ResponseUtil.userDoesntExistMessage(e.getMessage());
+        }
     }
 
     private void addFrontendRedirect(HttpServletResponse httpServletResponse) {

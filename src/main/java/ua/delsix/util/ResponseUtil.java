@@ -17,6 +17,10 @@ public class ResponseUtil {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
     }
 
+    public static ResponseEntity<String> userDoesntExistMessage(String message) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+    }
+
     public static ResponseEntity<String> notFoundMessage(String message) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
     }
