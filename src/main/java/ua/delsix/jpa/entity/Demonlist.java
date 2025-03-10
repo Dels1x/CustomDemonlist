@@ -44,7 +44,7 @@ public class Demonlist {
     @JsonView({Views.Public.class, Views.Superficial.class})
     private Boolean isMulti = false;
 
-    @OneToMany(mappedBy = "demonlist")
+    @OneToMany(mappedBy = "demonlist", fetch = FetchType.EAGER)
     @JsonView(Views.Public.class)
     @ToString.Exclude
     private Set<Demon> demons = new LinkedHashSet<>();
