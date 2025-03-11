@@ -1,15 +1,15 @@
 import Image from "next/image";
 import React from "react";
 import {countDemonsInDemonlist, createNewDemon} from "@/api/api";
-import {ListItem} from "@/components/ListOfDemonlists";
+import {Demon} from "@/lib/models";
 
 interface CreateDemonlistButtonProps {
-    demonlistId: string;
+    demonlistId: number;
     accessToken: string;
-    onDemonlistCreated: (demonlist: ListItem) => void;
+    onDemonCreated: (demonlist: Demon) => void;
 }
 
-const CreateDemonlistButton: React.FC<CreateDemonlistButtonProps> = ({demonlistId, accessToken, onDemonlistCreated}) => {
+const CreateDemonlistButton: React.FC<CreateDemonlistButtonProps> = ({demonlistId, accessToken, onDemonCreated}) => {
     const handleClick = async () => {
         const count = countDemonsInDemonlist(demonlistId, accessToken)
         const demon = {

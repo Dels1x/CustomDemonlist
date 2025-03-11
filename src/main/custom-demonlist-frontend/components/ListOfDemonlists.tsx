@@ -1,8 +1,9 @@
 import React from "react";
 import Link from "next/link";
+import {Demon, Demonlist} from "@/lib/models";
 
 interface ListOfDemonlistsProps {
-    list: ListItem[];
+    list: Demonlist[];
 }
 
 export interface ListItem {
