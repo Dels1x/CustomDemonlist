@@ -11,9 +11,9 @@ interface CreateDemonlistButtonProps {
 
 const CreateDemonlistButton: React.FC<CreateDemonlistButtonProps> = ({demonlistId, accessToken, onDemonCreated}) => {
     const handleClick = async () => {
-        const count = countDemonsInDemonlist(demonlistId, accessToken)
+        const count: number = await countDemonsInDemonlist(demonlistId, accessToken)
         const demon = {
-            name: "Demon #" + (Number(count) + 1),
+            name: "Demon #" + (count + 1),
             author: "Author",
         };
 

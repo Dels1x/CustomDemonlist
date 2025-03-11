@@ -1,6 +1,7 @@
 package ua.delsix.controller;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +16,7 @@ import ua.delsix.util.ResponseUtil;
 
 @RestController
 @RequestMapping("/demons")
+@Log4j2
 public class DemonController {
     private final DemonService demonService;
     private final DemonlistUtil demonlistUtil;
@@ -95,6 +97,7 @@ public class DemonController {
     @GetMapping("/count")
     public ResponseEntity<Integer> countByDemonlist(@RequestParam long demonlistId) {
         int count = demonService.countByDemonlist(demonlistId);
+        log.info("Request to count amount of demons in demonlist {}. Count: {}",  demonlistId, count);
         return ResponseEntity.ok(count);
     }
 }
