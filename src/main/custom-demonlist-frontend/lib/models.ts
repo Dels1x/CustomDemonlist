@@ -26,11 +26,11 @@ export interface Demon {
 }
 
 export interface Demonlist {
-    id: number;
-    personId: number;
+    id?: number;
+    personId?: number;
     person?: Person; // Optional, only if you fetch it with `JOIN`
     name: string;
     isPublic: boolean;
     isMulti: boolean;
-    demons: Demon[];
+    demons?: Demon[];
 }

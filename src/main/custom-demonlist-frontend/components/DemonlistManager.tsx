@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import CreateDemonButton from "@/components/CreateDemonButton";
 import ListOfDemons from "@/components/ListOfDemons";
 import {Demon, Demonlist} from "@/lib/models";
@@ -8,8 +8,13 @@ interface DemonlistManagerProps {
     demonlist: Demonlist;
 }
 
-// TODO implement method with updating demonlist state
 const DemonlistManager: React.FC<DemonlistManagerProps> = ({accessToken, demonlist}) => {
+    if (!demonlist.id) {
+        console.error("Demonlist ID is missing or invalid");
+        return;
+    }
+
+    const [demons, setDemons] = useState<Demon[]>([]);
     const addDemonToState = (newDemon: Demon) => {
 
     }

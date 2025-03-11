@@ -1,10 +1,11 @@
 import CreateDemonlistButton from "@/components/CreateDemonlistButton";
-import ListOfDemonlists, {ListItem} from "@/components/ListOfDemonlists";
+import ListOfDemonlists from "@/components/ListOfDemonlists";
 import {useEffect, useState} from "react";
 import {getDemonlistsForUserId} from "@/api/api";
+import {Demonlist} from "@/lib/models";
 
 const DemonlistListManager: React.FC<{ userId: string; accessToken: string }> = ({userId, accessToken}) => {
-    const [demonlists, setDemonlists] = useState<ListItem[]>([]);
+    const [demonlists, setDemonlists] = useState<Demonlist[]>([]);
 
      useEffect(() => {
         const fetchDemonlists = async () => {
@@ -18,7 +19,7 @@ const DemonlistListManager: React.FC<{ userId: string; accessToken: string }> = 
         fetchDemonlists();
     }, [userId, accessToken]);
 
-    const addDemonlistToState = (newDemonlist: ListItem) => {
+    const addDemonlistToState = (newDemonlist: Demonlist) => {
         setDemonlists((prev) => [...prev, newDemonlist])
     }
 
