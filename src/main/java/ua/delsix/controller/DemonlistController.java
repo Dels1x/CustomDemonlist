@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import ua.delsix.dto.DemonlistDto;
 import ua.delsix.exception.AuthorizationException;
-import ua.delsix.exception.MoreDemonlistsThanAllowed;
+import ua.delsix.exception.MoreDemonlistsThanAllowedException;
 import ua.delsix.jpa.entity.Demonlist;
 import ua.delsix.service.DemonlistService;
 import ua.delsix.util.ResponseUtil;
@@ -57,7 +57,7 @@ public class DemonlistController {
                                                      @AuthenticationPrincipal UserDetails userDetails) {
         try {
             demonlistService.createDemonlist(demonlist, userDetails);
-        } catch (MoreDemonlistsThanAllowed e) {
+        } catch (MoreDemonlistsThanAllowedException e) {
             return ResponseUtil.moreDemonlistsThanAllowed();
         }
         return ResponseEntity.ok(String.format("Demonlist %s has been created", demonlist.getName()));

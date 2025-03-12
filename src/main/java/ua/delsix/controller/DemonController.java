@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import ua.delsix.dto.DemonDto;
 import ua.delsix.exception.AuthorizationException;
-import ua.delsix.exception.DemonlistDoesntExist;
+import ua.delsix.exception.DemonlistDoesntExistException;
 import ua.delsix.jpa.entity.Demon;
 import ua.delsix.service.DemonService;
 import ua.delsix.util.DemonlistUtil;
@@ -48,7 +48,7 @@ public class DemonController {
                                               @AuthenticationPrincipal UserDetails userDetails) {
         try {
             demonlistUtil.LinkDemonlistToDemon(demon, demonlistId);
-        } catch (DemonlistDoesntExist e) {
+        } catch (DemonlistDoesntExistException e) {
             return ResponseUtil.demonlistDoesntExistMessage();
         }
 

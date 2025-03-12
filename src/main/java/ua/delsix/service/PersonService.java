@@ -9,8 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ua.delsix.dto.DiscordUserDto;
 import ua.delsix.dto.GoogleUserDto;
 import ua.delsix.enums.OAuth2Type;
-import ua.delsix.exception.EmailAlreadyExists;
-import ua.delsix.exception.UsernameAlreadyExists;
+import ua.delsix.exception.EmailAlreadyExistsException;
+import ua.delsix.exception.UsernameAlreadyExistsException;
 import ua.delsix.jpa.entity.Person;
 import ua.delsix.jpa.repository.DemonRepository;
 import ua.delsix.jpa.repository.DemonlistRepository;
@@ -50,16 +50,16 @@ public class PersonService {
         return getUserByUsername(userDetails.getUsername());
     }
 
-    public void createUser(Person person) throws UsernameAlreadyExists, EmailAlreadyExists {
+    public void createUser(Person person) throws UsernameAlreadyExistsException, EmailAlreadyExistsException {
         if (personRepository.existsByUsername(person.getUsername())) {
             String errorMessage = String.format("User %s already exists", person.getUsername());
             log.info(errorMessage);
-            throw new UsernameAlreadyExists(errorMessage);
+            throw new UsernameAlreadyExistsException(errorMessage);
         }
         if (personRepository.existsByEmail(person.getEmail())) {
             String errorMessage = String.format("User %s with email %s that already exists", person.getUsername(), person.getEmail());
             log.info(errorMessage);
-            throw new EmailAlreadyExists(errorMessage);
+            throw new EmailAlreadyExistsException(errorMessage);
         }
 
         person.setCreatedAt(Instant.now());

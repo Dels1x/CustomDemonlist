@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import ua.delsix.dto.DemonlistDto;
 import ua.delsix.exception.AuthorizationException;
-import ua.delsix.exception.MoreDemonlistsThanAllowed;
+import ua.delsix.exception.MoreDemonlistsThanAllowedException;
 import ua.delsix.jpa.entity.Demonlist;
 import ua.delsix.jpa.entity.Person;
 import ua.delsix.jpa.repository.DemonlistRepository;
@@ -63,7 +63,7 @@ public class DemonlistService {
         }
     }
 
-    public void createDemonlist(Demonlist demonlist, UserDetails userDetails) throws MoreDemonlistsThanAllowed {
+    public void createDemonlist(Demonlist demonlist, UserDetails userDetails) throws MoreDemonlistsThanAllowedException {
         Person person = personService.getUserFromUserDetails(userDetails);
 
         demonlist.setPerson(person);
@@ -72,7 +72,7 @@ public class DemonlistService {
             log.info("User {} has more demonlists than {}",
                     person.getUsername(),
                     DEMONLISTS_AMOUNT_LIMIT);
-            throw new MoreDemonlistsThanAllowed();
+            throw new MoreDemonlistsThanAllowedException();
         }
 
         demonlistRepository.save(demonlist);

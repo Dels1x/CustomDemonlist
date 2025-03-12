@@ -8,9 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import ua.delsix.exception.UsernameAlreadyExists;
+import ua.delsix.exception.UsernameAlreadyExistsException;
 import ua.delsix.jpa.entity.Person;
-import ua.delsix.exception.EmailAlreadyExists;
+import ua.delsix.exception.EmailAlreadyExistsException;
 import ua.delsix.service.PersonService;
 import ua.delsix.util.ResponseUtil;
 import ua.delsix.util.Views;
@@ -40,7 +40,7 @@ public class PersonController {
         try {
             personService.createUser(person);
             return ResponseEntity.ok(String.format("User %s was successfully created", person.getUsername()));
-        } catch (UsernameAlreadyExists | EmailAlreadyExists e) {
+        } catch (UsernameAlreadyExistsException | EmailAlreadyExistsException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
     }
