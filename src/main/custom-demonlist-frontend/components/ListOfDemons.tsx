@@ -1,4 +1,5 @@
 import {Demon} from "@/lib/models";
+import React from "react";
 
 interface DemonlistProps {
     demons: Demon[];
