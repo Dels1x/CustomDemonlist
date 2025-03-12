@@ -17,7 +17,9 @@ const CreateDemonlistButton: React.FC<CreateDemonlistButtonProps> = ({demonlistI
             author: "Author",
         };
 
-        await createNewDemon(demon, demonlistId, accessToken);
+        const newDemon: Demon = await createNewDemon(demon, demonlistId, accessToken);
+        console.log("newDemon: " + JSON.stringify(newDemon, null, 2));
+        onDemonCreated(newDemon);
     };
 
     return (

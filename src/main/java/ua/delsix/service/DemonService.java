@@ -35,7 +35,7 @@ public class DemonService {
     }
 
     @Transactional
-    public void createDemon(Demon demon, UserDetails userDetails) throws AuthorizationException {
+    public Demon createDemon(Demon demon, UserDetails userDetails) throws AuthorizationException {
         Person person = personService.getUserFromUserDetails(userDetails);
         authService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), person);
 
@@ -54,6 +54,8 @@ public class DemonService {
 
         demonRepository.save(demon);
         log.info("New demon #{} {} of user {} has been created", demon.getId(), demon.getName(), person.getUsername());
+
+        return demon;
     }
 
 

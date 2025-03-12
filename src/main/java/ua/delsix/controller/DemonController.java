@@ -43,7 +43,7 @@ public class DemonController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<String> createDemon(@RequestBody Demon demon,
+    public ResponseEntity<?> createDemon(@RequestBody Demon demon,
                                               @RequestParam long demonlistId,
                                               @AuthenticationPrincipal UserDetails userDetails) {
         try {
@@ -53,12 +53,8 @@ public class DemonController {
         }
 
         try {
-            demonService.createDemon(demon, userDetails);
-            return ResponseEntity.ok(String.format(
-                    "New demon #%s of demonlist #%s of user \"%s\" successfully created",
-                    demon.getId(),
-                    demon.getDemonlist().getId(),
-                    userDetails.getUsername()));
+            Demon newDemon = demonService.createDemon(demon, userDetails);
+            return ResponseEntity.ok(newDemon);
         } catch (AuthorizationException e) {
             return ResponseUtil.authorizationExceptionMessage(e.getMessage());
         }

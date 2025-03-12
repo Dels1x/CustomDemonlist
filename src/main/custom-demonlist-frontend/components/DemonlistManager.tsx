@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import CreateDemonButton from "@/components/CreateDemonButton";
 import ListOfDemons from "@/components/ListOfDemons";
 import {Demon, Demonlist} from "@/lib/models";
@@ -15,13 +15,17 @@ const DemonlistManager: React.FC<DemonlistManagerProps> = ({accessToken, demonli
     }
 
     const [demons, setDemons] = useState<Demon[]>([]);
-    const addDemonToState = (newDemon: Demon) => {
+    useEffect(() => {
+        setDemons(demonlist.demons);
+    }, [demonlist.demons]);
 
+    const addDemonToState = (newDemon: Demon) => {
+        setDemons((prev) => [...prev, newDemon]);
     }
 
     return (
         <div>
-            <ListOfDemons demonlist={demonlist} />
+            <ListOfDemons demons={demons} />
             <CreateDemonButton demonlistId={demonlist.id} accessToken={accessToken} onDemonCreated={addDemonToState} />
         </div>
     )

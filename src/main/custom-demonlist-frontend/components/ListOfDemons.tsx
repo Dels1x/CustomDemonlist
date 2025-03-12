@@ -1,16 +1,16 @@
-import {Demonlist} from "@/lib/models";
+import {Demon} from "@/lib/models";
 
 interface DemonlistProps {
-    demonlist: Demonlist;
+    demons: Demon[];
 }
 
-const ListOfDemons: React.FC<DemonlistProps> = ({demonlist}) => {
-    console.log(JSON.stringify(demonlist, null, 2));
+const ListOfDemons: React.FC<DemonlistProps> = ({demons}) => {
+    console.log(demons);
 
     return (
         <table>
             <tbody>
-            {demonlist.demons.map((demon) =>  (
+            {demons.map((demon) =>  (
                 <tr key={demon.id}>
                     <td>{demon.name}</td>
                 </tr>
