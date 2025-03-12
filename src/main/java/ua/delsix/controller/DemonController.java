@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import ua.delsix.dto.DemonDto;
 import ua.delsix.exception.AuthorizationException;
 import ua.delsix.exception.DemonlistDoesntExistException;
+import ua.delsix.exception.InvalidNameException;
 import ua.delsix.jpa.entity.Demon;
 import ua.delsix.service.DemonService;
 import ua.delsix.util.DemonlistUtil;
@@ -87,6 +88,22 @@ public class DemonController {
             return ResponseUtil.authorizationExceptionMessage(e.getMessage());
         } catch (EntityNotFoundException e) {
             return ResponseUtil.notFoundMessage(e.getMessage());
+        }
+    }
+
+    @PatchMapping("/update-name")
+    public ResponseEntity<String> updateDemonName(@RequestParam long id,
+                                                  @RequestParam String name,
+                                                  @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            demonService.updateDemonName(id,name, userDetails);
+            return ResponseEntity.ok(String.format("demon #%s's name has been updated to %s", id, name));
+        } catch (InvalidNameException e) {
+            return ResponseUtil.invalidName(e.getMessage());
+        } catch (AuthorizationException e) {
+            return ResponseUtil.authorizationExceptionMessage(e.getMessage());
+        } catch (DemonlistDoesntExistException e) {
+            return ResponseUtil.demonlistDoesntExistMessage();
         }
     }
 
