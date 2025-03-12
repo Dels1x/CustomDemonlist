@@ -32,4 +32,8 @@ public class ResponseUtil {
     public static ResponseEntity<String> illegalArgument(String message) {
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(message);
     }
+
+    public static ResponseEntity<String> invalidName(String message) {
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(message);
+    }
 }
