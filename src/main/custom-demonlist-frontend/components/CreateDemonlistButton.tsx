@@ -14,9 +14,12 @@ const CreateDemonlistButton: React.FC<CreateDemonlistButtonProps> = ({userId, ac
         const demonlistCount = await countDemonlistsByUser(userId, accessToken);
 
         const demonlist: Demonlist = {
+            id: -1, // placeholder,
+            personId: -1, // placeholder
             name: "Demonlist #" + (Number(demonlistCount) + 1),
             isPublic: true,
-            isMulti: false
+            isMulti: false,
+            demons: [],
         };
 
         await createNewDemonlist(demonlist, accessToken);
