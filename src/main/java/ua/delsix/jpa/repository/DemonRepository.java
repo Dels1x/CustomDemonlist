@@ -28,6 +28,11 @@ public interface DemonRepository extends JpaRepository<Demon, Long> {
     void deleteByDemonlistPersonId(long personId);
     @Modifying
     @Transactional
-    @Query("UPDATE Demon d SET d.placement = :placement WHERE d.id = :demonId")
-    void setPlacementById(int placement, long demonId);
+    @Query("UPDATE Demon d SET d.placement = :placement WHERE d.id = :id")
+    void setPlacementById(int placement, long id);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Demon d SET d.name = :newName WHERE d.id = :id")
+    void updateNameById(long id, String newName);
 }
