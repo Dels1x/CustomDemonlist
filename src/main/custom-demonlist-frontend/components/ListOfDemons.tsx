@@ -13,7 +13,9 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons}) => {
             <tbody>
             {demons.map((demon) =>  (
                 <tr key={demon.id}>
+                    <td>{demon.placement}.</td>
                     <td>{demon.name}</td>
+                    <td></td>
                 </tr>
             ))}
             </tbody>

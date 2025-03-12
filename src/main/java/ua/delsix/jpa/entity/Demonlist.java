@@ -45,6 +45,7 @@ public class Demonlist {
     private Boolean isMulti = false;
 
     @OneToMany(mappedBy = "demonlist", fetch = FetchType.EAGER)
+    @OrderBy("placement ASC")
     @JsonView(Views.Public.class)
     @ToString.Exclude
     private Set<Demon> demons = new LinkedHashSet<>();
