@@ -15,7 +15,10 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons}) => {
                 <tr key={demon.id}>
                     <td>{demon.placement}.</td>
                     <td>{demon.name}</td>
-                    <td></td>
+                    <td>{demon.author}</td>
+                    <td>{demon.difficulty}</td>
+                    <td>{demon.attemptsCount}</td>
+                    <td>{demon.enjoymentRating}</td>
                 </tr>
             ))}
             </tbody>
