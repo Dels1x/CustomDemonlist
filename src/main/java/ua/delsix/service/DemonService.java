@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.delsix.dto.DemonDto;
 import ua.delsix.exception.AuthorizationException;
+import ua.delsix.exception.DemonlistDoesntExistException;
+import ua.delsix.exception.InvalidNameException;
 import ua.delsix.jpa.entity.Demon;
 import ua.delsix.jpa.entity.Demonlist;
 import ua.delsix.jpa.entity.Person;
@@ -148,5 +150,28 @@ public class DemonService {
 
     public Demon getDemonById(long id) {
         return demonRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Demon with id " + id + " not found"));
+    }
+
+    @Transactional
+    public void updateName(long id, String newName, UserDetails userDetails) throws
+            InvalidNameException,
+            DemonlistDoesntExistException,
+            AuthorizationException {
+        if (newName == null || newName.isEmpty()) {
+            throw new InvalidNameException("Name must not be null");
+        }
+
+        if (newName.length() > 80) {
+            throw new InvalidNameException("Name must not exceed 80 characters");
+        }
+
+        Demonlist demonlist = demonlistRepository.findById(id).orElseThrow(() ->
+                new DemonlistDoesntExistException(String.format("Demonlist %d doesn't exist", id))
+        );
+
+        Person person = personService.getUserFromUserDetails(userDetails);
+        authService.verifyOwnershipOfTheDemonlist(demonlist, person);
+
+        demonRepository.updateNameById(id, newName);
     }
 }
