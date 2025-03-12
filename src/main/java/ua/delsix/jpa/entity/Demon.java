@@ -1,5 +1,6 @@
 package ua.delsix.jpa.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
@@ -29,6 +30,7 @@ public class Demon {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "demonlist_id", nullable = false)
     @ToString.Exclude
+    @JsonIgnore
     private Demonlist demonlist;
 
     @Column(name = "name", nullable = false, length = 32)
