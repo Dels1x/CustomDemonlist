@@ -153,7 +153,7 @@ public class DemonService {
     }
 
     @Transactional
-    public void updateName(long id, String newName, UserDetails userDetails) throws
+    public void updateDemonName(long id, String newName, UserDetails userDetails) throws
             InvalidNameException,
             DemonlistDoesntExistException,
             AuthorizationException {
