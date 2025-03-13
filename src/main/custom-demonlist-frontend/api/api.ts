@@ -155,7 +155,28 @@ export async function createNewDemon(
 
         return response.data;
     } catch (error) {
-        console.error('Error geting demonlists count', error)
+        console.error('Error geting demonlist\'s count', error)
+        throw error;
+    }
+}
+
+export async function updateDemonlistName(id: number,
+                                          name: string,
+                                          accessToken: string) {
+    try {
+        const response = await api.patch(
+            'demonlist/update-name',
+            {
+                params: {id: id, name: name},
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                }
+            }
+        );
+
+        return response.data;
+    } catch (error) {
+        console.error('Error updating demonlist\'s name', error);
         throw error;
     }
 }
