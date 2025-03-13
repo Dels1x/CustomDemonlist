@@ -143,7 +143,7 @@ public class DemonController {
                                                  @RequestParam int enjoyment,
                                                  @AuthenticationPrincipal UserDetails userDetails) {
         try {
-            demonService.updateDemonEnjoyment(id, enjoyment, userDetails);
+            demonService.updateDemonEnjoymentRating(id, enjoyment, userDetails);
             return ResponseEntity.ok(String.format("Demon #%d's enjoyment rating have been updated to %d", id, enjoyment));
         } catch (AuthorizationException e) {
             return ResponseUtil.authorizationExceptionMessage(e.getMessage());

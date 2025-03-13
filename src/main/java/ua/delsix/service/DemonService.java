@@ -212,7 +212,7 @@ public class DemonService {
     }
 
     @Transactional
-    public void updateDemonEnjoyment(long id, int enjoymentRating, UserDetails userDetails) throws
+    public void updateDemonEnjoymentRating(long id, int enjoymentRating, UserDetails userDetails) throws
             DemonlistDoesntExistException,
             AuthorizationException{
         Demonlist demonlist = demonlistRepository.findById(id).orElseThrow(() ->
