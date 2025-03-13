@@ -26,6 +26,6 @@ public interface DemonlistRepository extends JpaRepository<Demonlist, Long> {
 
     @Modifying
     @Transactional
-    @Query("UPDATE Demon d SET d.name = :newName WHERE d.id = :id")
+    @Query("UPDATE Demonlist d SET d.name = :newName WHERE d.id = :id")
     void updateNameById(long id, String newName);
 }
