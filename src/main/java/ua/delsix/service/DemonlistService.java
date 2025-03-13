@@ -4,6 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ua.delsix.dto.DemonlistDto;
 import ua.delsix.exception.AuthorizationException;
 import ua.delsix.exception.DemonlistDoesntExistException;
@@ -101,6 +102,21 @@ public class DemonlistService {
 
         demonlistRepository.save(demonlist);
         log.info("Demonlist {} of user {} has been updated", demonlist.getId(), person.getUsername());
+    }
+
+    @Transactional
+    public void updateDemonlistName(long id, String newName, UserDetails userDetails) throws
+            DemonlistDoesntExistException,
+            AuthorizationException {
+        Person person = personService.getUserFromUserDetails(userDetails);
+        Demonlist demonlist = demonlistUtil.getDemonlistThrowIfDoesntExist(id);
+        authService.verifyOwnershipOfTheDemonlist(demonlist, person);
+
+        demonlistRepository.updateNameById(id, newName);
+        log.info("Demonlist #{}'s name of user {} has been updated to {}",
+                id,
+                person.getUsername(),
+                newName);
     }
 
     public int countByPersonId(long id, UserDetails userDetails) throws

@@ -83,7 +83,24 @@ public class DemonlistController {
                                                   @AuthenticationPrincipal UserDetails userDetails) {
         try {
             demonlistService.updateDemonlist(id, dto, userDetails);
-            return ResponseEntity.ok(String.format("%s demonlist %s has been updated", userDetails.getUsername(), id));
+            return ResponseEntity.ok(String.format("%s's demonlist %s has been updated", userDetails.getUsername(), id));
+        } catch (AuthorizationException e) {
+            return ResponseUtil.authorizationExceptionMessage(e.getMessage());
+        } catch (DemonlistDoesntExistException e) {
+            return ResponseUtil.demonlistDoesntExistMessage();
+        }
+    }
+
+    @PatchMapping("/update-name")
+    public ResponseEntity<String> updateDemonlistName(@RequestParam long id,
+                                                  @RequestParam String newName,
+                                                  @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            demonlistService.updateDemonlistName(id, newName, userDetails);
+            return ResponseEntity.ok(String.format("%s's demonlist #%s's name has been updated to %s",
+                    userDetails.getUsername(),
+                    id,
+                    newName));
         } catch (AuthorizationException e) {
             return ResponseUtil.authorizationExceptionMessage(e.getMessage());
         } catch (DemonlistDoesntExistException e) {
