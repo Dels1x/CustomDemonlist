@@ -98,7 +98,7 @@ public class DemonController {
                                                   @AuthenticationPrincipal UserDetails userDetails) {
         try {
             demonService.updateDemonName(id,name, userDetails);
-            return ResponseEntity.ok(String.format("demon #%s's name has been updated to %s", id, name));
+            return ResponseEntity.ok(String.format("Demon #%d's name has been updated to %s", id, name));
         } catch (InvalidNameException e) {
             return ResponseUtil.invalidName(e.getMessage());
         } catch (AuthorizationException e) {
@@ -114,9 +114,23 @@ public class DemonController {
                                                @AuthenticationPrincipal UserDetails userDetails) {
         try {
             demonService.updateDemonAuthor(id, author, userDetails);
-            return ResponseEntity.ok(String.format("demons #%s's author has been updated to %s", id, author));
+            return ResponseEntity.ok(String.format("Demon #%d's author has been updated to %s", id, author));
         } catch (InvalidAuthorException e) {
             return ResponseUtil.invalidName(e.getMessage());
+        } catch (AuthorizationException e) {
+            return ResponseUtil.authorizationExceptionMessage(e.getMessage());
+        } catch (DemonlistDoesntExistException e) {
+            return ResponseUtil.demonlistDoesntExistMessage();
+        }
+    }
+
+    @PatchMapping("/update-attempts")
+    public ResponseEntity<String> updateAttempts(@RequestParam long id,
+                                                 @RequestParam int attemptsCount,
+                                                 @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            demonService.updateDemonAttemptsCount(id, attemptsCount, userDetails);
+            return ResponseEntity.ok(String.format("Demon #%d's attempts have been updated to %d", id, attemptsCount));
         } catch (AuthorizationException e) {
             return ResponseUtil.authorizationExceptionMessage(e.getMessage());
         } catch (DemonlistDoesntExistException e) {

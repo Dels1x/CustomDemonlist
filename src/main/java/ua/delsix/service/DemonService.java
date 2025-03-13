@@ -198,4 +198,18 @@ public class DemonService {
 
         demonRepository.updateAuthorById(id, newAuthor);
     }
+
+    @Transactional
+    public void updateDemonAttemptsCount(long id, int attemptsCount, UserDetails userDetails) throws
+            DemonlistDoesntExistException,
+            AuthorizationException {
+        Demonlist demonlist = demonlistRepository.findById(id).orElseThrow(() ->
+                new DemonlistDoesntExistException(String.format("Demonlist %d doesn't exist", id))
+        );
+
+        Person person = personService.getUserFromUserDetails(userDetails);
+        authService.verifyOwnershipOfTheDemonlist(demonlist, person);
+
+        demonRepository.updateAttemptsCountById(id, attemptsCount);
+    }
 }
