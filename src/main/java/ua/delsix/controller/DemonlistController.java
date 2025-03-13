@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import ua.delsix.dto.DemonlistDto;
 import ua.delsix.exception.AuthorizationException;
+import ua.delsix.exception.DemonlistDoesntExistException;
 import ua.delsix.exception.MoreDemonlistsThanAllowedException;
 import ua.delsix.jpa.entity.Demonlist;
 import ua.delsix.service.DemonlistService;
@@ -32,8 +33,8 @@ public class DemonlistController {
                                           @AuthenticationPrincipal @Nullable UserDetails userDetails) {
         try {
             return ResponseEntity.ok(demonlistService.getDemonlistByIdAuth(id, userDetails));
-        } catch (EntityNotFoundException e) {
-            return ResponseUtil.notFoundMessage(e.getMessage());
+        } catch (DemonlistDoesntExistException e) {
+            return ResponseUtil.demonlistDoesntExistMessage();
         } catch (AuthorizationException e) {
             return ResponseUtil.authorizationExceptionMessage(e.getMessage());
         }
@@ -71,8 +72,8 @@ public class DemonlistController {
             return ResponseEntity.ok(String.format("Demonlist %s has been deleted", id));
         } catch (AuthorizationException e) {
             return ResponseUtil.authorizationExceptionMessage(e.getMessage());
-        } catch (EntityNotFoundException e) {
-            return ResponseUtil.notFoundMessage(e.getMessage());
+        } catch (DemonlistDoesntExistException e) {
+            return ResponseUtil.demonlistDoesntExistMessage();
         }
     }
 
@@ -85,8 +86,8 @@ public class DemonlistController {
             return ResponseEntity.ok(String.format("%s demonlist %s has been updated", userDetails.getUsername(), id));
         } catch (AuthorizationException e) {
             return ResponseUtil.authorizationExceptionMessage(e.getMessage());
-        } catch (EntityNotFoundException e) {
-            return ResponseUtil.notFoundMessage(e.getMessage());
+        } catch (DemonlistDoesntExistException e) {
+            return ResponseUtil.demonlistDoesntExistMessage();
         }
     }
 

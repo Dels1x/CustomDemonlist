@@ -14,27 +14,28 @@ import ua.delsix.jpa.entity.Demon;
 import ua.delsix.jpa.entity.Demonlist;
 import ua.delsix.jpa.entity.Person;
 import ua.delsix.jpa.repository.DemonRepository;
-import ua.delsix.jpa.repository.DemonlistRepository;
 import ua.delsix.mapper.DemonMapper;
+import ua.delsix.util.DemonlistUtil;
 
 @Service
 @Log4j2
 public class DemonService {
     private final DemonRepository demonRepository;
-    private final DemonlistRepository demonlistRepository;
     private final DemonMapper demonMapper;
     private final AuthService authService;
     private final PersonService personService;
+    private final DemonlistUtil demonlistUtil;
 
     public DemonService(AuthService authService,
                         DemonRepository demonRepository,
-                        DemonlistRepository demonlistRepository, DemonMapper demonMapper,
-                        PersonService personService) {
+                        DemonMapper demonMapper,
+                        PersonService personService,
+                        DemonlistUtil demonlistUtil) {
         this.authService = authService;
         this.demonRepository = demonRepository;
         this.demonMapper = demonMapper;
         this.personService = personService;
-        this.demonlistRepository = demonlistRepository;
+        this.demonlistUtil = demonlistUtil;
     }
 
     @Transactional
@@ -136,14 +137,11 @@ public class DemonService {
         return demonRepository.countByDemonlistId(id);
     }
 
-    public void deleteDemon(long demonlistId, long demonId, UserDetails userDetails) throws AuthorizationException {
+    public void deleteDemon(long id, long demonId, UserDetails userDetails) throws AuthorizationException,
+            DemonlistDoesntExistException {
         Person person = personService.getUserFromUserDetails(userDetails);
-        Demonlist demonlist = demonlistRepository.getReferenceById(demonlistId);
+        Demonlist demonlist = demonlistUtil.getDemonlistThrowIfDoesntExist(id);
         authService.verifyOwnershipOfTheDemonlist(demonlist, person);
-
-        if (!demonRepository.existsById(demonId)) {
-            throw new EntityNotFoundException("Demon with id " + demonId + " not found");
-        }
 
         demonRepository.deleteById(demonId);
         log.info("Demon #{} of user {} has been deleted", demonId, person.getUsername());
@@ -166,10 +164,7 @@ public class DemonService {
             throw new InvalidNameException("Name must not exceed 32 characters");
         }
 
-        Demonlist demonlist = demonlistRepository.findById(id).orElseThrow(() ->
-                new DemonlistDoesntExistException(String.format("Demonlist %d doesn't exist", id))
-        );
-
+        Demonlist demonlist = demonlistUtil.getDemonlistThrowIfDoesntExist(id);
         Person person = personService.getUserFromUserDetails(userDetails);
         authService.verifyOwnershipOfTheDemonlist(demonlist, person);
 
@@ -189,9 +184,7 @@ public class DemonService {
             throw new InvalidAuthorException("Author must not exceed 32 characters");
         }
 
-        Demonlist demonlist = demonlistRepository.findById(id).orElseThrow(() ->
-                new DemonlistDoesntExistException(String.format("Demonlist %d doesn't exist", id))
-        );
+        Demonlist demonlist = demonlistUtil.getDemonlistThrowIfDoesntExist(id);
         Person person = personService.getUserFromUserDetails(userDetails);
         authService.verifyOwnershipOfTheDemonlist(demonlist, person);
 
@@ -202,9 +195,7 @@ public class DemonService {
     public void updateDemonAttemptsCount(long id, int attemptsCount, UserDetails userDetails) throws
             DemonlistDoesntExistException,
             AuthorizationException {
-        Demonlist demonlist = demonlistRepository.findById(id).orElseThrow(() ->
-                new DemonlistDoesntExistException(String.format("Demonlist %d doesn't exist", id))
-        );
+        Demonlist demonlist = demonlistUtil.getDemonlistThrowIfDoesntExist(id);
         Person person = personService.getUserFromUserDetails(userDetails);
         authService.verifyOwnershipOfTheDemonlist(demonlist, person);
 
@@ -215,9 +206,7 @@ public class DemonService {
     public void updateDemonEnjoymentRating(long id, int enjoymentRating, UserDetails userDetails) throws
             DemonlistDoesntExistException,
             AuthorizationException{
-        Demonlist demonlist = demonlistRepository.findById(id).orElseThrow(() ->
-                new DemonlistDoesntExistException(String.format("Demonlist %d doesn't exist", id))
-        );
+        Demonlist demonlist = demonlistUtil.getDemonlistThrowIfDoesntExist(id);
         Person person = personService.getUserFromUserDetails(userDetails);
         authService.verifyOwnershipOfTheDemonlist(demonlist, person);
 

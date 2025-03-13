@@ -4,22 +4,23 @@ import org.springframework.stereotype.Component;
 import ua.delsix.exception.DemonlistDoesntExistException;
 import ua.delsix.jpa.entity.Demon;
 import ua.delsix.jpa.entity.Demonlist;
-import ua.delsix.service.DemonlistService;
+import ua.delsix.jpa.repository.DemonlistRepository;
 
 @Component
 public class DemonlistUtil {
-    private final DemonlistService demonlistService;
+    private final DemonlistRepository demonlistRepository;
 
-    public DemonlistUtil(DemonlistService demonlistService) {
-        this.demonlistService = demonlistService;
+    public DemonlistUtil(DemonlistRepository demonlistRepository) {
+        this.demonlistRepository = demonlistRepository;
     }
 
     public void LinkDemonlistToDemon(Demon demon, long id) throws DemonlistDoesntExistException {
-        Demonlist demonlist = demonlistService.getDemonlistById(id);
-        if (demonlist == null) {
-            throw new DemonlistDoesntExistException();
-        }
+        demon.setDemonlist(getDemonlistThrowIfDoesntExist(id));
+    }
 
-        demon.setDemonlist(demonlist);
+    public Demonlist getDemonlistThrowIfDoesntExist(long id) throws DemonlistDoesntExistException {
+        return demonlistRepository.findById(id).orElseThrow(() ->
+                new DemonlistDoesntExistException(String.format("Demonlist %d doesn't exist", id))
+        );
     }
 }

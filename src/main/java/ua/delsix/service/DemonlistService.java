@@ -6,11 +6,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import ua.delsix.dto.DemonlistDto;
 import ua.delsix.exception.AuthorizationException;
+import ua.delsix.exception.DemonlistDoesntExistException;
 import ua.delsix.exception.MoreDemonlistsThanAllowedException;
 import ua.delsix.jpa.entity.Demonlist;
 import ua.delsix.jpa.entity.Person;
 import ua.delsix.jpa.repository.DemonlistRepository;
 import ua.delsix.mapper.DemonlistMapper;
+import ua.delsix.util.DemonlistUtil;
 
 import java.util.List;
 
@@ -21,21 +23,24 @@ public class DemonlistService {
     private final DemonlistRepository demonlistRepository;
     private final DemonlistMapper demonlistMapper;
     private final PersonService personService;
+    private final DemonlistUtil demonlistUtil;
     private static final int DEMONLISTS_AMOUNT_LIMIT = 100;
 
     public DemonlistService(AuthService authService,
                             DemonlistRepository demonlistRepository,
                             DemonlistMapper demonlistMapper,
-                            PersonService personService) {
+                            PersonService personService, DemonlistUtil demonlistUtil) {
         this.authService = authService;
         this.demonlistRepository = demonlistRepository;
         this.demonlistMapper = demonlistMapper;
         this.personService = personService;
+        this.demonlistUtil = demonlistUtil;
     }
 
     public Demonlist getDemonlistByIdAuth(long id, UserDetails userDetails)
-            throws EntityNotFoundException, AuthorizationException {
-        Demonlist demonlist = demonlistRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Demonlist with id " + id + " not found"));
+            throws AuthorizationException,
+            DemonlistDoesntExistException {
+        Demonlist demonlist = demonlistUtil.getDemonlistThrowIfDoesntExist(id);
         Person person1 = demonlist.getPerson();
         Person person2 = userDetails == null ? null : personService.getUserFromUserDetails(userDetails);
 
@@ -44,11 +49,6 @@ public class DemonlistService {
         }
 
         throw new AuthorizationException("User isn't authorized not the demonlist is public");
-    }
-
-    public Demonlist getDemonlistById(long id)
-            throws EntityNotFoundException {
-        return demonlistRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Demonlist with id " + id + " not found"));
     }
 
     public List<Demonlist> getDemonlistsByUserId(long userId, UserDetails userDetails)
@@ -65,7 +65,6 @@ public class DemonlistService {
 
     public void createDemonlist(Demonlist demonlist, UserDetails userDetails) throws MoreDemonlistsThanAllowedException {
         Person person = personService.getUserFromUserDetails(userDetails);
-
         demonlist.setPerson(person);
 
         if (demonlistRepository.countByPerson(person) >= DEMONLISTS_AMOUNT_LIMIT) {
@@ -81,9 +80,10 @@ public class DemonlistService {
 
     public void deleteDemonlist(long id, UserDetails userDetails) throws
             AuthorizationException,
-            EntityNotFoundException {
+            EntityNotFoundException,
+            DemonlistDoesntExistException {
         Person person = personService.getUserFromUserDetails(userDetails);
-        Demonlist demonlist = getDemonlistById(id);
+        Demonlist demonlist = demonlistUtil.getDemonlistThrowIfDoesntExist(id);
         authService.verifyOwnershipOfTheDemonlist(demonlist, person);
 
         demonlistRepository.deleteById(id);
@@ -92,9 +92,10 @@ public class DemonlistService {
 
     public void updateDemonlist(long id, DemonlistDto dto, UserDetails userDetails) throws
             EntityNotFoundException,
-            AuthorizationException {
+            AuthorizationException,
+            DemonlistDoesntExistException {
         Person person = personService.getUserFromUserDetails(userDetails);
-        Demonlist demonlist = getDemonlistById(id);
+        Demonlist demonlist = demonlistUtil.getDemonlistThrowIfDoesntExist(id);
         authService.verifyOwnershipOfTheDemonlist(demonlist, person);
         demonlistMapper.updateDemonlistFromDto(dto, demonlist);
 

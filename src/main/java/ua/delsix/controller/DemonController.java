@@ -41,6 +41,8 @@ public class DemonController {
                     userDetails.getUsername()));
         } catch (AuthorizationException e) {
             return ResponseUtil.authorizationExceptionMessage(e.getMessage());
+        } catch (DemonlistDoesntExistException e) {
+            return ResponseUtil.demonlistDoesntExistMessage();
         }
     }
 
