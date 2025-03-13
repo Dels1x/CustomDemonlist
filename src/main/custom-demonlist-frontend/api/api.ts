@@ -165,7 +165,7 @@ export async function updateDemonlistName(id: number,
                                           accessToken: string) {
     try {
         const response = await api.patch(
-            'demonlist/update-name',
+            'demonlists/update-name',
             null,
             {
                 params: {id: id, name: name},
