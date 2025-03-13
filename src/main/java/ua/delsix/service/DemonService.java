@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ua.delsix.dto.DemonDto;
 import ua.delsix.exception.AuthorizationException;
 import ua.delsix.exception.DemonlistDoesntExistException;
+import ua.delsix.exception.InvalidAuthorException;
 import ua.delsix.exception.InvalidNameException;
 import ua.delsix.jpa.entity.Demon;
 import ua.delsix.jpa.entity.Demonlist;
@@ -173,5 +174,27 @@ public class DemonService {
         authService.verifyOwnershipOfTheDemonlist(demonlist, person);
 
         demonRepository.updateNameById(id, newName);
+    }
+
+    @Transactional
+    public void updateDemonAuthor(long id, String newAuthor, UserDetails userDetails) throws
+            InvalidAuthorException,
+            AuthorizationException {
+        if (newAuthor == null || newAuthor.isEmpty()) {
+            throw new InvalidAuthorException("Author must not be null");
+        }
+
+        if (newAuthor.length() > 32) {
+            throw new InvalidAuthorException("Author must not exceed 32 characters");
+        }
+
+        Demonlist demonlist = demonlistRepository.findById(id).orElseThrow(() -> {
+            throw new EntityNotFoundException("Demonlist with id " + id + " not found");
+        });
+
+        Person person = personService.getUserFromUserDetails(userDetails);
+        authService.verifyOwnershipOfTheDemonlist(demonlist, person);
+
+        demonRepository.updateAuthorById(id, newAuthor);
     }
 }
