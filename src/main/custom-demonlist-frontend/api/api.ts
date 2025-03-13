@@ -166,6 +166,7 @@ export async function updateDemonlistName(id: number,
     try {
         const response = await api.patch(
             'demonlist/update-name',
+            null,
             {
                 params: {id: id, name: name},
                 headers: {
@@ -177,6 +178,5 @@ export async function updateDemonlistName(id: number,
         return response.data;
     } catch (error) {
         console.error('Error updating demonlist\'s name', error);
-        throw error;
     }
 }

@@ -93,14 +93,16 @@ public class DemonlistController {
 
     @PatchMapping("/update-name")
     public ResponseEntity<String> updateDemonlistName(@RequestParam long id,
-                                                  @RequestParam String newName,
+                                                  @RequestParam String name,
                                                   @AuthenticationPrincipal UserDetails userDetails) {
+        log.info("New request to update demonlist with name {}", name);
+
         try {
-            demonlistService.updateDemonlistName(id, newName, userDetails);
+            demonlistService.updateDemonlistName(id, name, userDetails);
             return ResponseEntity.ok(String.format("%s's demonlist #%s's name has been updated to %s",
                     userDetails.getUsername(),
                     id,
-                    newName));
+                    name));
         } catch (AuthorizationException e) {
             return ResponseUtil.authorizationExceptionMessage(e.getMessage());
         } catch (DemonlistDoesntExistException e) {
