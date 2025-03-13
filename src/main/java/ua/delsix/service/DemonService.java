@@ -179,6 +179,7 @@ public class DemonService {
     @Transactional
     public void updateDemonAuthor(long id, String newAuthor, UserDetails userDetails) throws
             InvalidAuthorException,
+            DemonlistDoesntExistException,
             AuthorizationException {
         if (newAuthor == null || newAuthor.isEmpty()) {
             throw new InvalidAuthorException("Author must not be null");
@@ -188,9 +189,9 @@ public class DemonService {
             throw new InvalidAuthorException("Author must not exceed 32 characters");
         }
 
-        Demonlist demonlist = demonlistRepository.findById(id).orElseThrow(() -> {
-            throw new EntityNotFoundException("Demonlist with id " + id + " not found");
-        });
+        Demonlist demonlist = demonlistRepository.findById(id).orElseThrow(() ->
+                new DemonlistDoesntExistException(String.format("Demonlist %d doesn't exist", id))
+        );
 
         Person person = personService.getUserFromUserDetails(userDetails);
         authService.verifyOwnershipOfTheDemonlist(demonlist, person);
