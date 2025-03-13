@@ -161,8 +161,8 @@ public class DemonService {
             throw new InvalidNameException("Name must not be null");
         }
 
-        if (newName.length() > 80) {
-            throw new InvalidNameException("Name must not exceed 80 characters");
+        if (newName.length() > 32) {
+            throw new InvalidNameException("Name must not exceed 32 characters");
         }
 
         Demonlist demonlist = demonlistRepository.findById(id).orElseThrow(() ->
