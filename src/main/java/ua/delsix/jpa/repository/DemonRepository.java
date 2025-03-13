@@ -51,4 +51,9 @@ public interface DemonRepository extends JpaRepository<Demon, Long> {
     @Transactional
     @Query("UPDATE Demon d SET d.attemptsCount = :attemptsCount WHERE d.id = :id")
     void updateAttemptsCountById(long id, int attemptsCount);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Demon d SET d.enjoymentRating = :enjoymentRating WHERE d.id = :id")
+    void updateEnjoymentRatingById(long id, int enjoymentRating);
 }

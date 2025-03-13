@@ -192,7 +192,6 @@ public class DemonService {
         Demonlist demonlist = demonlistRepository.findById(id).orElseThrow(() ->
                 new DemonlistDoesntExistException(String.format("Demonlist %d doesn't exist", id))
         );
-
         Person person = personService.getUserFromUserDetails(userDetails);
         authService.verifyOwnershipOfTheDemonlist(demonlist, person);
 
@@ -206,10 +205,22 @@ public class DemonService {
         Demonlist demonlist = demonlistRepository.findById(id).orElseThrow(() ->
                 new DemonlistDoesntExistException(String.format("Demonlist %d doesn't exist", id))
         );
-
         Person person = personService.getUserFromUserDetails(userDetails);
         authService.verifyOwnershipOfTheDemonlist(demonlist, person);
 
         demonRepository.updateAttemptsCountById(id, attemptsCount);
+    }
+
+    @Transactional
+    public void updateDemonEnjoyment(long id, int enjoymentRating, UserDetails userDetails) throws
+            DemonlistDoesntExistException,
+            AuthorizationException{
+        Demonlist demonlist = demonlistRepository.findById(id).orElseThrow(() ->
+                new DemonlistDoesntExistException(String.format("Demonlist %d doesn't exist", id))
+        );
+        Person person = personService.getUserFromUserDetails(userDetails);
+        authService.verifyOwnershipOfTheDemonlist(demonlist, person);
+
+        demonRepository.updateEnjoymentRatingById(id, enjoymentRating);
     }
 }

@@ -138,6 +138,20 @@ public class DemonController {
         }
     }
 
+    @PatchMapping("/update-enjoyment")
+    public ResponseEntity<String> updateEnjoyment(@RequestParam long id,
+                                                 @RequestParam int enjoyment,
+                                                 @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            demonService.updateDemonEnjoyment(id, enjoyment, userDetails);
+            return ResponseEntity.ok(String.format("Demon #%d's enjoyment rating have been updated to %d", id, enjoyment));
+        } catch (AuthorizationException e) {
+            return ResponseUtil.authorizationExceptionMessage(e.getMessage());
+        } catch (DemonlistDoesntExistException e) {
+            return ResponseUtil.demonlistDoesntExistMessage();
+        }
+    }
+
     @GetMapping("/count")
     public ResponseEntity<Integer> countByDemonlist(@RequestParam long demonlistId) {
         int count = demonService.countByDemonlist(demonlistId);
