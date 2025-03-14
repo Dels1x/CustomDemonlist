@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {getDemonlist, updateDemonlistName} from "@/api/api";
 import {
     extractFromAccessToken,
@@ -14,8 +14,14 @@ interface DemonlistProps {
 }
 
 const DemonlistPage: React.FC<DemonlistProps> = ({demonlist, user, accessToken}) => {
+    console.log("DemonlistPage Demonlist: " + JSON.stringify(demonlist));
     const [isEditing, setEditing] = React.useState(false);
     const [name, setName] = React.useState(demonlist.name);
+
+    useEffect(() => {
+        setName(demonlist.name);
+        setEditing(false);
+    }, [demonlist]);
 
     const doubleClick = () => {
         setEditing(true);
