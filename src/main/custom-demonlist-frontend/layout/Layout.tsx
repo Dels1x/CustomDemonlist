@@ -2,16 +2,15 @@ import React, {ReactNode} from "react";
 import styles from "@/styles/Layout.module.css";
 import Head from "next/head";
 import Link from "next/link";
-import {AuthTokenPayload} from "@/api/auth";
 import DemonlistListManager from "@/components/DemonlistListManager";
+import {useAuthContext} from "@/context/AuthContext";
 
 interface LayoutProps {
     children: ReactNode;
-    user?: AuthTokenPayload
-    accessToken?: string
 }
 
-const Layout: React.FC<LayoutProps> = ({children, user, accessToken}) => {
+const Layout: React.FC<LayoutProps> = ({children}) => {
+    const {user, accessToken} = useAuthContext();
     const isAuthenticated = user !== null;
     if (isAuthenticated) {
         console.log(JSON.stringify(user));
@@ -31,7 +30,7 @@ const Layout: React.FC<LayoutProps> = ({children, user, accessToken}) => {
                     ) : (
                         <Link href="/account">Sign up</Link>)
                 }
-                {accessToken && isAuthenticated && <DemonlistListManager userId={user.sub} accessToken={accessToken}/>}
+                {accessToken && isAuthenticated && <DemonlistListManager/>}
             </nav>
             <main>
                 {children}

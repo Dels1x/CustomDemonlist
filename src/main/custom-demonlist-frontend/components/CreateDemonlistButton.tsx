@@ -2,16 +2,18 @@ import Image from "next/image";
 import React from "react";
 import {countDemonlistsByUser, createNewDemonlist} from "@/api/api";
 import {Demonlist} from "@/lib/models";
+import {useAuthContext} from "@/context/AuthContext";
 
 interface CreateDemonlistButtonProps {
-    userId: string;
-    accessToken: string;
     onDemonlistCreated: (demonlist: Demonlist) => void;
 }
 
-const CreateDemonlistButton: React.FC<CreateDemonlistButtonProps> = ({userId, accessToken, onDemonlistCreated}) => {
+const CreateDemonlistButton: React.FC<CreateDemonlistButtonProps> = ({onDemonlistCreated}) => {
+    const {accessToken, user} = useAuthContext();
+    if (!user || !accessToken) return;
+
     const handleClick = async () => {
-        const demonlistCount = await countDemonlistsByUser(userId, accessToken);
+        const demonlistCount = await countDemonlistsByUser(user.sub, accessToken);
 
         const demonlist: Demonlist = {
             id: -1, // placeholder,

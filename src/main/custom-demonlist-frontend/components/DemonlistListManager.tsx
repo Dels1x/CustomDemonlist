@@ -3,21 +3,26 @@ import ListOfDemonlists from "@/components/ListOfDemonlists";
 import {useEffect, useState} from "react";
 import {getDemonlistsForUserId} from "@/api/api";
 import {Demonlist} from "@/lib/models";
+import {useAuthContext} from "@/context/AuthContext";
 
-const DemonlistListManager: React.FC<{ userId: string; accessToken: string }> = ({userId, accessToken}) => {
+const DemonlistListManager= () => {
+    const {accessToken, user} = useAuthContext();
+    console.log(JSON.stringify(user, null, 2))
+    if (!user || !accessToken) return;
+
     const [demonlists, setDemonlists] = useState<Demonlist[]>([]);
 
      useEffect(() => {
         const fetchDemonlists = async () => {
             try {
-                const data = await getDemonlistsForUserId(userId, accessToken);
-                setDemonlists(data);
+                    const data = await getDemonlistsForUserId(user.sub, accessToken);
+                    setDemonlists(data);
             } catch (error) {
                 console.error("Error fetching demonlists: ", error);
             }
         };
         fetchDemonlists();
-    }, [userId, accessToken]);
+    }, [user.sub, accessToken]);
 
     const addDemonlistToState = (newDemonlist: Demonlist) => {
         setDemonlists((prev) => [...prev, newDemonlist])
@@ -25,7 +30,7 @@ const DemonlistListManager: React.FC<{ userId: string; accessToken: string }> = 
 
     return (
         <div>
-            <CreateDemonlistButton userId={userId} accessToken={accessToken} onDemonlistCreated={addDemonlistToState}/>
+            <CreateDemonlistButton onDemonlistCreated={addDemonlistToState}/>
             <ListOfDemonlists list={demonlists}/>
         </div>
     );

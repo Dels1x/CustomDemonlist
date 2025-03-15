@@ -1,20 +1,17 @@
 import React from "react";
 import Layout from "@/layout/Layout";
 import {
-    AuthTokenPayload,
     extractFromAccessToken,
     getAccessTokenAndRefreshToken,
 } from "@/api/auth";
+import {useAuthContext} from "@/context/AuthContext";
 
-interface HomeProps {
-    user: AuthTokenPayload;
-    list: any;
-    accessToken: string;
-}
 
-const Home: React.FC<HomeProps> = ({user, accessToken}) => {
+const Home = () => {
+    const {user} = useAuthContext();
+
     return (
-        <Layout user={user} accessToken={accessToken}>
+        <Layout>
             <main>
                 {user ? "Welcome, #" + user.sub + " - " + user.username : ""}
             </main>
