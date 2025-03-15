@@ -6,6 +6,7 @@ import {
 } from "@/api/auth";
 import Layout from "@/layout/Layout";
 import DemonlistManager from "@/components/DemonlistManager";
+import {useDemonlistContext} from "@/context/DemonlistContext";
 
 interface DemonlistProps {
     demonlist: any;
@@ -13,8 +14,9 @@ interface DemonlistProps {
     accessToken: any;
 }
 
-const DemonlistPage: React.FC<DemonlistProps> = ({demonlist, user, accessToken}) => {
+const DemonlistPage: React.FC<DemonlistProps> = ({demonlist, accessToken}) => {
     console.log("DemonlistPage Demonlist: " + JSON.stringify(demonlist));
+    const {refreshDemonlists} = useDemonlistContext();
     const [isEditing, setEditing] = React.useState(false);
     const [name, setName] = React.useState(demonlist.name);
 
@@ -34,6 +36,7 @@ const DemonlistPage: React.FC<DemonlistProps> = ({demonlist, user, accessToken})
     const handleBlur = async () => {
         await saveNameToDatabase();
         setEditing(false);
+        refreshDemonlists();
     }
 
     const handleKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -41,6 +44,7 @@ const DemonlistPage: React.FC<DemonlistProps> = ({demonlist, user, accessToken})
 
         await saveNameToDatabase();
         setEditing(false);
+        refreshDemonlists();
     }
 
     const saveNameToDatabase = async () => {
@@ -51,7 +55,7 @@ const DemonlistPage: React.FC<DemonlistProps> = ({demonlist, user, accessToken})
     }
 
     return (
-        <Layout user={user} accessToken={accessToken}>
+        <Layout>
             <main>
                 <div>
                     {
