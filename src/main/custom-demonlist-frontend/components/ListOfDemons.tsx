@@ -7,6 +7,8 @@ interface DemonlistProps {
     demons: Demon[];
 }
 
+const MAX_INT = 2147483647;
+
 const ListOfDemons: React.FC<DemonlistProps> = ({demons}) => {
     const {accessToken} = useAuthContext()
 
@@ -56,7 +58,11 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons}) => {
 
         if (editing.field === "attemptsCount" || editing.field === "enjoymentRating") {
             if (/^\d*$/.test(value)) {
-                setData(value);
+                const numValue = Number(value);
+
+                if (numValue < MAX_INT) {
+                    setData(value);
+                }
             } else {
                 console.log("Value: ", value);
             }
