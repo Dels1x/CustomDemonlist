@@ -41,10 +41,18 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons}) => {
                 demon.author = data;
                 break;
             case "attemptsCount":
+                if (data === '') {
+                    break;
+                }
+
                 await updateDemonAttempts(demon.id, data, accessToken);
                 demon.attemptsCount = Number(data);
                 break;
             case "enjoymentRating":
+                if (data === '') {
+                    break;
+                }
+
                 await updateDemonEnjoyment(demon.id, data, accessToken);
                 demon.enjoymentRating = Number(data);
                 break;
@@ -83,6 +91,8 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons}) => {
         setEditing({id: null, field: null});
     }
 
+    // TODO dnd
+
     return (
         <table>
             <tbody>
@@ -94,7 +104,8 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons}) => {
                 <td>Enjoyment</td>
             </tr>
             {demons.map((demon) => (
-                <tr key={demon.id}>
+                <tr
+                    key={demon.id}>
                     {['placement', 'name', 'author', 'attemptsCount', 'enjoymentRating']
                         .map((fieldName) => (
                             <td
