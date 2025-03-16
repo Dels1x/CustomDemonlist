@@ -13,6 +13,10 @@ public class ResponseUtil {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Provided demonlist doesn't exist");
     }
 
+    public static ResponseEntity<String> demonDoesntExistMessage() {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Provided demon doesn't exist");
+    }
+
     public static ResponseEntity<String> authorizationExceptionMessage(String message){
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
     }

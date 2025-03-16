@@ -1,9 +1,11 @@
 package ua.delsix.util;
 
+import org.springframework.stereotype.Component;
 import ua.delsix.exception.DemonDoesntExistException;
 import ua.delsix.jpa.entity.Demon;
 import ua.delsix.jpa.repository.DemonRepository;
 
+@Component
 public class DemonUtil {
     private final DemonRepository demonRepository;
 

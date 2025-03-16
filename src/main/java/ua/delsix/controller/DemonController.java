@@ -7,10 +7,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import ua.delsix.dto.DemonDto;
-import ua.delsix.exception.AuthorizationException;
-import ua.delsix.exception.DemonlistDoesntExistException;
-import ua.delsix.exception.InvalidAuthorException;
-import ua.delsix.exception.InvalidNameException;
+import ua.delsix.exception.*;
 import ua.delsix.jpa.entity.Demon;
 import ua.delsix.service.DemonService;
 import ua.delsix.util.DemonlistUtil;
@@ -98,15 +95,20 @@ public class DemonController {
     public ResponseEntity<String> updateDemonName(@RequestParam long id,
                                                   @RequestParam String name,
                                                   @AuthenticationPrincipal UserDetails userDetails) {
+        log.info("Updating name #{} to {}", id, name);
+
         try {
             demonService.updateDemonName(id,name, userDetails);
             return ResponseEntity.ok(String.format("Demon #%d's name has been updated to %s", id, name));
         } catch (InvalidNameException e) {
+            log.info("InvalidNameException: {}", e.getMessage());
             return ResponseUtil.invalidName(e.getMessage());
         } catch (AuthorizationException e) {
+            log.info("AuthorizationException: {}", e.getMessage());
             return ResponseUtil.authorizationExceptionMessage(e.getMessage());
-        } catch (DemonlistDoesntExistException e) {
-            return ResponseUtil.demonlistDoesntExistMessage();
+        } catch (DemonDoesntExistException e) {
+            log.info("DemonDoesntExistException: {}", e.getMessage());
+            return ResponseUtil.demonDoesntExistMessage();
         }
     }
 
@@ -114,14 +116,19 @@ public class DemonController {
     public ResponseEntity<String> updateAuthor(@RequestParam long id,
                                                @RequestParam String author,
                                                @AuthenticationPrincipal UserDetails userDetails) {
+        log.info("Updating author #{} to {}", id, author);
+
         try {
             demonService.updateDemonAuthor(id, author, userDetails);
             return ResponseEntity.ok(String.format("Demon #%d's author has been updated to %s", id, author));
         } catch (InvalidAuthorException e) {
+            log.info("InvalidAuthorException: {}", e.getMessage());
             return ResponseUtil.invalidName(e.getMessage());
         } catch (AuthorizationException e) {
+            log.info("AuthorizationException: {}", e.getMessage());
             return ResponseUtil.authorizationExceptionMessage(e.getMessage());
         } catch (DemonlistDoesntExistException e) {
+            log.info("DemonlistDoesntExistException: {}", e.getMessage());
             return ResponseUtil.demonlistDoesntExistMessage();
         }
     }

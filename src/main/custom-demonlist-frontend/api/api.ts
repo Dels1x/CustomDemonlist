@@ -180,3 +180,24 @@ export async function updateDemonlistName(id: number,
         console.error('Error updating demonlist\'s name', error);
     }
 }
+
+export async function updateDemonName(id: number,
+                                      name: string,
+                                      accessToken: string) {
+    try {
+        const response = await api.patch(
+            'demons/update-name',
+            null,
+            {
+                params: {id: id, name: name},
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                }
+            }
+        )
+
+        return response.data;
+    } catch (error) {
+        console.error('Error updating demon\'s name', error);
+    }
+}

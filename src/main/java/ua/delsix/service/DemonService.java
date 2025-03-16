@@ -6,15 +6,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.delsix.dto.DemonDto;
-import ua.delsix.exception.AuthorizationException;
-import ua.delsix.exception.DemonlistDoesntExistException;
-import ua.delsix.exception.InvalidAuthorException;
-import ua.delsix.exception.InvalidNameException;
+import ua.delsix.exception.*;
 import ua.delsix.jpa.entity.Demon;
 import ua.delsix.jpa.entity.Demonlist;
 import ua.delsix.jpa.entity.Person;
 import ua.delsix.jpa.repository.DemonRepository;
 import ua.delsix.mapper.DemonMapper;
+import ua.delsix.util.DemonUtil;
 import ua.delsix.util.DemonlistUtil;
 
 @Service
@@ -25,17 +23,20 @@ public class DemonService {
     private final AuthService authService;
     private final PersonService personService;
     private final DemonlistUtil demonlistUtil;
+    private final DemonUtil demonUtil;
 
     public DemonService(AuthService authService,
                         DemonRepository demonRepository,
                         DemonMapper demonMapper,
                         PersonService personService,
-                        DemonlistUtil demonlistUtil) {
+                        DemonlistUtil demonlistUtil,
+                        DemonUtil demonUtil) {
         this.authService = authService;
         this.demonRepository = demonRepository;
         this.demonMapper = demonMapper;
         this.personService = personService;
         this.demonlistUtil = demonlistUtil;
+        this.demonUtil = demonUtil;
     }
 
     @Transactional
@@ -154,7 +155,7 @@ public class DemonService {
     @Transactional
     public void updateDemonName(long id, String newName, UserDetails userDetails) throws
             InvalidNameException,
-            DemonlistDoesntExistException,
+            DemonDoesntExistException,
             AuthorizationException {
         if (newName == null || newName.isEmpty()) {
             throw new InvalidNameException("Name must not be null");
@@ -164,9 +165,9 @@ public class DemonService {
             throw new InvalidNameException("Name must not exceed 32 characters");
         }
 
-        Demonlist demonlist = demonlistUtil.getDemonlistThrowIfDoesntExist(id);
+        Demon demon = demonUtil.getDemonThrowIfDoesntExist(id);
         Person person = personService.getUserFromUserDetails(userDetails);
-        authService.verifyOwnershipOfTheDemonlist(demonlist, person);
+        authService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), person);
 
         demonRepository.updateNameById(id, newName);
     }
