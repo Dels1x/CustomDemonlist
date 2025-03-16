@@ -175,7 +175,7 @@ public class DemonService {
     @Transactional
     public void updateDemonAuthor(long id, String newAuthor, UserDetails userDetails) throws
             InvalidAuthorException,
-            DemonlistDoesntExistException,
+            DemonDoesntExistException,
             AuthorizationException {
         if (newAuthor == null || newAuthor.isEmpty()) {
             throw new InvalidAuthorException("Author must not be null");
@@ -185,31 +185,33 @@ public class DemonService {
             throw new InvalidAuthorException("Author must not exceed 32 characters");
         }
 
-        Demonlist demonlist = demonlistUtil.getDemonlistThrowIfDoesntExist(id);
+        Demon demon = demonUtil.getDemonThrowIfDoesntExist(id);
         Person person = personService.getUserFromUserDetails(userDetails);
-        authService.verifyOwnershipOfTheDemonlist(demonlist, person);
+        authService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), person);
 
         demonRepository.updateAuthorById(id, newAuthor);
     }
 
     @Transactional
     public void updateDemonAttemptsCount(long id, int attemptsCount, UserDetails userDetails) throws
-            DemonlistDoesntExistException,
+            DemonDoesntExistException,
             AuthorizationException {
-        Demonlist demonlist = demonlistUtil.getDemonlistThrowIfDoesntExist(id);
+
+
+        Demon demon = demonUtil.getDemonThrowIfDoesntExist(id);
         Person person = personService.getUserFromUserDetails(userDetails);
-        authService.verifyOwnershipOfTheDemonlist(demonlist, person);
+        authService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), person);
 
         demonRepository.updateAttemptsCountById(id, attemptsCount);
     }
 
     @Transactional
     public void updateDemonEnjoymentRating(long id, int enjoymentRating, UserDetails userDetails) throws
-            DemonlistDoesntExistException,
+            DemonDoesntExistException,
             AuthorizationException{
-        Demonlist demonlist = demonlistUtil.getDemonlistThrowIfDoesntExist(id);
+        Demon demon = demonUtil.getDemonThrowIfDoesntExist(id);
         Person person = personService.getUserFromUserDetails(userDetails);
-        authService.verifyOwnershipOfTheDemonlist(demonlist, person);
+        authService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), person);
 
         demonRepository.updateEnjoymentRatingById(id, enjoymentRating);
     }

@@ -95,19 +95,16 @@ public class DemonController {
     public ResponseEntity<String> updateDemonName(@RequestParam long id,
                                                   @RequestParam String name,
                                                   @AuthenticationPrincipal UserDetails userDetails) {
-        log.info("Updating name #{} to {}", id, name);
+        log.info("Updating demon #{} name to {}", id, name);
 
         try {
             demonService.updateDemonName(id,name, userDetails);
             return ResponseEntity.ok(String.format("Demon #%d's name has been updated to %s", id, name));
         } catch (InvalidNameException e) {
-            log.info("InvalidNameException: {}", e.getMessage());
             return ResponseUtil.invalidName(e.getMessage());
         } catch (AuthorizationException e) {
-            log.info("AuthorizationException: {}", e.getMessage());
             return ResponseUtil.authorizationExceptionMessage(e.getMessage());
         } catch (DemonDoesntExistException e) {
-            log.info("DemonDoesntExistException: {}", e.getMessage());
             return ResponseUtil.demonDoesntExistMessage();
         }
     }
@@ -116,19 +113,16 @@ public class DemonController {
     public ResponseEntity<String> updateAuthor(@RequestParam long id,
                                                @RequestParam String author,
                                                @AuthenticationPrincipal UserDetails userDetails) {
-        log.info("Updating author #{} to {}", id, author);
+        log.info("Updating demon #{} author to {}", id, author);
 
         try {
             demonService.updateDemonAuthor(id, author, userDetails);
             return ResponseEntity.ok(String.format("Demon #%d's author has been updated to %s", id, author));
         } catch (InvalidAuthorException e) {
-            log.info("InvalidAuthorException: {}", e.getMessage());
             return ResponseUtil.invalidName(e.getMessage());
         } catch (AuthorizationException e) {
-            log.info("AuthorizationException: {}", e.getMessage());
             return ResponseUtil.authorizationExceptionMessage(e.getMessage());
-        } catch (DemonlistDoesntExistException e) {
-            log.info("DemonlistDoesntExistException: {}", e.getMessage());
+        } catch (DemonDoesntExistException e) {
             return ResponseUtil.demonlistDoesntExistMessage();
         }
     }
@@ -137,13 +131,15 @@ public class DemonController {
     public ResponseEntity<String> updateAttempts(@RequestParam long id,
                                                  @RequestParam int attemptsCount,
                                                  @AuthenticationPrincipal UserDetails userDetails) {
+        log.info("Updating demon #{} attempts count to {}", id, attemptsCount);
+
         try {
             demonService.updateDemonAttemptsCount(id, attemptsCount, userDetails);
             return ResponseEntity.ok(String.format("Demon #%d's attempts have been updated to %d", id, attemptsCount));
         } catch (AuthorizationException e) {
             return ResponseUtil.authorizationExceptionMessage(e.getMessage());
-        } catch (DemonlistDoesntExistException e) {
-            return ResponseUtil.demonlistDoesntExistMessage();
+        } catch (DemonDoesntExistException e) {
+            return ResponseUtil.demonDoesntExistMessage();
         }
     }
 
@@ -151,13 +147,15 @@ public class DemonController {
     public ResponseEntity<String> updateEnjoyment(@RequestParam long id,
                                                  @RequestParam int enjoyment,
                                                  @AuthenticationPrincipal UserDetails userDetails) {
+        log.info("Updating demon #{} enjoyment rating to {}", id, enjoyment);
+
         try {
             demonService.updateDemonEnjoymentRating(id, enjoyment, userDetails);
             return ResponseEntity.ok(String.format("Demon #%d's enjoyment rating have been updated to %d", id, enjoyment));
         } catch (AuthorizationException e) {
             return ResponseUtil.authorizationExceptionMessage(e.getMessage());
-        } catch (DemonlistDoesntExistException e) {
-            return ResponseUtil.demonlistDoesntExistMessage();
+        } catch (DemonDoesntExistException e) {
+            return ResponseUtil.demonDoesntExistMessage();
         }
     }
 

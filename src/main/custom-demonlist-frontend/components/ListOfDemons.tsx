@@ -1,6 +1,6 @@
 import {Demon} from "@/lib/models";
 import React, {useState} from "react";
-import {updateDemonName} from "@/api/api";
+import {updateDemonAttempts, updateDemonAuthor, updateDemonEnjoyment, updateDemonName} from "@/api/api";
 import {useAuthContext} from "@/context/AuthContext";
 
 interface DemonlistProps {
@@ -29,6 +29,18 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons}) => {
             case "name":
                 await updateDemonName(demon.id, data, accessToken);
                 demon.name = data;
+                break;
+            case "author":
+                await updateDemonAuthor(demon.id, data, accessToken);
+                demon.author = data;
+                break;
+            case "attemptsCount":
+                await updateDemonAttempts(demon.id, data, accessToken);
+                demon.attemptsCount = Number(data);
+                break;
+            case "enjoymentRating":
+                await updateDemonEnjoyment(demon.id, data, accessToken);
+                demon.enjoymentRating = Number(data);
                 break;
             default:
                 console.error("Unknown field: ", fieldName);

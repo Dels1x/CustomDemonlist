@@ -201,3 +201,67 @@ export async function updateDemonName(id: number,
         console.error('Error updating demon\'s name', error);
     }
 }
+
+export async function updateDemonAuthor(id: number,
+                                      author: string,
+                                      accessToken: string) {
+    try {
+        const response = await api.patch(
+            'demons/update-author',
+            null,
+            {
+                params: {id: id, author: author},
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                }
+            }
+        )
+
+        return response.data;
+    } catch (error) {
+        console.error('Error updating demon\'s author', error);
+    }
+}
+
+export async function updateDemonAttempts(id: number,
+                                        attempts: string,
+                                        accessToken: string) {
+    try {
+        const response = await api.patch(
+            'demons/update-attempts',
+            null,
+            {
+                params: {id: id, attemptsCount: attempts},
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                }
+            }
+        )
+
+        return response.data;
+    } catch (error) {
+        console.error('Error updating demon\'s attempts count', error);
+    }
+}
+
+
+export async function updateDemonEnjoyment(id: number,
+                                        enjoyment: string,
+                                        accessToken: string) {
+    try {
+        const response = await api.patch(
+            'demons/update-enjoyment',
+            null,
+            {
+                params: {id: id, enjoyment: enjoyment},
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                }
+            }
+        )
+
+        return response.data;
+    } catch (error) {
+        console.error('Error updating demon\'s enjoyment rating', error);
+    }
+}
