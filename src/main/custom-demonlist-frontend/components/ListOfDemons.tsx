@@ -18,8 +18,9 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons}) => {
     });
     const [data, setData] = useState<string>('');
 
-    const handleDoubleClick = (id: number, fieldName: string) => {
-        setEditing({id: id, field: fieldName})
+    const handleDoubleClick = (demon: Demon, fieldName: string) => {
+        setData(String(demon[fieldName as keyof Demon]));
+        setEditing({id: demon.id, field: fieldName})
     }
 
     const updateDemon = async (demon: Demon, fieldName: string) => {
@@ -56,6 +57,13 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons}) => {
         setEditing({id: null, field: null});
     }
 
+    const handleKeyDown = async (demon: Demon, fieldName: string, e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e && e.key !== "Enter") return;
+
+        await updateDemon(demon, fieldName);
+        setEditing({id: null, field: null});
+    }
+
     return (
         <table>
             <tbody>
@@ -63,21 +71,24 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons}) => {
                 <td>#</td>
                 <td>Name</td>
                 <td>Author</td>
-                <td>Difficulty</td>
                 <td>Attempts</td>
                 <td>Enjoyment</td>
             </tr>
             {demons.map((demon) => (
                 <tr key={demon.id}>
-                    {['placement', 'name', 'author', 'difficulty', 'attemptsCount', 'enjoymentRating']
+                    {['placement', 'name', 'author', 'attemptsCount', 'enjoymentRating']
                         .map((fieldName) => (
                             <td
-                                onDoubleClick={() => handleDoubleClick(demon.id, fieldName)}
+                                onDoubleClick={() => handleDoubleClick(demon, fieldName)}
                             >
                                 {editing.id === demon.id && editing.field === fieldName ?
                                     (<input
+                                        type="text"
                                         onChange={handleChange}
                                         onBlur={() => handleBlur(demon, fieldName)}
+                                        onKeyDown={(e) => handleKeyDown(demon, fieldName, e)}
+                                        autoFocus
+                                        value={data}
                                     />)
                                     :
                                     demon[fieldName as keyof Demon]}
