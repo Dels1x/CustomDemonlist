@@ -19,7 +19,10 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons}) => {
     const [data, setData] = useState<string>('');
 
     const handleDoubleClick = (demon: Demon, fieldName: string) => {
-        setData(String(demon[fieldName as keyof Demon]));
+        let tempData = demon[fieldName as keyof Demon];
+        if (!tempData) tempData = '';
+
+        setData(String(tempData));
         setEditing({id: demon.id, field: fieldName})
     }
 
@@ -49,7 +52,17 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons}) => {
     }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setData(e.currentTarget.value);
+        const value = e.currentTarget.value;
+
+        if (editing.field === "attemptsCount" || editing.field === "enjoymentRating") {
+            if (/^\d*$/.test(value)) {
+                setData(value);
+            } else {
+                console.log("Value: ", value);
+            }
+        } else {
+            setData(value);
+        }
     }
 
     const handleBlur = async (demon: Demon, fieldName: string)=> {
