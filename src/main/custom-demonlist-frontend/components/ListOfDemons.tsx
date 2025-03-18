@@ -2,7 +2,6 @@ import {Demon} from "@/lib/models";
 import React, {useState} from "react";
 import {updateDemonAttempts, updateDemonAuthor, updateDemonEnjoyment, updateDemonName} from "@/api/api";
 import {useAuthContext} from "@/context/AuthContext";
-import {useDrag} from "react-dnd";
 import DemonRow from "@/components/DemonRow";
 
 interface DemonlistProps {

@@ -1,6 +1,6 @@
 import {Demon} from "@/lib/models";
-import {useDrag} from "react-dnd";
-import React from "react";
+import {useDrag, useDrop} from "react-dnd";
+import React, {useRef} from "react";
 
 interface DemonRowProps {
     demon: Demon;
@@ -20,6 +20,7 @@ export default function DemonRow({
                                      handleKeyDown,
                                      editing,
                                      data}: DemonRowProps) {
+    const ref = useRef<HTMLTableRowElement>(null);
     const [{isDragging}, drag] = useDrag(() => ({
         type: "ROW",
         item: demon.id,
@@ -28,8 +29,18 @@ export default function DemonRow({
         }),
     }));
 
+    const [, drop] = useDrop({
+        accept: "ROW",
+        hover: (draggedItem: {id: number}) => {
+            if( draggedItem.id === demon.id) return;
+        }
+    })
+
+    drag(drop(ref));
+
     return (
         <tr
+            ref={ref}
             key={demon.id}>
             {['placement', 'name', 'author', 'attemptsCount', 'enjoymentRating']
                 .map((fieldName) => (
