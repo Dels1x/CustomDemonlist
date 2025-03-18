@@ -10,6 +10,7 @@ interface DemonRowProps {
     handleKeyDown: (demon: Demon, fieldName: string, e: React.KeyboardEvent<HTMLInputElement>) => void;
     editing: {id: number | null, field: string | null};
     data: string;
+    rearrangeDemonlist: (id: number, target: number) => void;
 }
 
 export default function DemonRow({
@@ -19,11 +20,12 @@ export default function DemonRow({
                                      handleBlur,
                                      handleKeyDown,
                                      editing,
-                                     data}: DemonRowProps) {
+                                     data,
+                                     rearrangeDemonlist}: DemonRowProps) {
     const ref = useRef<HTMLTableRowElement>(null);
     const [{isDragging}, drag] = useDrag(() => ({
         type: "ROW",
-        item: demon.id,
+        item: {id: demon.id, placement: demon.placement},
         collect: (monitor) => ({
             isDragging: monitor.isDragging()
         }),
@@ -31,8 +33,13 @@ export default function DemonRow({
 
     const [, drop] = useDrop({
         accept: "ROW",
-        hover: (draggedItem: {id: number}) => {
-            if( draggedItem.id === demon.id) return;
+        drop: (dragged: {id: number, placement: number}) => {
+            if (!ref.current) return;
+
+            console.log(demon.placement);
+            console.log(dragged);
+            console.log("REARRANGE!!!!");
+            rearrangeDemonlist(dragged.id, demon.placement);
         }
     })
 

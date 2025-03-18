@@ -81,6 +81,8 @@ public class DemonController {
     public ResponseEntity<String> updateDemonPosition(@RequestParam long id,
                                                       @RequestParam int position,
                                                       @AuthenticationPrincipal UserDetails userDetails) {
+        log.info("New request to update Demon #{} to position {}", id, position);
+
         try {
             demonService.updateDemonPosition(id, position, userDetails);
             return ResponseEntity.ok(String.format("%s demon #%s position has been updated", userDetails.getUsername(), id));

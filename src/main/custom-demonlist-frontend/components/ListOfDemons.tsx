@@ -1,6 +1,12 @@
 import {Demon} from "@/lib/models";
 import React, {useState} from "react";
-import {updateDemonAttempts, updateDemonAuthor, updateDemonEnjoyment, updateDemonName} from "@/api/api";
+import {
+    updateDemonAttempts,
+    updateDemonAuthor,
+    updateDemonEnjoyment,
+    updateDemonName,
+    updateDemonPosition
+} from "@/api/api";
 import {useAuthContext} from "@/context/AuthContext";
 import DemonRow from "@/components/DemonRow";
 
@@ -92,7 +98,10 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons}) => {
         setEditing({id: null, field: null});
     }
 
-    // TODO dnd
+    async function rearrangeDemonlist(id: number, target: number) {
+        if (!accessToken) return;
+        await updateDemonPosition(id, target, accessToken);
+    }
 
     return (
         <table>
@@ -113,6 +122,7 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons}) => {
                     handleKeyDown={handleKeyDown}
                     editing={editing}
                     data={data}
+                    rearrangeDemonlist={rearrangeDemonlist}
                 />
             ))}
             </tbody>

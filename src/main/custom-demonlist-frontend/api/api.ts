@@ -30,7 +30,6 @@ export async function refreshToken(refreshToken: string) {
         return response.data.accessToken;
     } catch (error) {
         console.error("Error refresh a token: ", error);
-        throw error;
     }
 }
 
@@ -47,7 +46,6 @@ export async function getDemonlistsForUserId(id: string, accessToken: string) {
         return response.data;
     } catch (error) {
         console.error('Error fetching demonlists', error);
-        throw error;
     }
 }
 
@@ -69,7 +67,6 @@ export async function createNewDemonlist(demonlist: {
         return response.data;
     } catch (error) {
         console.error('Error adding demonlist', error);
-        throw error;
     }
 }
 
@@ -86,7 +83,6 @@ export async function countDemonsInDemonlist(id: number, accessToken: string) {
         return response.data;
     } catch (error) {
         console.error('Error getting demons count', error);
-        throw error;
     }
 }
 
@@ -103,7 +99,6 @@ export async function countDemonlistsByUser(id: string, accessToken: string) {
         return response.data;
     } catch (error) {
         console.error('Error geting demonlists count', error)
-        throw error;
     }
 }
 
@@ -129,7 +124,6 @@ export async function getDemonlist(demonlistId: string, accessToken: string | nu
         }
     } catch (error) {
         console.error(`Error getting demonlist by id ${demonlistId}`, error);
-        throw error;
     }
 }
 
@@ -156,7 +150,6 @@ export async function createNewDemon(
         return response.data;
     } catch (error) {
         console.error('Error geting demonlist\'s count', error)
-        throw error;
     }
 }
 
@@ -263,5 +256,26 @@ export async function updateDemonEnjoyment(id: number,
         return response.data;
     } catch (error) {
         console.error('Error updating demon\'s enjoyment rating', error);
+    }
+}
+
+export async function updateDemonPosition(id: number,
+                                          position: number,
+                                          accessToken: string) {
+    try {
+        const response = await api.patch(
+            'demons/update-position',
+            null,
+            {
+                params: {id: id, position: position},
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                }
+            }
+        )
+
+        return response.data;
+    } catch (error) {
+        console.error('Error updating position', error);
     }
 }

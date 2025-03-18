@@ -15,7 +15,6 @@ interface DemonlistProps {
 }
 
 const DemonlistPage: React.FC<DemonlistProps> = ({demonlist, accessToken}) => {
-    console.log("DemonlistPage Demonlist: " + JSON.stringify(demonlist));
     const {refreshDemonlists} = useDemonlistContext();
     const [isEditing, setEditing] = React.useState(false);
     const [name, setName] = React.useState(demonlist.name);
