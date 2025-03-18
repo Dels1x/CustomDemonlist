@@ -2,6 +2,8 @@ import {Demon} from "@/lib/models";
 import React, {useState} from "react";
 import {updateDemonAttempts, updateDemonAuthor, updateDemonEnjoyment, updateDemonName} from "@/api/api";
 import {useAuthContext} from "@/context/AuthContext";
+import {useDrag} from "react-dnd";
+import DemonRow from "@/components/DemonRow";
 
 interface DemonlistProps {
     demons: Demon[];
@@ -104,27 +106,15 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons}) => {
                 <td>Enjoyment</td>
             </tr>
             {demons.map((demon) => (
-                <tr
-                    key={demon.id}>
-                    {['placement', 'name', 'author', 'attemptsCount', 'enjoymentRating']
-                        .map((fieldName) => (
-                            <td
-                                onDoubleClick={() => handleDoubleClick(demon, fieldName)}
-                            >
-                                {editing.id === demon.id && editing.field === fieldName ?
-                                    (<input
-                                        type="text"
-                                        onChange={handleChange}
-                                        onBlur={() => handleBlur(demon, fieldName)}
-                                        onKeyDown={(e) => handleKeyDown(demon, fieldName, e)}
-                                        autoFocus
-                                        value={data}
-                                    />)
-                                    :
-                                    demon[fieldName as keyof Demon]}
-                            </td>
-                        ))}
-                </tr>
+                <DemonRow
+                    demon={demon}
+                    handleDoubleClick={handleDoubleClick}
+                    handleChange={handleChange}
+                    handleBlur={handleBlur}
+                    handleKeyDown={handleKeyDown}
+                    editing={editing}
+                    data={data}
+                />
             ))}
             </tbody>
         </table>
