@@ -6,7 +6,9 @@ import {DndProvider} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";
 
 export default function App({Component, pageProps}: AppProps) {
-    const isAuthenticated = pageProps.user !== undefined;
+    const isAuthenticated = pageProps.user !== undefined && pageProps.user !== null;
+    console.log("pageProps.user: ", pageProps.user);
+    console.log("isAuthenticated: ", isAuthenticated);
 
     return (
         <AuthProvider accessToken={pageProps.accessToken} user={pageProps.user}>
