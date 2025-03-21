@@ -6,15 +6,19 @@ import {DndProvider} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";
 
 export default function App({Component, pageProps}: AppProps) {
-    console.log("pageProps: ", pageProps.user.sub);
+    const isAuthenticated = pageProps.user !== undefined;
 
     return (
         <AuthProvider accessToken={pageProps.accessToken} user={pageProps.user}>
-            <DemonlistProvider accessToken={pageProps.accessToken} userId={pageProps.user.sub}>
-                <DndProvider backend={HTML5Backend} >
-                    <Component {...pageProps} />
-                </DndProvider>
-            </DemonlistProvider>
+            {isAuthenticated ? (
+                <DemonlistProvider accessToken={pageProps.accessToken} userId={pageProps.user.sub}>
+                    <DndProvider backend={HTML5Backend}>
+                        <Component {...pageProps} />
+                    </DndProvider>
+                </DemonlistProvider>
+            ) : (
+                <Component {...pageProps} />
+            )}
         </AuthProvider>
     );
 }
