@@ -14,6 +14,9 @@ import ua.delsix.exception.AuthorizationException;
 import ua.delsix.jpa.entity.Person;
 import ua.delsix.service.AuthService;
 import ua.delsix.service.PersonService;
+import ua.delsix.util.CookieUtil;
+import ua.delsix.util.JwtUtil;
+import ua.delsix.util.LogUtil;
 import ua.delsix.util.ResponseUtil;
 
 import java.io.IOException;
@@ -25,18 +28,24 @@ import java.util.Map;
 public class AuthController {
     private final AuthService authService;
     private final PersonService personService;
+    private final JwtUtil jwtUtil;
+
     private static final String FRONTEND_URL = "http://localhost:3000";
 
-    public AuthController(AuthService authService, PersonService personService) {
+    public AuthController(AuthService authService,
+                          PersonService personService,
+                          JwtUtil jwtUtil) {
         this.authService = authService;
         this.personService = personService;
+        this.jwtUtil = jwtUtil;
     }
 
     // Gets access token from Discord, on order to generate its own access token later via jwtUtil.generateAccessToken()
     @GetMapping("/callback/discord")
-    public ResponseEntity<?> callbackDiscord(@RequestParam(required = false) String code, HttpServletResponse response) {
+    public void callbackDiscord(@RequestParam(required = false) String code, HttpServletResponse response) {
         if (code == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Code parameter is missing.");
+            LogUtil.codeIsNull();
+            return;
         }
         OAuth2Type type = OAuth2Type.DISCORD;
         addFrontendRedirect(response);
@@ -45,22 +54,22 @@ public class AuthController {
             String accessToken = authService.fetchAccessToken(code, type);
             DiscordUserDto userDto = authService.fetchUserDiscord(accessToken);
             Person person = personService.createUserByDiscordDto(userDto, response, type);
-
-            return ResponseEntity.ok(Map.of(
-                    "message", "User successfully authenticated and created",
-                    "username", person.getUsername(),
-                    "id", person.getId()));
+            CookieUtil.attachAuthCookies(
+                    response,
+                    jwtUtil.generateAccessToken(person),
+                    jwtUtil.generateRefreshToken(person));
         } catch (HttpClientErrorException | MissingRequestValueException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            log.error(e.getMessage());
         }
     }
 
     @GetMapping("/callback/google")
-    public ResponseEntity<?> callbackGoogle(
+    public void callbackGoogle(
             @RequestParam(required = false) String code,
             HttpServletResponse response) {
         if (code == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Code parameter is missing.");
+            LogUtil.codeIsNull();
+            return;
         }
         OAuth2Type type = OAuth2Type.GOOGLE;
         addFrontendRedirect(response);
@@ -68,13 +77,15 @@ public class AuthController {
         try {
             String accessToken = authService.fetchAccessToken(code, type);
             GoogleUserDto userDto = authService.fetchUserGoogle(accessToken);
-            Person person = personService.createUserByGoogleDto(userDto, response, type);
-            return ResponseEntity.ok(Map.of(
-                    "message", "User successfully authenticated and created",
-                    "username", person.getUsername(),
-                    "id", person.getId()));
+            Person person = personService.createUserByGoogleDto(userDto, response);
+
+            CookieUtil.attachAuthCookies(
+                    response,
+                    jwtUtil.generateAccessToken(person),
+                    jwtUtil.generateRefreshToken(person));
+
         } catch (HttpClientErrorException | MissingRequestValueException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            log.error(e.getMessage());
         }
     }
 
@@ -94,11 +105,8 @@ public class AuthController {
         }
     }
 
-    private void addFrontendRedirect(HttpServletResponse httpServletResponse) {
-        try {
-            httpServletResponse.sendRedirect(FRONTEND_URL);
-        } catch (IOException e) {
-            log.error(e);
-        }
+    private void addFrontendRedirect(HttpServletResponse res) {
+        res.setHeader("Location", FRONTEND_URL);
+        res.setStatus(HttpServletResponse.SC_TEMPORARY_REDIRECT);
     }
 }

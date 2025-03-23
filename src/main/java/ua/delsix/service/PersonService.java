@@ -75,31 +75,16 @@ public class PersonService {
                     existingPerson.setEmail(userDto.getEmail());
                     existingPerson.setPfpUrl(String.format("https://cdn.discordapp.com/avatars/%s/%s.png",
                             userDto.getId(), userDto.getAvatar()));
-                    existingPerson = personRepository.save(existingPerson);
-
-                    CookieUtil.attachAuthCookies(
-                            response,
-                            jwtUtil.generateAccessToken(existingPerson),
-                            jwtUtil.generateRefreshToken(existingPerson));
-
                     return personRepository.save(existingPerson);
                 })
                 .orElseGet(() -> {
                     Person newPerson = PersonMapper.INSTANCE.toEntity(userDto);
-
-                    newPerson = personRepository.save(newPerson);
-
-                    CookieUtil.attachAuthCookies(
-                            response,
-                            jwtUtil.generateAccessToken(newPerson),
-                            jwtUtil.generateRefreshToken(newPerson));
-
                     return personRepository.save(newPerson);
                 });
     }
 
     @Transactional
-    public Person createUserByGoogleDto(GoogleUserDto userDto, HttpServletResponse response, final OAuth2Type type) {
+    public Person createUserByGoogleDto(GoogleUserDto userDto, HttpServletResponse response) {
         return personRepository.findByEmail(userDto.getEmail())
                 .map(existingPerson -> {
                     existingPerson.setUsername(userDto.getName());
@@ -109,23 +94,10 @@ public class PersonService {
 
                     existingPerson = personRepository.save(existingPerson);
 
-                    CookieUtil.attachAuthCookies(
-                            response,
-                            jwtUtil.generateAccessToken(existingPerson),
-                            jwtUtil.generateRefreshToken(existingPerson));
-
                     return personRepository.save(existingPerson);
                 })
                 .orElseGet(() -> {
                     Person newPerson = PersonMapper.INSTANCE.toEntity(userDto);
-
-                    newPerson = personRepository.save(newPerson);
-
-                    CookieUtil.attachAuthCookies(
-                            response,
-                            jwtUtil.generateAccessToken(newPerson),
-                            jwtUtil.generateRefreshToken(newPerson));
-
                     return personRepository.save(newPerson);
                 });
     }

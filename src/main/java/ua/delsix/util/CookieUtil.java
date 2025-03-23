@@ -3,6 +3,7 @@ package ua.delsix.util;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.ResponseCookie;
 
 import java.util.Objects;
 
@@ -12,14 +13,15 @@ public class CookieUtil {
     }
 
     public static void addHttpOnlyCookie(HttpServletResponse response, String name, String value, int maxAge) {
-        Cookie cookie = new Cookie(name, value);
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-        cookie.setDomain("localhost");
-        cookie.setSecure(false); // Set to true when in production
-        cookie.setAttribute("SameSite", "None"); // Set to Strict when in production
-        cookie.setMaxAge(maxAge);
-        response.addCookie(cookie);
+        ResponseCookie cookie = ResponseCookie.from(name, value)
+                .path("/")
+                .httpOnly(true)
+                .secure(false) // Set to true in production
+                .sameSite("Lax")
+                .maxAge(maxAge)
+                .build();
+
+        response.addHeader("Set-Cookie", cookie.toString());
     }
 
     public static String findToken(HttpServletRequest request, String tokenName) {
