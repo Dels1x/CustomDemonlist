@@ -1,14 +1,12 @@
 package ua.delsix.service;
 
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.delsix.dto.DiscordUserDto;
 import ua.delsix.dto.GoogleUserDto;
-import ua.delsix.enums.OAuth2Type;
 import ua.delsix.exception.EmailAlreadyExistsException;
 import ua.delsix.exception.UsernameAlreadyExistsException;
 import ua.delsix.jpa.entity.Person;
@@ -16,8 +14,6 @@ import ua.delsix.jpa.repository.DemonRepository;
 import ua.delsix.jpa.repository.DemonlistRepository;
 import ua.delsix.jpa.repository.PersonRepository;
 import ua.delsix.mapper.PersonMapper;
-import ua.delsix.util.JwtUtil;
-import ua.delsix.util.CookieUtil;
 
 import java.time.Instant;
 
@@ -27,15 +23,13 @@ public class PersonService {
     private final DemonlistRepository demonlistRepository;
     private final DemonRepository demonRepository;
     private final PersonRepository personRepository;
-    private final JwtUtil jwtUtil;
 
     public PersonService(DemonlistRepository demonlistRepository,
                          DemonRepository demonRepository,
-                         PersonRepository personRepository, JwtUtil jwtUtil) {
+                         PersonRepository personRepository) {
         this.demonlistRepository = demonlistRepository;
         this.demonRepository = demonRepository;
         this.personRepository = personRepository;
-        this.jwtUtil = jwtUtil;
     }
 
     public Person getUserById(long id) throws EntityNotFoundException {
@@ -68,7 +62,7 @@ public class PersonService {
     }
 
     @Transactional
-    public Person createUserByDiscordDto(DiscordUserDto userDto, HttpServletResponse response, final OAuth2Type type) {
+    public Person createUserByDiscordDto(DiscordUserDto userDto) {
         return personRepository.findByEmail(userDto.getEmail())
                 .map(existingPerson -> {
                     existingPerson.setUsername(userDto.getUsername());
@@ -84,7 +78,7 @@ public class PersonService {
     }
 
     @Transactional
-    public Person createUserByGoogleDto(GoogleUserDto userDto, HttpServletResponse response) {
+    public Person createUserByGoogleDto(GoogleUserDto userDto) {
         return personRepository.findByEmail(userDto.getEmail())
                 .map(existingPerson -> {
                     existingPerson.setUsername(userDto.getName());

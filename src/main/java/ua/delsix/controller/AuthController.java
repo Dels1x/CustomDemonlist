@@ -19,7 +19,6 @@ import ua.delsix.util.JwtUtil;
 import ua.delsix.util.LogUtil;
 import ua.delsix.util.ResponseUtil;
 
-import java.io.IOException;
 import java.util.Map;
 
 @RestController
@@ -53,7 +52,7 @@ public class AuthController {
         try {
             String accessToken = authService.fetchAccessToken(code, type);
             DiscordUserDto userDto = authService.fetchUserDiscord(accessToken);
-            Person person = personService.createUserByDiscordDto(userDto, response, type);
+            Person person = personService.createUserByDiscordDto(userDto);
             CookieUtil.attachAuthCookies(
                     response,
                     jwtUtil.generateAccessToken(person),
@@ -77,7 +76,7 @@ public class AuthController {
         try {
             String accessToken = authService.fetchAccessToken(code, type);
             GoogleUserDto userDto = authService.fetchUserGoogle(accessToken);
-            Person person = personService.createUserByGoogleDto(userDto, response);
+            Person person = personService.createUserByGoogleDto(userDto);
 
             CookieUtil.attachAuthCookies(
                     response,
