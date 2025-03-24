@@ -36,12 +36,8 @@ public class PersonService {
         return personRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User with id " + id + " not found"));
     }
 
-    public Person getUserByUsername(String username) throws EntityNotFoundException {
-        return personRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException("User with username " + username + " not found"));
-    }
-
     public Person getUserFromUserDetails(UserDetails userDetails) throws EntityNotFoundException {
-        return getUserByUsername(userDetails.getUsername());
+        return getUserById(Long.parseLong(userDetails.getUsername()));
     }
 
     public void createUser(Person person) throws UsernameAlreadyExistsException, EmailAlreadyExistsException {
