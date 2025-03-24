@@ -3,27 +3,33 @@ import {useDrag, useDrop} from "react-dnd";
 import React, {useRef} from "react";
 
 interface DemonRowProps {
-    demon: Demon;
+    demonId: number;
+    demons: Demon[]
     handleDoubleClick: (demon: Demon, fieldName: string) => void;
     handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handleBlur: (demon: Demon, fieldName: string) => void;
     handleKeyDown: (demon: Demon, fieldName: string, e: React.KeyboardEvent<HTMLInputElement>) => void;
-    editing: {id: number | null, field: string | null};
+    editing: { id: number | null, field: string | null };
     data: string;
-    rearrangeDemonlist: (id: number, target: number) => void;
+    rearrangeDemonlistRequest: (id: number, target: number) => void;
+    rearrangeDemonlist: (current: number, target: number) => void;
 }
 
 export default function DemonRow({
-                                     demon,
+                                     demonId,
+                                     demons,
                                      handleDoubleClick,
                                      handleChange,
                                      handleBlur,
                                      handleKeyDown,
                                      editing,
                                      data,
-                                     rearrangeDemonlist}: DemonRowProps) {
+                                     rearrangeDemonlistRequest,
+                                     rearrangeDemonlist
+                                 }: DemonRowProps,) {
+    const demon = demons[demonId];
     const ref = useRef<HTMLTableRowElement>(null);
-    const [{isDragging}, drag] = useDrag(() => ({
+    const [, drag] = useDrag(() => ({
         type: "ROW",
         item: {id: demon.id, placement: demon.placement},
         collect: (monitor) => ({
@@ -33,13 +39,17 @@ export default function DemonRow({
 
     const [, drop] = useDrop({
         accept: "ROW",
-        drop: (dragged: {id: number, placement: number}) => {
+        hover: (dragged: { id: number, placement: number }) => {
+            if (!ref.current) return;
+        },
+        drop: (dragged: { id: number, placement: number }) => {
             if (!ref.current) return;
 
             console.log(demon.placement);
             console.log(dragged);
             console.log("REARRANGE!!!!");
-            rearrangeDemonlist(dragged.id, demon.placement);
+            rearrangeDemonlistRequest(dragged.id, demon.placement);
+            rearrangeDemonlist(dragged.placement, demon.placement);
         }
     })
 

@@ -12,14 +12,16 @@ import DemonRow from "@/components/DemonRow";
 
 interface DemonlistProps {
     demons: Demon[];
+    setDemons: React.Dispatch<React.SetStateAction<Demon[]>>;
 }
 
 const MAX_INT = 2147483647;
 
-const ListOfDemons: React.FC<DemonlistProps> = ({demons}) => {
+const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons}) => {
     const {accessToken} = useAuthContext()
-
     if (!accessToken) return;
+
+    console.log("DEMONS: ", demons);
 
     const [editing, setEditing] = useState<{ id: number | null, field: string | null }>({
         id: null,
@@ -98,9 +100,26 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons}) => {
         setEditing({id: null, field: null});
     }
 
-    async function rearrangeDemonlist(id: number, target: number) {
+    async function rearrangeDemonlistRequest(id: number, target: number) {
         if (!accessToken) return;
         await updateDemonPosition(id, target, accessToken);
+    }
+
+    async function rearrangeDemonlist(current: number, target: number) {
+        setDemons((prevDemons) => {
+            const newDemons = [...prevDemons.map(d => ({ ...d }))];
+            const demon = newDemons.find(d => d.placement === current);
+            if (!demon) return prevDemons;
+
+            newDemons.sort((a, b) => a.placement - b.placement);
+
+            newDemons.splice(current - 1, 1);
+            newDemons.splice(target - 1, 0, demon);
+
+            newDemons.forEach((d, index) => d.placement = index + 1);
+
+            return newDemons;
+        });
     }
 
     return (
@@ -115,13 +134,15 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons}) => {
             </tr>
             {demons.map((demon) => (
                 <DemonRow
-                    demon={demon}
+                    demonId={demon.placement - 1}
+                    demons={demons}
                     handleDoubleClick={handleDoubleClick}
                     handleChange={handleChange}
                     handleBlur={handleBlur}
                     handleKeyDown={handleKeyDown}
                     editing={editing}
                     data={data}
+                    rearrangeDemonlistRequest={rearrangeDemonlistRequest}
                     rearrangeDemonlist={rearrangeDemonlist}
                 />
             ))}
