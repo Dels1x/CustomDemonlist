@@ -272,10 +272,30 @@ export async function updateDemonPosition(id: number,
                     Authorization: `Bearer ${accessToken}`
                 }
             }
-        )
+        );
 
         return response.data;
     } catch (error) {
         console.error('Error updating position', error);
     }
+}
+
+export async function deleteDemonlist(id: number,
+                                      accessToken: string) {
+    try {
+        const response = await api.delete(
+            'demonlists/delete',
+            {
+                params: {id: id},
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                }
+            }
+        );
+
+        return response.data;
+    } catch (error) {
+        console.error('Error deleting demonlist', error);
+    }
+
 }
