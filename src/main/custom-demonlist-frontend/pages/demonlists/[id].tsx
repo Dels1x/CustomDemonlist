@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {getDemonlist, updateDemonlistName} from "@/api/api";
+import {deleteDemonlist, getDemonlist, updateDemonlistName} from "@/api/api";
 import {
     extractFromAccessToken,
     getAccessTokenAndRefreshToken,
@@ -7,6 +7,7 @@ import {
 import Layout from "@/layout/Layout";
 import DemonlistManager from "@/components/DemonlistManager";
 import {useDemonlistContext} from "@/context/DemonlistContext";
+import DeleteButton from "@/components/DeleteButton";
 
 interface DemonlistProps {
     demonlist: any;
@@ -76,6 +77,9 @@ const DemonlistPage: React.FC<DemonlistProps> = ({demonlist, accessToken}) => {
                                 </span>
                             )
                     }
+                    <DeleteButton
+                        onDelete={() => deleteDemonlist(demonlist.id, accessToken)}
+                        label={`Delete ${name}`}/>
                     <DemonlistManager accessToken={accessToken} demonlist={demonlist}/>
                 </div>
             </main>
