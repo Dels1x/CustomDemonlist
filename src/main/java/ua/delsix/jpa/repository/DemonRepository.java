@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ua.delsix.jpa.entity.Demon;
+import ua.delsix.jpa.entity.Demonlist;
 
 @Repository
 public interface DemonRepository extends JpaRepository<Demon, Long> {
@@ -56,4 +57,9 @@ public interface DemonRepository extends JpaRepository<Demon, Long> {
     @Transactional
     @Query("UPDATE Demon d SET d.enjoymentRating = :enjoymentRating WHERE d.id = :id")
     void updateEnjoymentRatingById(long id, int enjoymentRating);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM Demon d WHERE d.demonlist = :demonlist")
+    void deleteByDemonlist(Demonlist demonlist);
 }

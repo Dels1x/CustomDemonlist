@@ -215,4 +215,8 @@ public class DemonService {
 
         demonRepository.updateEnjoymentRatingById(id, enjoymentRating);
     }
+
+    public void deleteDemonsBy(Demonlist demonlist) {
+        demonRepository.deleteByDemonlist(demonlist);
+    }
 }

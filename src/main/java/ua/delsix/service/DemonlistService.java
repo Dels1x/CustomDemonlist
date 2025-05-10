@@ -26,16 +26,18 @@ public class DemonlistService {
     private final PersonService personService;
     private final DemonlistUtil demonlistUtil;
     private static final int DEMONLISTS_AMOUNT_LIMIT = 100;
+    private final DemonService demonService;
 
     public DemonlistService(AuthService authService,
                             DemonlistRepository demonlistRepository,
                             DemonlistMapper demonlistMapper,
-                            PersonService personService, DemonlistUtil demonlistUtil) {
+                            PersonService personService, DemonlistUtil demonlistUtil, DemonService demonService) {
         this.authService = authService;
         this.demonlistRepository = demonlistRepository;
         this.demonlistMapper = demonlistMapper;
         this.personService = personService;
         this.demonlistUtil = demonlistUtil;
+        this.demonService = demonService;
     }
 
     public Demonlist getDemonlistByIdAuth(long id, UserDetails userDetails)
@@ -79,6 +81,7 @@ public class DemonlistService {
         log.info("New demonlist {} of user {} has been created", demonlist.getId(), person.getUsername());
     }
 
+    @Transactional
     public void deleteDemonlist(long id, UserDetails userDetails) throws
             AuthorizationException,
             EntityNotFoundException,
@@ -87,10 +90,12 @@ public class DemonlistService {
         Demonlist demonlist = demonlistUtil.getDemonlistThrowIfDoesntExist(id);
         authService.verifyOwnershipOfTheDemonlist(demonlist, person);
 
+        demonService.deleteDemonsBy(demonlist);
         demonlistRepository.deleteById(id);
         log.info("Demonlist {} of user {} has been deleted", id, person.getUsername());
     }
 
+    @Transactional
     public void updateDemonlist(long id, DemonlistDto dto, UserDetails userDetails) throws
             EntityNotFoundException,
             AuthorizationException,
