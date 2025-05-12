@@ -58,6 +58,7 @@ const DemonlistPage: React.FC<DemonlistProps> = ({demonlist, accessToken}) => {
 
     const handleDeleteDemonlist = async () => {
         await deleteDemonlist(demonlist.id, accessToken);
+        refreshDemonlists();
         router.push("/");
     }
 
