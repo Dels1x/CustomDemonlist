@@ -8,6 +8,7 @@ import Layout from "@/layout/Layout";
 import DemonlistManager from "@/components/DemonlistManager";
 import {useDemonlistContext} from "@/context/DemonlistContext";
 import DeleteButton from "@/components/DeleteButton";
+import {useRouter} from "next/router";
 
 interface DemonlistProps {
     demonlist: any;
@@ -19,6 +20,7 @@ const DemonlistPage: React.FC<DemonlistProps> = ({demonlist, accessToken}) => {
     const {refreshDemonlists} = useDemonlistContext();
     const [isEditing, setEditing] = React.useState(false);
     const [name, setName] = React.useState(demonlist.name);
+    const router = useRouter();
 
     useEffect(() => {
         setName(demonlist.name);
@@ -54,6 +56,11 @@ const DemonlistPage: React.FC<DemonlistProps> = ({demonlist, accessToken}) => {
         }
     }
 
+    const handleDeleteDemonlist = async () => {
+        await deleteDemonlist(demonlist.id, accessToken);
+        router.push("/");
+    }
+
     return (
         <Layout>
             <main>
@@ -78,7 +85,7 @@ const DemonlistPage: React.FC<DemonlistProps> = ({demonlist, accessToken}) => {
                             )
                     }
                     <DeleteButton
-                        onDelete={() => deleteDemonlist(demonlist.id, accessToken)}
+                        onDelete={handleDeleteDemonlist}
                         label={`Delete ${name}`}/>
                     <DemonlistManager accessToken={accessToken} demonlist={demonlist}/>
                 </div>
