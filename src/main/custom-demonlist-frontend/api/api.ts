@@ -196,8 +196,8 @@ export async function updateDemonName(id: number,
 }
 
 export async function updateDemonAuthor(id: number,
-                                      author: string,
-                                      accessToken: string) {
+                                        author: string,
+                                        accessToken: string) {
     try {
         const response = await api.patch(
             'demons/update-author',
@@ -217,8 +217,8 @@ export async function updateDemonAuthor(id: number,
 }
 
 export async function updateDemonAttempts(id: number,
-                                        attempts: string,
-                                        accessToken: string) {
+                                          attempts: string,
+                                          accessToken: string) {
     try {
         const response = await api.patch(
             'demons/update-attempts',
@@ -239,8 +239,8 @@ export async function updateDemonAttempts(id: number,
 
 
 export async function updateDemonEnjoyment(id: number,
-                                        enjoyment: string,
-                                        accessToken: string) {
+                                           enjoyment: string,
+                                           accessToken: string) {
     try {
         const response = await api.patch(
             'demons/update-enjoyment',
@@ -297,5 +297,28 @@ export async function deleteDemonlist(id: number,
     } catch (error) {
         console.error('Error deleting demonlist', error);
     }
-
 }
+
+export async function deleteDemon(demonlistId: number,
+                                  demonId: number,
+                                  accessToken: string) {
+    try {
+        const response = await api.delete(
+            'demons/delete',
+            {
+                params: {
+                    demonlistId: demonlistId,
+                    demonId: demonId
+                },
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                }
+            }
+        );
+
+        return response.data;
+    } catch (error) {
+        console.error('Error deleting demonlist', error);
+    }
+}
+
