@@ -138,14 +138,13 @@ public class DemonService {
         return demonRepository.countByDemonlistId(id);
     }
 
-    public void deleteDemon(long id, long demonId, UserDetails userDetails) throws AuthorizationException,
+    public void deleteDemon(long id, UserDetails userDetails) throws AuthorizationException,
             DemonlistDoesntExistException {
         Person person = personService.getUserFromUserDetails(userDetails);
-        Demonlist demonlist = demonlistUtil.getDemonlistThrowIfDoesntExist(id);
-        authService.verifyOwnershipOfTheDemonlist(demonlist, person);
+        log.info(getDemonById(id));
 
-        demonRepository.deleteById(demonId);
-        log.info("Demon #{} of user {} has been deleted", demonId, person.getUsername());
+        demonRepository.deleteById(id);
+        log.info("Demon #{} of user {} has been deleted", id, person.getUsername());
     }
 
     public Demon getDemonById(long id) {

@@ -299,17 +299,14 @@ export async function deleteDemonlist(id: number,
     }
 }
 
-export async function deleteDemon(demonlistId: number,
-                                  demonId: number,
+export async function deleteDemon(demonId: number,
                                   accessToken: string) {
     try {
+        const url = `demons/delete?demonId=${demonId}`;
+        console.log(url);
         const response = await api.delete(
-            'demons/delete',
+            url,
             {
-                params: {
-                    demonlistId: demonlistId,
-                    demonId: demonId
-                },
                 headers: {
                     Authorization: `Bearer ${accessToken}`
                 }

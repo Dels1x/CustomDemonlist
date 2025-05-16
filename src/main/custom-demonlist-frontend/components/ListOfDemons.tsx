@@ -126,6 +126,7 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons}) => {
         <table>
             <tbody>
             <tr key="names">
+                <td>X</td>
                 <td>#</td>
                 <td>Name</td>
                 <td>Author</td>

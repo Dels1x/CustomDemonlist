@@ -1,6 +1,10 @@
 import {Demon} from "@/lib/models";
 import {useDrag, useDrop} from "react-dnd";
 import React, {useRef} from "react";
+import {useAuthContext} from "@/context/AuthContext";
+import {deleteDemon} from "@/api/api";
+import {useDemonlistContext} from "@/context/DemonlistContext";
+import DeleteButton from "@/components/DeleteButton";
 
 interface DemonRowProps {
     demonId: number;
@@ -27,6 +31,8 @@ export default function DemonRow({
                                      rearrangeDemonlistRequest,
                                      rearrangeDemonlist
                                  }: DemonRowProps,) {
+    const {accessToken} = useAuthContext()
+    const {refreshDemonlists} = useDemonlistContext();
     const demon = demons[demonId];
     const ref = useRef<HTMLTableRowElement>(null);
     const [, drag] = useDrag(() => ({
@@ -36,6 +42,17 @@ export default function DemonRow({
             isDragging: monitor.isDragging()
         }),
     }));
+
+    const handleDeleteDemon = async () => {
+        if (!accessToken) {
+            return;
+        }
+
+        console.log('demon', demon);
+
+        await deleteDemon(demon.id, accessToken)
+        refreshDemonlists();
+    }
 
     const [, drop] = useDrop({
         accept: "ROW",
@@ -59,7 +76,7 @@ export default function DemonRow({
         <tr
             ref={ref}
             key={demon.id}>
-            {['placement', 'name', 'author', 'attemptsCount', 'enjoymentRating']
+            {['delete', 'placement', 'name', 'author', 'attemptsCount', 'enjoymentRating']
                 .map((fieldName) => (
                     <td
                         onDoubleClick={() => handleDoubleClick(demon, fieldName)}
@@ -73,7 +90,12 @@ export default function DemonRow({
                                 autoFocus
                                 value={data}
                             />)
-                            :
+                            : fieldName === "delete" ? (
+                                    <DeleteButton
+                                        onDelete={handleDeleteDemon}
+                                        label="X"
+                                    />
+                            ) :
                             demon[fieldName as keyof Demon]}
                     </td>
                 ))}

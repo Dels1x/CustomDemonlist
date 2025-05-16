@@ -26,15 +26,13 @@ public class DemonController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteDemon(@RequestParam long demonlistId,
-                                              @RequestParam long demonId,
+    public ResponseEntity<String> deleteDemon(@RequestParam long demonId,
                                               @AuthenticationPrincipal UserDetails userDetails) {
         try {
-            demonService.deleteDemon(demonlistId, demonId, userDetails);
+            demonService.deleteDemon(demonId, userDetails);
             return ResponseEntity.ok(String.format(
-                    "Demon \"%s\" of demonlist \"%s\" of user \"%s\" has been successfully deleted",
+                    "Demon \"%s\" of user \"%s\" has been successfully deleted",
                     demonId,
-                    demonlistId,
                     userDetails.getUsername()));
         } catch (AuthorizationException e) {
             return ResponseUtil.authorizationExceptionMessage(e.getMessage());
