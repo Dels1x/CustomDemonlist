@@ -3,7 +3,6 @@ import {useDrag, useDrop} from "react-dnd";
 import React, {useRef} from "react";
 import {useAuthContext} from "@/context/AuthContext";
 import {deleteDemon} from "@/api/api";
-import {useDemonlistContext} from "@/context/DemonlistContext";
 import DeleteButton from "@/components/DeleteButton";
 
 interface DemonRowProps {
@@ -34,7 +33,6 @@ export default function DemonRow({
                                      deleteDemonLocally
                                  }: DemonRowProps,) {
     const {accessToken} = useAuthContext()
-    const {refreshDemonlists} = useDemonlistContext();
     const demon = demons.find(d => d.placement === demonPlacement + 1);
 
     console.log("DEMONROW demonId: ", demonPlacement);
@@ -68,9 +66,6 @@ export default function DemonRow({
 
     const [, drop] = useDrop({
         accept: "ROW",
-        hover: (dragged: { id: number, placement: number }) => {
-            if (!ref.current) return;
-        },
         drop: (dragged: { id: number, placement: number }) => {
             if (!ref.current) return;
 
