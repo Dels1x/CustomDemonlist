@@ -105,7 +105,7 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons}) => {
         await updateDemonPosition(id, target, accessToken);
     }
 
-    async function rearrangeDemonlist(current: number, target: number) {
+     function rearrangeDemonlist(current: number, target: number) {
         setDemons((prevDemons) => {
             const newDemons = [...prevDemons.map(d => ({ ...d }))];
             const demon = newDemons.find(d => d.placement === current);
@@ -120,6 +120,12 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons}) => {
 
             return newDemons;
         });
+    }
+
+     function deleteDemonLocally(targetId: number) {
+        setDemons((prevDemons) => {
+            return prevDemons.filter(demon => demon.id !== targetId);
+        })
     }
 
     return (
@@ -145,6 +151,7 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons}) => {
                     data={data}
                     rearrangeDemonlistRequest={rearrangeDemonlistRequest}
                     rearrangeDemonlist={rearrangeDemonlist}
+                    deleteDemonLocally={deleteDemonLocally}
                 />
             ))}
             </tbody>

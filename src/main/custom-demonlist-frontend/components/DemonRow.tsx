@@ -7,16 +7,17 @@ import {useDemonlistContext} from "@/context/DemonlistContext";
 import DeleteButton from "@/components/DeleteButton";
 
 interface DemonRowProps {
-    demonPlacement: number;
-    demons: Demon[]
-    handleDoubleClick: (demon: Demon, fieldName: string) => void;
-    handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    handleBlur: (demon: Demon, fieldName: string) => void;
-    handleKeyDown: (demon: Demon, fieldName: string, e: React.KeyboardEvent<HTMLInputElement>) => void;
-    editing: { id: number | null, field: string | null };
-    data: string;
-    rearrangeDemonlistRequest: (id: number, target: number) => void;
-    rearrangeDemonlist: (current: number, target: number) => void;
+    demonPlacement: number,
+    demons: Demon[],
+    handleDoubleClick: (demon: Demon, fieldName: string) => void,
+    handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
+    handleBlur: (demon: Demon, fieldName: string) => void,
+    handleKeyDown: (demon: Demon, fieldName: string, e: React.KeyboardEvent<HTMLInputElement>) => void,
+    editing: { id: number | null, field: string | null },
+    data: string,
+    rearrangeDemonlistRequest: (id: number, target: number) => void,
+    rearrangeDemonlist: (current: number, target: number) => void,
+    deleteDemonLocally: (targetId: number) => void
 }
 
 export default function DemonRow({
@@ -29,7 +30,8 @@ export default function DemonRow({
                                      editing,
                                      data,
                                      rearrangeDemonlistRequest,
-                                     rearrangeDemonlist
+                                     rearrangeDemonlist,
+                                     deleteDemonLocally
                                  }: DemonRowProps,) {
     const {accessToken} = useAuthContext()
     const {refreshDemonlists} = useDemonlistContext();
@@ -61,7 +63,7 @@ export default function DemonRow({
         console.log('demon', demon);
 
         await deleteDemon(demon.id, accessToken)
-        refreshDemonlists();
+        deleteDemonLocally(demon.id);
     }
 
     const [, drop] = useDrop({
@@ -105,8 +107,8 @@ export default function DemonRow({
                                         onDelete={handleDeleteDemon}
                                         label="X"
                                     />
-                            ) :
-                            demon[fieldName as keyof Demon]}
+                                ) :
+                                demon[fieldName as keyof Demon]}
                     </td>
                 ))}
         </tr>
