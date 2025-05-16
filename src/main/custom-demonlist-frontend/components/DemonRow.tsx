@@ -7,7 +7,7 @@ import {useDemonlistContext} from "@/context/DemonlistContext";
 import DeleteButton from "@/components/DeleteButton";
 
 interface DemonRowProps {
-    demonId: number;
+    demonPlacement: number;
     demons: Demon[]
     handleDoubleClick: (demon: Demon, fieldName: string) => void;
     handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -20,7 +20,7 @@ interface DemonRowProps {
 }
 
 export default function DemonRow({
-                                     demonId,
+                                     demonPlacement,
                                      demons,
                                      handleDoubleClick,
                                      handleChange,
@@ -33,7 +33,17 @@ export default function DemonRow({
                                  }: DemonRowProps,) {
     const {accessToken} = useAuthContext()
     const {refreshDemonlists} = useDemonlistContext();
-    const demon = demons[demonId];
+    const demon = demons.find(d => d.placement === demonPlacement + 1);
+
+    console.log("DEMONROW demonId: ", demonPlacement);
+
+    if (!demon) {
+        console.log("Demon is undefined");
+        return null;
+    }
+
+    console.log("DEMONROW ID: ", demon.id);
+
     const ref = useRef<HTMLTableRowElement>(null);
     const [, drag] = useDrag(() => ({
         type: "ROW",

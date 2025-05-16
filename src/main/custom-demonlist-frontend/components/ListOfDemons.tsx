@@ -135,7 +135,7 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons}) => {
             </tr>
             {demons.map((demon) => (
                 <DemonRow
-                    demonId={demon.placement - 1}
+                    demonPlacement={demon.placement - 1}
                     demons={demons}
                     handleDoubleClick={handleDoubleClick}
                     handleChange={handleChange}
