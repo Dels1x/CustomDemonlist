@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
+import ua.delsix.enums.Difficulty;
 import ua.delsix.util.Views;
 
 import java.time.LocalDate;
@@ -49,9 +50,10 @@ public class Demon {
     @JsonView(Views.Public.class)
     private Integer enjoymentRating;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "difficulty", length = 32)
     @JsonView(Views.Public.class)
-    private String difficulty;
+    private Difficulty difficulty;
 
     @Column(name = "date_of_completion")
     @JsonView(Views.Public.class)

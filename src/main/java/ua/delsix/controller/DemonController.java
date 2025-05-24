@@ -7,6 +7,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import ua.delsix.dto.DemonDto;
+import ua.delsix.enums.Difficulty;
 import ua.delsix.exception.*;
 import ua.delsix.jpa.entity.Demon;
 import ua.delsix.service.DemonService;
@@ -135,7 +136,23 @@ public class DemonController {
 
         try {
             demonService.updateDemonAttemptsCount(id, attemptsCount, userDetails);
-            return ResponseEntity.ok(String.format("Demon #%d's attempts have been updated to %d", id, attemptsCount));
+            return ResponseEntity.ok(String.format("Demon #%d's attempts has been updated to %d", id, attemptsCount));
+        } catch (AuthorizationException e) {
+            return ResponseUtil.authorizationExceptionMessage(e.getMessage());
+        } catch (DemonDoesntExistException e) {
+            return ResponseUtil.demonDoesntExistMessage();
+        }
+    }
+
+    @PatchMapping("/update-difficulty")
+    public ResponseEntity<String> updateDifficulty(@RequestParam long id,
+                                                   @RequestParam Difficulty difficulty,
+                                                   @AuthenticationPrincipal UserDetails userDetails) {
+        log.info("Updating demon #{} difficulty to {}", id, difficulty);
+
+        try {
+            demonService.updateDemonDifficulty(id, difficulty, userDetails);
+            return ResponseEntity.ok(String.format("Demon #%d's difficulty has been updated to %s", id, difficulty));
         } catch (AuthorizationException e) {
             return ResponseUtil.authorizationExceptionMessage(e.getMessage());
         } catch (DemonDoesntExistException e) {

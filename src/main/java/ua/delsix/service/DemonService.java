@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.delsix.dto.DemonDto;
+import ua.delsix.enums.Difficulty;
 import ua.delsix.exception.*;
 import ua.delsix.jpa.entity.Demon;
 import ua.delsix.jpa.entity.Demonlist;
@@ -13,7 +14,6 @@ import ua.delsix.jpa.entity.Person;
 import ua.delsix.jpa.repository.DemonRepository;
 import ua.delsix.mapper.DemonMapper;
 import ua.delsix.util.DemonUtil;
-import ua.delsix.util.DemonlistUtil;
 
 @Service
 @Log4j2
@@ -22,20 +22,17 @@ public class DemonService {
     private final DemonMapper demonMapper;
     private final AuthService authService;
     private final PersonService personService;
-    private final DemonlistUtil demonlistUtil;
     private final DemonUtil demonUtil;
 
     public DemonService(AuthService authService,
                         DemonRepository demonRepository,
                         DemonMapper demonMapper,
                         PersonService personService,
-                        DemonlistUtil demonlistUtil,
                         DemonUtil demonUtil) {
         this.authService = authService;
         this.demonRepository = demonRepository;
         this.demonMapper = demonMapper;
         this.personService = personService;
-        this.demonlistUtil = demonlistUtil;
         this.demonUtil = demonUtil;
     }
 
@@ -207,12 +204,23 @@ public class DemonService {
     @Transactional
     public void updateDemonEnjoymentRating(long id, int enjoymentRating, UserDetails userDetails) throws
             DemonDoesntExistException,
-            AuthorizationException{
+            AuthorizationException {
         Demon demon = demonUtil.getDemonThrowIfDoesntExist(id);
         Person person = personService.getUserFromUserDetails(userDetails);
         authService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), person);
 
         demonRepository.updateEnjoymentRatingById(id, enjoymentRating);
+    }
+
+    @Transactional
+    public void updateDemonDifficulty(long id, Difficulty difficulty, UserDetails userDetails) throws
+            DemonDoesntExistException,
+            AuthorizationException {
+        Demon demon = demonUtil.getDemonThrowIfDoesntExist(id);
+        Person person = personService.getUserFromUserDetails(userDetails);
+        authService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), person);
+
+        demonRepository.updateDifficultyById(id, difficulty);
     }
 
     public void deleteDemonsBy(Demonlist demonlist) {
