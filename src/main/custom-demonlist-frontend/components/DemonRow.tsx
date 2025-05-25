@@ -44,6 +44,11 @@ export default function DemonRow({
 
     console.log("DEMONROW ID: ", demon.id);
 
+    const DIFFICULTIES = [
+        'N/A', 'AUTO', 'EASY', 'NORMAL', 'HARD', 'HARDER', 'INSANE',
+        'EASY_DEMON', 'MEDIUM_DEMON', 'HARD_DEMON', 'INSANE_DEMON', 'EXTREME_DEMON'
+    ];
+
     const ref = useRef<HTMLTableRowElement>(null);
     const [, drag] = useDrag(() => ({
         type: "ROW",
@@ -83,7 +88,7 @@ export default function DemonRow({
         <tr
             ref={ref}
             key={demon.id}>
-            {['delete', 'placement', 'name', 'author', 'attemptsCount', 'enjoymentRating']
+            {['delete', 'placement', 'name', 'author', 'difficulty', 'attemptsCount', 'enjoymentRating']
                 .map((fieldName) => (
                     <td
                         onDoubleClick={() => handleDoubleClick(demon, fieldName)}
@@ -102,6 +107,12 @@ export default function DemonRow({
                                         onDelete={handleDeleteDemon}
                                         label="X"
                                     />
+                                ) : fieldName === "difficulty" ? (
+                                    <select>
+                                        {DIFFICULTIES.map((diff) => (
+                                            <option key={diff} value={diff}>{diff}</option>
+                                        ))}
+                                    </select>
                                 ) :
                                 demon[fieldName as keyof Demon]}
                     </td>

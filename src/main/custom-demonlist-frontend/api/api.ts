@@ -280,6 +280,27 @@ export async function updateDemonPosition(id: number,
     }
 }
 
+export async function updateDemonDifficulty(id: number,
+                                          difficulty: number,
+                                          accessToken: string) {
+    try {
+        const response = await api.patch(
+            'demons/update-difficulty',
+            null,
+            {
+                params: {id: id, difficulty: difficulty},
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                }
+            }
+        );
+
+        return response.data;
+    } catch (error) {
+        console.error('Error updating position', error);
+    }
+}
+
 export async function deleteDemonlist(id: number,
                                       accessToken: string) {
     try {

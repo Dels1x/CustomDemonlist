@@ -65,6 +65,13 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons}) => {
                 await updateDemonEnjoyment(demon.id, data, accessToken);
                 demon.enjoymentRating = Number(data);
                 break;
+            case "difficulty":
+                if (data === '') {
+                    break;
+                }
+
+
+                break;
             default:
                 console.error("Unknown field: ", fieldName);
         }
@@ -136,6 +143,7 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons}) => {
                 <td>#</td>
                 <td>Name</td>
                 <td>Author</td>
+                <td>Difficulty</td>
                 <td>Attempts</td>
                 <td>Enjoyment</td>
             </tr>
