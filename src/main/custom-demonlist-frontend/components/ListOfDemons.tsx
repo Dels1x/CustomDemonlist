@@ -71,6 +71,7 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons}) => {
                     break;
                 }
 
+                demon.difficulty = valueToUse;
                 await updateDemonDifficulty(demon.id, valueToUse, accessToken);
                 break;
             default:
@@ -97,7 +98,6 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons}) => {
     }
 
     const handleSelectDifficultyChange = (e: React.ChangeEvent<HTMLSelectElement>, demon: Demon) => {
-
         handleBlur(demon, "difficulty", e.target.value);
     }
 

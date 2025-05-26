@@ -38,6 +38,7 @@ export default function DemonRow({
     const demon = demons.find(d => d.placement === demonPlacement + 1);
 
     console.log("DEMONROW demonId: ", demonPlacement);
+    console.log("The demon: ", demon);
 
     if (!demon) {
         console.log("Demon is undefined");
