@@ -37,40 +37,41 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons}) => {
         setEditing({id: demon.id, field: fieldName})
     }
 
-    const updateDemon = async (demon: Demon, fieldName: string) => {
-        console.log("DATA: ", data);
+    const updateDemon = async (demon: Demon, fieldName: string, newValue?: string) => {
+        const valueToUse = newValue ?? data;
+        console.log("valueToUse: ", valueToUse);
 
         switch (fieldName) {
             case "name":
-                await updateDemonName(demon.id, data, accessToken);
-                demon.name = data;
+                await updateDemonName(demon.id, valueToUse, accessToken);
+                demon.name = valueToUse;
                 break;
             case "author":
-                await updateDemonAuthor(demon.id, data, accessToken);
-                demon.author = data;
+                await updateDemonAuthor(demon.id, valueToUse, accessToken);
+                demon.author = valueToUse;
                 break;
             case "attemptsCount":
-                if (data === '') {
+                if (valueToUse === '') {
                     break;
                 }
 
-                await updateDemonAttempts(demon.id, data, accessToken);
-                demon.attemptsCount = Number(data);
+                await updateDemonAttempts(demon.id, valueToUse, accessToken);
+                demon.attemptsCount = Number(valueToUse);
                 break;
             case "enjoymentRating":
-                if (data === '') {
+                if (valueToUse === '') {
                     break;
                 }
 
-                await updateDemonEnjoyment(demon.id, data, accessToken);
-                demon.enjoymentRating = Number(data);
+                await updateDemonEnjoyment(demon.id, valueToUse, accessToken);
+                demon.enjoymentRating = Number(valueToUse);
                 break;
             case "difficulty":
-                if (data === '') {
+                if (valueToUse === '') {
                     break;
                 }
 
-                await updateDemonDifficulty(demon.id, data, accessToken);
+                await updateDemonDifficulty(demon.id, valueToUse, accessToken);
                 break;
             default:
                 console.error("Unknown field: ", fieldName);
@@ -95,12 +96,13 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons}) => {
         }
     }
 
-    const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setData(e.target.value);
+    const handleSelectDifficultyChange = (e: React.ChangeEvent<HTMLSelectElement>, demon: Demon) => {
+
+        handleBlur(demon, "difficulty", e.target.value);
     }
 
-    const handleBlur = async (demon: Demon, fieldName: string)=> {
-        await updateDemon(demon, fieldName);
+    const handleBlur = async (demon: Demon, fieldName: string, newValue?: string) => {
+        await updateDemon(demon, fieldName, newValue);
         setEditing({id: null, field: null});
     }
 
@@ -116,9 +118,9 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons}) => {
         await updateDemonPosition(id, target, accessToken);
     }
 
-     function rearrangeDemonlist(current: number, target: number) {
+    function rearrangeDemonlist(current: number, target: number) {
         setDemons((prevDemons) => {
-            const newDemons = [...prevDemons.map(d => ({ ...d }))];
+            const newDemons = [...prevDemons.map(d => ({...d}))];
             const demon = newDemons.find(d => d.placement === current);
             if (!demon) return prevDemons;
 
@@ -133,7 +135,7 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons}) => {
         });
     }
 
-     function deleteDemonLocally(targetId: number) {
+    function deleteDemonLocally(targetId: number) {
         setDemons((prevDemons) => {
             return prevDemons.filter(demon => demon.id !== targetId);
         })
@@ -157,7 +159,7 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons}) => {
                     demons={demons}
                     handleDoubleClick={handleDoubleClick}
                     handleChange={handleChange}
-                    handleSelectChange={handleSelectChange}
+                    handleSelectChange={handleSelectDifficultyChange}
                     handleBlur={handleBlur}
                     handleKeyDown={handleKeyDown}
                     editing={editing}
