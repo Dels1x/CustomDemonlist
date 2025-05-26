@@ -10,6 +10,7 @@ interface DemonRowProps {
     demons: Demon[],
     handleDoubleClick: (demon: Demon, fieldName: string) => void,
     handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
+    handleSelectChange: (e: React.ChangeEvent<HTMLSelectElement>) => void,
     handleBlur: (demon: Demon, fieldName: string) => void,
     handleKeyDown: (demon: Demon, fieldName: string, e: React.KeyboardEvent<HTMLInputElement>) => void,
     editing: { id: number | null, field: string | null },
@@ -24,6 +25,7 @@ export default function DemonRow({
                                      demons,
                                      handleDoubleClick,
                                      handleChange,
+                                     handleSelectChange,
                                      handleBlur,
                                      handleKeyDown,
                                      editing,
@@ -45,8 +47,8 @@ export default function DemonRow({
     console.log("DEMONROW ID: ", demon.id);
 
     const DIFFICULTIES = [
-        'N/A', 'AUTO', 'EASY', 'NORMAL', 'HARD', 'HARDER', 'INSANE',
-        'EASY_DEMON', 'MEDIUM_DEMON', 'HARD_DEMON', 'INSANE_DEMON', 'EXTREME_DEMON'
+        'N/A', 'EXTREME_DEMON', 'INSANE_DEMON', 'HARD_DEMON', 'MEDIUM_DEMON', 'EASY_DEMON',
+        'INSANE', 'HARDER', 'HARD', 'NORMAL', 'EASY', 'AUTO'
     ];
 
     const ref = useRef<HTMLTableRowElement>(null);
@@ -103,12 +105,16 @@ export default function DemonRow({
                                 value={data}
                             />)
                             : fieldName === "delete" ? (
-                                    <DeleteButton
-                                        onDelete={handleDeleteDemon}
-                                        label="X"
-                                    />
-                                ) : fieldName === "difficulty" ? (
-                                    <select>
+                                <DeleteButton
+                                    onDelete={handleDeleteDemon}
+                                    label="X"
+                                />
+                            ) : fieldName === "difficulty" ? (
+                                    <select
+                                        value={demon.difficulty ? demon.difficulty : "N/A"}
+                                        onChange={handleSelectChange}
+                                        onBlur={() => handleBlur(demon, fieldName)}
+                                    >
                                         {DIFFICULTIES.map((diff) => (
                                             <option key={diff} value={diff}>{diff}</option>
                                         ))}

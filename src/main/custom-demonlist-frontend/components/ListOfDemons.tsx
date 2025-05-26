@@ -2,7 +2,7 @@ import {Demon} from "@/lib/models";
 import React, {useState} from "react";
 import {
     updateDemonAttempts,
-    updateDemonAuthor,
+    updateDemonAuthor, updateDemonDifficulty,
     updateDemonEnjoyment,
     updateDemonName,
     updateDemonPosition
@@ -70,7 +70,7 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons}) => {
                     break;
                 }
 
-
+                await updateDemonDifficulty(demon.id, data, accessToken);
                 break;
             default:
                 console.error("Unknown field: ", fieldName);
@@ -93,6 +93,10 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons}) => {
         } else {
             setData(value);
         }
+    }
+
+    const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setData(e.target.value);
     }
 
     const handleBlur = async (demon: Demon, fieldName: string)=> {
@@ -153,6 +157,7 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons}) => {
                     demons={demons}
                     handleDoubleClick={handleDoubleClick}
                     handleChange={handleChange}
+                    handleSelectChange={handleSelectChange}
                     handleBlur={handleBlur}
                     handleKeyDown={handleKeyDown}
                     editing={editing}

@@ -281,8 +281,9 @@ export async function updateDemonPosition(id: number,
 }
 
 export async function updateDemonDifficulty(id: number,
-                                          difficulty: number,
+                                          difficulty: string,
                                           accessToken: string) {
+    console.log("sending request to update difficulty to: ", difficulty);
     try {
         const response = await api.patch(
             'demons/update-difficulty',
