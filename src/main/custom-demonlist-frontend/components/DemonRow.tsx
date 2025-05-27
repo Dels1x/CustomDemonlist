@@ -4,13 +4,14 @@ import React, {useRef} from "react";
 import {useAuthContext} from "@/context/AuthContext";
 import {deleteDemon} from "@/api/api";
 import DeleteButton from "@/components/DeleteButton";
+import DropdownWithImages from "@/components/DropdownWithImages";
 
 interface DemonRowProps {
     demonPlacement: number,
     demons: Demon[],
     handleDoubleClick: (demon: Demon, fieldName: string) => void,
     handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
-    handleSelectChange: (e: React.ChangeEvent<HTMLSelectElement>, demon: Demon) => void,
+    handleSelectChange: (newDiff: string, demon: Demon) => void,
     handleBlur: (demon: Demon, fieldName: string) => void,
     handleKeyDown: (demon: Demon, fieldName: string, e: React.KeyboardEvent<HTMLInputElement>) => void,
     editing: { id: number | null, field: string | null },
@@ -111,15 +112,11 @@ export default function DemonRow({
                                     label="X"
                                 />
                             ) : fieldName === "difficulty" ? (
-                                    <select
-                                        value={demon.difficulty ? demon.difficulty : "N/A"}
-                                        onChange={(e) =>
-                                            handleSelectChange(e, demon)}
-                                    >
-                                        {DIFFICULTIES.map((diff) => (
-                                            <option key={diff} value={diff}>{diff}</option>
-                                        ))}
-                                    </select>
+                                    <DropdownWithImages
+                                        options={DIFFICULTIES}
+                                        selected={demon.difficulty ? demon.difficulty : "N/A"}
+                                        onSelect={(newDiff) => handleSelectChange(newDiff, demon)}
+                                    />
                                 ) :
                                 demon[fieldName as keyof Demon]}
                     </td>

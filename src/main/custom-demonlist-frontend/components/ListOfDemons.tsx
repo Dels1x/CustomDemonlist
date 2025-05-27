@@ -97,8 +97,8 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons}) => {
         }
     }
 
-    const handleSelectDifficultyChange = (e: React.ChangeEvent<HTMLSelectElement>, demon: Demon) => {
-        handleBlur(demon, "difficulty", e.target.value);
+    const handleSelectDifficultyChange = (newDiff: string, demon: Demon) => {
+        handleBlur(demon, "difficulty", newDiff);
     }
 
     const handleBlur = async (demon: Demon, fieldName: string, newValue?: string) => {

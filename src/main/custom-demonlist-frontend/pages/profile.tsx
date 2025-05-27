@@ -1,7 +1,6 @@
 import {useAuthContext} from "@/context/AuthContext";
 import Layout from "@/layout/Layout";
 import {extractFromAccessToken, getAccessTokenAndRefreshToken} from "@/api/auth";
-import Test from "@/components/Test";
 
 interface ProfileProps {
 
@@ -14,7 +13,6 @@ const Profile: React.FC<ProfileProps> =({}) => {
     return (
         <Layout>
             Hello, #{user?.sub} - {user?.username}!
-            <Test />
         </Layout>
     );
 };
