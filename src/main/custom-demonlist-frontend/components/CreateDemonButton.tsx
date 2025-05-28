@@ -24,7 +24,7 @@ const CreateDemonlistButton: React.FC<CreateDemonlistButtonProps> = ({demonlistI
 
     return (
         <div>
-            <button onClick={handleClick}>
+            <button onClick={handleClick} className='flex items-center gap-1.5'>
                 <Image
                     src={"/addplus.svg"}
                     alt={"Create"}
