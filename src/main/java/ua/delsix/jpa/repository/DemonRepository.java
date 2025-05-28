@@ -15,17 +15,26 @@ public interface DemonRepository extends JpaRepository<Demon, Long> {
 
     @Modifying
     @Transactional
-    @Query("UPDATE Demon d SET d.placement = d.placement + 1 WHERE d.placement >= :placement AND d.demonlist.id = :demonlistId")
+    @Query("UPDATE Demon d SET d.placement = d.placement + 1 WHERE d.placement >= :placement " +
+            "AND d.demonlist.id = :demonlistId")
     void incrementPlacements(int placement, long demonlistId);
 
     @Modifying
     @Transactional
-    @Query("UPDATE Demon d SET d.placement = d.placement + 1 WHERE d.placement >= :low AND d.placement < :high AND d.demonlist.id = :demonlistId")
+    @Query("UPDATE Demon d SET d.placement = d.placement + 1 WHERE d.placement >= :low " +
+            "AND d.placement < :high AND d.demonlist.id = :demonlistId")
     void incrementPlacementsBetween(int low, int high, long demonlistId);
 
     @Modifying
     @Transactional
-    @Query("UPDATE Demon d SET d.placement = d.placement - 1 WHERE d.placement > :low AND d.placement <= :high AND d.demonlist.id = :demonlistId")
+    @Query("UPDATE Demon d SET d.placement = d.placement - 1 WHERE d.placement >= :placement " +
+            "AND d.demonlist.id = :demonlistId")
+    void decrementPlacementsBelow(int placement, long demonlistId);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Demon d SET d.placement = d.placement - 1 WHERE d.placement > :low " +
+            "AND d.placement <= :high AND d.demonlist.id = :demonlistId")
     void decrementPlacementsBetween(int low, int high, long demonlistId);
 
     boolean existsByPlacementAndDemonlistId(int placement, long demonlistId);

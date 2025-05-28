@@ -100,6 +100,10 @@ public class DemonService {
         demonRepository.flush();
     }
 
+    private void decrementPlacementsBelow(int deletedPos, long demonlistId) {
+        demonRepository.decrementPlacementsBelow(deletedPos, demonlistId);
+    }
+
     @Transactional
     public void updateDemon(long id, DemonDto dto, UserDetails userDetails) throws
             EntityNotFoundException,
@@ -138,9 +142,11 @@ public class DemonService {
     public void deleteDemon(long id, UserDetails userDetails) throws AuthorizationException,
             DemonlistDoesntExistException {
         Person person = personService.getUserFromUserDetails(userDetails);
-        log.info(getDemonById(id));
+        Demon demon = getDemonById(id);
+        log.info("Demon: {}", demon);
 
         demonRepository.deleteById(id);
+        decrementPlacementsBelow(demon.getPlacement(), demon.getDemonlist().getId());
         log.info("Demon #{} of user {} has been deleted", id, person.getUsername());
     }
 
