@@ -9,6 +9,7 @@ import DemonlistManager from "@/components/DemonlistManager";
 import {useDemonlistContext} from "@/context/DemonlistContext";
 import DeleteButton from "@/components/DeleteButton";
 import {useRouter} from "next/router";
+import styles from "@/styles/Demonlist.module.css"
 
 interface DemonlistProps {
     demonlist: any;
@@ -65,7 +66,7 @@ const DemonlistPage: React.FC<DemonlistProps> = ({demonlist, accessToken}) => {
     return (
         <Layout>
             <main>
-                <div>
+                <div className={styles.demonlist}>
                     {
                         isEditing ?
                             (
