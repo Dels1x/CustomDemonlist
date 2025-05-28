@@ -139,6 +139,7 @@ public class DemonService {
         return demonRepository.countByDemonlistId(id);
     }
 
+    @Transactional
     public void deleteDemon(long id, UserDetails userDetails) throws AuthorizationException,
             DemonlistDoesntExistException {
         Person person = personService.getUserFromUserDetails(userDetails);
