@@ -18,7 +18,7 @@ interface DemonRowProps {
     data: string,
     rearrangeDemonlistRequest: (id: number, target: number) => void,
     rearrangeDemonlist: (current: number, target: number) => void,
-    deleteDemonLocally: (targetId: number) => void
+    deleteDemonLocally: (targetDemon: Demon) => void
 }
 
 export default function DemonRow({
@@ -73,7 +73,7 @@ export default function DemonRow({
         console.log('demon', demon);
 
         await deleteDemon(demon.id, accessToken)
-        deleteDemonLocally(demon.id);
+        deleteDemonLocally(demon);
     }
 
     const [, drop] = useDrop({

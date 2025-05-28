@@ -135,9 +135,17 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons}) => {
         });
     }
 
-    function deleteDemonLocally(targetId: number) {
+    function deleteDemonLocally(targetDemon: Demon) {
+        const targetId = targetDemon.id;
+        const targetPlacement = targetDemon.placement;
+
         setDemons((prevDemons) => {
-            return prevDemons.filter(demon => demon.id !== targetId);
+            return prevDemons
+                .filter(demon => demon.id !== targetId)
+                .map(demon => ({
+                    ...demon,
+                    placement: demon.placement > targetPlacement ? demon.placement - 1 : demon.placement
+                }));
         })
     }
 
