@@ -27,7 +27,7 @@ export default function DropdownWithImages({options, selected, onSelect}: Dropdo
         <div className="relative inline-block w-40" ref={dropdownRef}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="w-full flex items-center justify-between border px-2 py-1 bg-white hover:bg-gray-100"
+                className="w-full flex items-center justify-between border px-2 py-1 bg-black hover:bg-gray-700"
             >
                 <div className="flex items-center gap-2">
                     <Image
@@ -42,7 +42,7 @@ export default function DropdownWithImages({options, selected, onSelect}: Dropdo
             </button>
 
             {isOpen && (
-                <div className="absolute left-0 z-50 w-full bg-white border mt-1 shadow-md">
+                <div className="absolute left-0 z-50 w-full bg-black border mt-1 shadow-md">
                     {options.map((opt) => (
                         <div
                             key={opt}
@@ -50,7 +50,7 @@ export default function DropdownWithImages({options, selected, onSelect}: Dropdo
                                 onSelect(opt);
                                 setIsOpen(false);
                             }}
-                            className="flex items-center gap-2 px-2 py-1 hover:bg-gray-100 cursor-pointer"
+                            className="flex items-center gap-2 px-2 py-1 hover:bg-gray-700 cursor-pointer"
                         >
                             <Image
                                 src={`/difficulty/${opt === "N/A" ? "N-A" : opt}.webp`}
