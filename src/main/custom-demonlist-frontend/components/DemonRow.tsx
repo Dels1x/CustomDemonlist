@@ -96,34 +96,38 @@ export default function DemonRow({
             ref={ref}
             key={demon.id}>
             {['delete', 'placement', 'name', 'author', 'difficulty', 'attemptsCount', 'enjoymentRating']
-                .map((fieldName) => (
-                    <td
-                        onDoubleClick={() => handleDoubleClick(demon, fieldName)}
-                    >
-                        {editing.id === demon.id && editing.field === fieldName ?
-                            (<input
-                                type="text"
-                                onChange={handleChange}
-                                onBlur={() => handleBlur(demon, fieldName)}
-                                onKeyDown={(e) => handleKeyDown(demon, fieldName, e)}
-                                autoFocus
-                                value={data}
-                            />)
-                            : fieldName === "delete" ? (
-                                <DeleteButton
-                                    onDelete={handleDeleteDemon}
-                                    label="X"
-                                />
-                            ) : fieldName === "difficulty" ? (
-                                    <DropdownWithImages
-                                        options={DIFFICULTIES}
-                                        selected={demon.difficulty ? demon.difficulty : "N/A"}
-                                        onSelect={(newDiff) => handleSelectChange(newDiff, demon)}
+                .map((fieldName) => {
+                    const isEditable = ['name', 'author', 'attemptsCount', 'enjoymentRating'].includes(fieldName);
+
+                    return (
+                        <td
+                            onDoubleClick={isEditable ? () => handleDoubleClick(demon, fieldName) : undefined}
+                        >
+                            {editing.id === demon.id && editing.field === fieldName ?
+                                (<input
+                                    type="text"
+                                    onChange={handleChange}
+                                    onBlur={() => handleBlur(demon, fieldName)}
+                                    onKeyDown={(e) => handleKeyDown(demon, fieldName, e)}
+                                    autoFocus
+                                    value={data}
+                                />)
+                                : fieldName === "delete" ? (
+                                    <DeleteButton
+                                        onDelete={handleDeleteDemon}
+                                        label="X"
                                     />
-                                ) :
-                                demon[fieldName as keyof Demon]}
-                    </td>
-                ))}
+                                ) : fieldName === "difficulty" ? (
+                                        <DropdownWithImages
+                                            options={DIFFICULTIES}
+                                            selected={demon.difficulty ? demon.difficulty : "N/A"}
+                                            onSelect={(newDiff) => handleSelectChange(newDiff, demon)}
+                                        />
+                                    ) :
+                                    demon[fieldName as keyof Demon]}
+                        </td>
+                    )
+                })}
         </tr>
     )
 }
