@@ -37,7 +37,7 @@ export default function DropdownWithImages({options, selected, onSelect}: Dropdo
                         width={20}
                         height={20}
                     />
-                    <span className="text-sm">{selected}</span>
+                    <span className="text-sm">{DIFFICULTY_MAP.get(selected)}</span>
                 </div>
                 <span>▼</span>
             </button>
