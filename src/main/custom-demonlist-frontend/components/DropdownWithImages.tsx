@@ -2,6 +2,7 @@
 
 import {useEffect, useRef, useState} from "react";
 import Image from "next/image";
+import {DIFFICULTY_MAP} from "@/constants/difficultyMap";
 
 interface DropdownWithImagesProps {
     options: string[],
@@ -58,7 +59,7 @@ export default function DropdownWithImages({options, selected, onSelect}: Dropdo
                                 width={20}
                                 height={20}
                             />
-                            <span className="text-sm">{opt}</span>
+                            <span className="text-sm">{DIFFICULTY_MAP.get(opt)}</span>
                         </div>
                     ))}
                 </div>
