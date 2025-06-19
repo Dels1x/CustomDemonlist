@@ -302,6 +302,28 @@ export async function updateDemonDifficulty(id: number,
     }
 }
 
+export async function updateDemonDateOfCompletion(id: number,
+                                                  date: Date,
+                                                  accessToken: string) {
+    console.log("sending request to update date of completion to: ", date);
+    try {
+        const response = await api.patch(
+            'demons/update-completion-date',
+            null,
+            {
+                params: {id: id, date: date},
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                }
+            }
+        );
+
+        return response.data;
+    } catch (error) {
+        console.error('Error updating position', error);
+    }
+}
+
 export async function deleteDemonlist(id: number,
                                       accessToken: string) {
     try {
