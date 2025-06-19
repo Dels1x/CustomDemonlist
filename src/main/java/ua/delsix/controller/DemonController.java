@@ -14,6 +14,8 @@ import ua.delsix.service.DemonService;
 import ua.delsix.util.DemonlistUtil;
 import ua.delsix.util.ResponseUtil;
 
+import java.time.LocalDate;
+
 @RestController
 @RequestMapping("/demons")
 @Log4j2
@@ -168,7 +170,23 @@ public class DemonController {
 
         try {
             demonService.updateDemonEnjoymentRating(id, enjoyment, userDetails);
-            return ResponseEntity.ok(String.format("Demon #%d's enjoyment rating have been updated to %d", id, enjoyment));
+            return ResponseEntity.ok(String.format("Demon #%d's enjoyment rating has been updated to %d", id, enjoyment));
+        } catch (AuthorizationException e) {
+            return ResponseUtil.authorizationExceptionMessage(e.getMessage());
+        } catch (DemonDoesntExistException e) {
+            return ResponseUtil.demonDoesntExistMessage();
+        }
+    }
+
+    @PatchMapping("/update-dateOfCompletion")
+    public ResponseEntity<String> updateDateOfCompletion(@RequestParam long id,
+                                                         @RequestParam LocalDate date,
+                                                         @AuthenticationPrincipal UserDetails userDetails) {
+        log.info("Updating demon #{} date of completion to {}", id, date);
+
+        try {
+            demonService.updateDemonDateOfCompletion(id, date, userDetails);
+            return ResponseEntity.ok(String.format("Demon #%d's date of completion has been updated to %s", id, date));
         } catch (AuthorizationException e) {
             return ResponseUtil.authorizationExceptionMessage(e.getMessage());
         } catch (DemonDoesntExistException e) {

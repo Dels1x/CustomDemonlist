@@ -9,6 +9,8 @@ import ua.delsix.enums.Difficulty;
 import ua.delsix.jpa.entity.Demon;
 import ua.delsix.jpa.entity.Demonlist;
 
+import java.time.LocalDate;
+
 @Repository
 public interface DemonRepository extends JpaRepository<Demon, Long> {
     int countByDemonlistId(long demonlistId);
@@ -72,6 +74,11 @@ public interface DemonRepository extends JpaRepository<Demon, Long> {
     @Transactional
     @Query("UPDATE Demon d SET d.difficulty = :difficulty WHERE d.id = :id")
     void updateDifficultyById(long id, Difficulty difficulty);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Demon d SET d.dateOfCompletion = :date WHERE d.id = :id")
+    void updateDateOfCompletionById(long id, LocalDate date);
 
     @Modifying
     @Transactional

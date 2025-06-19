@@ -15,6 +15,8 @@ import ua.delsix.jpa.repository.DemonRepository;
 import ua.delsix.mapper.DemonMapper;
 import ua.delsix.util.DemonUtil;
 
+import java.time.LocalDate;
+
 @Service
 @Log4j2
 public class DemonService {
@@ -228,6 +230,17 @@ public class DemonService {
         authService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), person);
 
         demonRepository.updateDifficultyById(id, difficulty);
+    }
+
+    @Transactional
+    public void updateDemonDateOfCompletion(long id, LocalDate date, UserDetails userDetails) throws
+            DemonDoesntExistException,
+            AuthorizationException{
+        Demon demon = demonUtil.getDemonThrowIfDoesntExist(id);
+        Person person = personService.getUserFromUserDetails(userDetails);
+        authService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), person);
+
+        demonRepository.updateDateOfCompletionById(id, date);
     }
 
     public void deleteDemonsBy(Demonlist demonlist) {
