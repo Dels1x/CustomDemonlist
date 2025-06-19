@@ -178,10 +178,10 @@ public class DemonController {
         }
     }
 
-    @PatchMapping("/update-dateOfCompletion")
-    public ResponseEntity<String> updateDateOfCompletion(@RequestParam long id,
-                                                         @RequestParam LocalDate date,
-                                                         @AuthenticationPrincipal UserDetails userDetails) {
+    @PatchMapping("/update-completion-date")
+    public ResponseEntity<String> updateCompletionDate(@RequestParam long id,
+                                                       @RequestParam LocalDate date,
+                                                       @AuthenticationPrincipal UserDetails userDetails) {
         log.info("Updating demon #{} date of completion to {}", id, date);
 
         try {
