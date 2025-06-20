@@ -303,7 +303,7 @@ export async function updateDemonDifficulty(id: number,
 }
 
 export async function updateDemonDateOfCompletion(id: number,
-                                                  date: Date,
+                                                  date: string,
                                                   accessToken: string) {
     console.log("sending request to update date of completion to: ", date);
     try {

@@ -1,8 +1,8 @@
 import {Demon} from "@/lib/models";
 import {useDrag, useDrop} from "react-dnd";
-import React, {useRef} from "react";
+import React, {ChangeEvent, useRef} from "react";
 import {useAuthContext} from "@/context/AuthContext";
-import {deleteDemon} from "@/api/api";
+import {deleteDemon, updateDemonDateOfCompletion} from "@/api/api";
 import DeleteButton from "@/components/DeleteButton";
 import DropdownWithImages from "@/components/DropdownWithImages";
 
@@ -76,6 +76,16 @@ export default function DemonRow({
         deleteDemonLocally(demon);
     }
 
+    const handleUpdateCompletionDate = async (e: ChangeEvent<HTMLInputElement>) => {
+        if (!accessToken) {
+            console.error("accessToken is missing", e);
+            return;
+        }
+
+        await updateDemonDateOfCompletion(demon.id, e.target.value, accessToken);
+        demon.completionDate = e.target.value;
+    }
+
     const [, drop] = useDrop({
         accept: "ROW",
         drop: (dragged: { id: number, placement: number }) => {
@@ -95,7 +105,7 @@ export default function DemonRow({
         <tr
             ref={ref}
             key={demon.id}>
-            {['delete', 'placement', 'name', 'author', 'difficulty', 'attemptsCount', 'enjoymentRating']
+            {['delete', 'placement', 'name', 'author', 'difficulty', 'attemptsCount', 'enjoymentRating', 'completionDate']
                 .map((fieldName) => {
                     const isEditable = ['name', 'author', 'attemptsCount', 'enjoymentRating'].includes(fieldName);
 
@@ -122,6 +132,12 @@ export default function DemonRow({
                                             options={DIFFICULTIES}
                                             selected={demon.difficulty ? demon.difficulty : "N/A"}
                                             onSelect={(newDiff) => handleSelectChange(newDiff, demon)}
+                                        />
+                                    ) : fieldName === "completionDate" ? (
+                                        <input
+                                            type="date"
+                                            value={demon.completionDate ?? ''}
+                                            onChange={(e) => handleUpdateCompletionDate(e)}
                                         />
                                     ) :
                                     demon[fieldName as keyof Demon]}
