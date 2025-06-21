@@ -5,6 +5,7 @@ import {useAuthContext} from "@/context/AuthContext";
 import {deleteDemon, updateDemonDateOfCompletion} from "@/api/api";
 import DeleteButton from "@/components/DeleteButton";
 import DropdownWithImages from "@/components/DropdownWithImages";
+import CompletionDateInput from "@/components/CompletionDateInput";
 
 interface DemonRowProps {
     demonPlacement: number,
@@ -134,10 +135,9 @@ export default function DemonRow({
                                             onSelect={(newDiff) => handleSelectChange(newDiff, demon)}
                                         />
                                     ) : fieldName === "completionDate" ? (
-                                        <input
-                                            type="date"
-                                            value={demon.completionDate ?? ''}
-                                            onChange={(e) => handleUpdateCompletionDate(e)}
+                                        <CompletionDateInput
+                                            selectedDate={demon.completionDate}
+                                            onInput={handleUpdateCompletionDate}
                                         />
                                     ) :
                                     demon[fieldName as keyof Demon]}
