@@ -1,8 +1,8 @@
 import {Demon} from "@/lib/models";
-import React, {useState} from "react";
+import React, {ChangeEvent, useState} from "react";
 import {
     updateDemonAttempts,
-    updateDemonAuthor, updateDemonDifficulty,
+    updateDemonAuthor, updateDemonDateOfCompletion, updateDemonDifficulty,
     updateDemonEnjoyment,
     updateDemonName,
     updateDemonPosition
@@ -71,8 +71,16 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons}) => {
                     break;
                 }
 
-                demon.difficulty = valueToUse;
                 await updateDemonDifficulty(demon.id, valueToUse, accessToken);
+                demon.difficulty = valueToUse;
+                break;
+            case "dateOfCompletion":
+                if (valueToUse === '') {
+                    break;
+                }
+
+                await updateDemonDateOfCompletion(demon.id, valueToUse, accessToken);
+                demon.dateOfCompletion = valueToUse;
                 break;
             default:
                 console.error("Unknown field: ", fieldName);
@@ -99,6 +107,17 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons}) => {
 
     const handleSelectDifficultyChange = (newDiff: string, demon: Demon) => {
         handleBlur(demon, "difficulty", newDiff);
+    }
+
+    const handleUpdateCompletionDate = async (e: ChangeEvent<HTMLInputElement>,
+                                              demon: Demon,
+                                              fieldName: string) => {
+        if (!accessToken) {
+            console.error("accessToken is missing", e);
+            return;
+        }
+
+        await handleBlur(demon, fieldName, e.target.value);
     }
 
     const handleBlur = async (demon: Demon, fieldName: string, newValue?: string) => {
@@ -176,6 +195,7 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons}) => {
                     rearrangeDemonlistRequest={rearrangeDemonlistRequest}
                     rearrangeDemonlist={rearrangeDemonlist}
                     deleteDemonLocally={deleteDemonLocally}
+                    handleUpdateCompletionDate={handleUpdateCompletionDate}
                 />
             ))}
             </tbody>

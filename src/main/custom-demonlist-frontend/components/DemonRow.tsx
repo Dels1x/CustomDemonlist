@@ -1,8 +1,8 @@
 import {Demon} from "@/lib/models";
 import {useDrag, useDrop} from "react-dnd";
-import React, {ChangeEvent, useRef} from "react";
+import React, {useRef} from "react";
 import {useAuthContext} from "@/context/AuthContext";
-import {deleteDemon, updateDemonDateOfCompletion} from "@/api/api";
+import {deleteDemon} from "@/api/api";
 import DeleteButton from "@/components/DeleteButton";
 import DropdownWithImages from "@/components/DropdownWithImages";
 import CompletionDateInput from "@/components/CompletionDateInput";
@@ -19,7 +19,8 @@ interface DemonRowProps {
     data: string,
     rearrangeDemonlistRequest: (id: number, target: number) => void,
     rearrangeDemonlist: (current: number, target: number) => void,
-    deleteDemonLocally: (targetDemon: Demon) => void
+    deleteDemonLocally: (targetDemon: Demon) => void,
+    handleUpdateCompletionDate: (e: React.ChangeEvent<HTMLInputElement>, demon: Demon, fieldName: string) => void,
 }
 
 export default function DemonRow({
@@ -34,7 +35,8 @@ export default function DemonRow({
                                      data,
                                      rearrangeDemonlistRequest,
                                      rearrangeDemonlist,
-                                     deleteDemonLocally
+                                     deleteDemonLocally,
+                                     handleUpdateCompletionDate
                                  }: DemonRowProps,) {
     const {accessToken} = useAuthContext()
     const demon = demons.find(d => d.placement === demonPlacement + 1);
@@ -77,16 +79,6 @@ export default function DemonRow({
         deleteDemonLocally(demon);
     }
 
-    const handleUpdateCompletionDate = async (e: ChangeEvent<HTMLInputElement>) => {
-        if (!accessToken) {
-            console.error("accessToken is missing", e);
-            return;
-        }
-
-        await updateDemonDateOfCompletion(demon.id, e.target.value, accessToken);
-        demon.completionDate = e.target.value;
-    }
-
     const [, drop] = useDrop({
         accept: "ROW",
         drop: (dragged: { id: number, placement: number }) => {
@@ -106,7 +98,7 @@ export default function DemonRow({
         <tr
             ref={ref}
             key={demon.id}>
-            {['delete', 'placement', 'name', 'author', 'difficulty', 'attemptsCount', 'enjoymentRating', 'completionDate']
+            {['delete', 'placement', 'name', 'author', 'difficulty', 'attemptsCount', 'enjoymentRating', 'dateOfCompletion']
                 .map((fieldName) => {
                     const isEditable = ['name', 'author', 'attemptsCount', 'enjoymentRating'].includes(fieldName);
 
@@ -134,10 +126,10 @@ export default function DemonRow({
                                             selected={demon.difficulty ? demon.difficulty : "N/A"}
                                             onSelect={(newDiff) => handleSelectChange(newDiff, demon)}
                                         />
-                                    ) : fieldName === "completionDate" ? (
+                                    ) : fieldName === "dateOfCompletion" ? (
                                         <CompletionDateInput
-                                            selectedDate={demon.completionDate}
-                                            onInput={handleUpdateCompletionDate}
+                                            selectedDate={demon.dateOfCompletion}
+                                            onInput={(e) => handleUpdateCompletionDate(e, demon, fieldName)}
                                         />
                                     ) :
                                     demon[fieldName as keyof Demon]}
