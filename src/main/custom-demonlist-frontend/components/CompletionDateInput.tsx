@@ -7,9 +7,35 @@ interface CompletionDateInputProps {
 
 export default function CompletionDateInput({selectedDate, onInput}: CompletionDateInputProps) {
     const hiddenInputRef = useRef<HTMLInputElement>(null);
+
     const displayDate = selectedDate
         ? new Date(selectedDate).toLocaleDateString()
         : "Pick a date";
+
+    function formatDate(dateStr: string) {
+        if (displayDate === "Pick a date") {
+            return displayDate;
+        }
+
+        const [month, day, year] = dateStr.split("/").map(Number);
+        const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August',
+            'September', 'October', 'November', 'December'];
+
+        return `${day}${ordinalSuffix(day)} ${months[month - 1]} ${year}`;
+    }
+
+    function ordinalSuffix(day: number) {
+        if (day > 10 && day < 14) {
+            return 'th';
+        }
+
+        switch (day % 10) {
+            case 1: return 'st';
+            case 2: return 'nd';
+            case 3: return 'rd';
+            default: return 'th';
+        }
+    }
 
     const handleButtonClick = () => {
         console.log("hello from handleButtonClick CompletionDateInput");
@@ -24,7 +50,7 @@ export default function CompletionDateInput({selectedDate, onInput}: CompletionD
             <button
                 onClick={handleButtonClick}
             >
-                {displayDate}
+                {formatDate(displayDate)}
             </button>
             <input
                 ref={hiddenInputRef}
