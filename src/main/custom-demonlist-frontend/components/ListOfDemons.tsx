@@ -95,7 +95,9 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons}) => {
                 const numValue = Number(value);
 
                 if (numValue < MAX_INT) {
-                    setData(value);
+                    if (editing.field === "attemptsCount" || numValue < 101) {
+                        setData(value);
+                    }
                 }
             } else {
                 console.log("Value: ", value);
