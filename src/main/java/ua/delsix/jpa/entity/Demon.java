@@ -46,6 +46,10 @@ public class Demon {
     @JsonView(Views.Public.class)
     private Integer attemptsCount;
 
+    @Column(name = "worst_fail")
+    @JsonView(Views.Public.class)
+    private Integer worstFail;
+
     @Column(name = "enjoyment_rating")
     @JsonView(Views.Public.class)
     private Integer enjoymentRating;

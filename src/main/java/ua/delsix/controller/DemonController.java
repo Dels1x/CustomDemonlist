@@ -194,6 +194,22 @@ public class DemonController {
         }
     }
 
+    @PatchMapping("/update-worst-fail")
+    public ResponseEntity<String> updateWorstFail(@RequestParam long id,
+                                                  @RequestParam int worstFail,
+                                                  @AuthenticationPrincipal UserDetails userDetails) {
+        log.info("Updating demon #{} worst fail to {}", id, worstFail);
+
+        try {
+            demonService.updateWorstFail(id, worstFail, userDetails);
+            return ResponseEntity.ok(String.format("Demon #%d's worst fail has been updated to %s", id, worstFail));
+        } catch (AuthorizationException e) {
+            return ResponseUtil.authorizationExceptionMessage(e.getMessage());
+        } catch (DemonDoesntExistException e) {
+            return ResponseUtil.demonDoesntExistMessage();
+        }
+    }
+
     @GetMapping("/count")
     public ResponseEntity<Integer> countByDemonlist(@RequestParam long demonlistId) {
         int count = demonService.countByDemonlist(demonlistId);

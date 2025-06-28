@@ -235,12 +235,23 @@ public class DemonService {
     @Transactional
     public void updateDemonDateOfCompletion(long id, LocalDate date, UserDetails userDetails) throws
             DemonDoesntExistException,
-            AuthorizationException{
+            AuthorizationException {
         Demon demon = demonUtil.getDemonThrowIfDoesntExist(id);
         Person person = personService.getUserFromUserDetails(userDetails);
         authService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), person);
 
         demonRepository.updateDateOfCompletionById(id, date);
+    }
+
+    @Transactional
+    public void updateWorstFail(long id, int worstFail, UserDetails userDetails) throws
+            DemonDoesntExistException,
+            AuthorizationException {
+        Demon demon = demonUtil.getDemonThrowIfDoesntExist(id);
+        Person person = personService.getUserFromUserDetails(userDetails);
+        authService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), person);
+
+        demonRepository.updateWorstFailById(id, worstFail);
     }
 
     public void deleteDemonsBy(Demonlist demonlist) {

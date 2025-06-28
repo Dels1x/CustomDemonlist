@@ -82,6 +82,11 @@ public interface DemonRepository extends JpaRepository<Demon, Long> {
 
     @Modifying
     @Transactional
+    @Query("UPDATE Demon d SET d.worstFail = :worstFail WHERE d.id = :id")
+    void updateWorstFailById(long id, int worstFail);
+
+    @Modifying
+    @Transactional
     @Query("DELETE FROM Demon d WHERE d.demonlist = :demonlist")
     void deleteByDemonlist(Demonlist demonlist);
 }

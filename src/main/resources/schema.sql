@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS demon (
                                                  'AMBER_DEMON', 'GOLD_DEMON', 'SILVER_DEMON', 'BRONZE_DEMON',
                                                  'BEGINNER_DEMON')),
     date_of_completion DATE,
-    gddp_difficulty VARCHAR(32),
+    worst_fail SMALLINT,
     nlw_tier VARCHAR(32),
     gddl_tier VARCHAR(32),
     aredl_placement INTEGER,
