@@ -324,6 +324,28 @@ export async function updateDemonDateOfCompletion(id: number,
     }
 }
 
+export async function updateDemonWorstFail(id: number,
+                                                  worstFail: number,
+                                                  accessToken: string) {
+    console.log("sending request to update worst fail to: ", worstFail);
+    try {
+        const response = await api.patch(
+            'demons/update-worst-fail',
+            null,
+            {
+                params: {id: id, worstFail: worstFail},
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                }
+            }
+        );
+
+        return response.data;
+    } catch (error) {
+        console.error('Error updating position', error);
+    }
+}
+
 export async function deleteDemonlist(id: number,
                                       accessToken: string) {
     try {
@@ -362,4 +384,3 @@ export async function deleteDemon(demonId: number,
         console.error('Error deleting demonlist', error);
     }
 }
-
