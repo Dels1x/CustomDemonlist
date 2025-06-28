@@ -325,7 +325,7 @@ export async function updateDemonDateOfCompletion(id: number,
 }
 
 export async function updateDemonWorstFail(id: number,
-                                                  worstFail: number,
+                                                  worstFail: string,
                                                   accessToken: string) {
     console.log("sending request to update worst fail to: ", worstFail);
     try {

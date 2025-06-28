@@ -5,7 +5,7 @@ import {
     updateDemonAuthor, updateDemonDateOfCompletion, updateDemonDifficulty,
     updateDemonEnjoyment,
     updateDemonName,
-    updateDemonPosition
+    updateDemonPosition, updateDemonWorstFail
 } from "@/api/api";
 import {useAuthContext} from "@/context/AuthContext";
 import DemonRow from "@/components/DemonRow";
@@ -58,6 +58,14 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons}) => {
                 await updateDemonAttempts(demon.id, valueToUse, accessToken);
                 demon.attemptsCount = Number(valueToUse);
                 break;
+            case "worstFail":
+                if (valueToUse === '') {
+                    break;
+                }
+
+                await updateDemonWorstFail(demon.id, valueToUse, accessToken);
+                demon.worstFail = Number(valueToUse);
+                break;
             case "enjoymentRating":
                 if (valueToUse === '') {
                     break;
@@ -90,7 +98,7 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons}) => {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.currentTarget.value;
 
-        if (editing.field === "attemptsCount" || editing.field === "enjoymentRating") {
+        if (editing.field === "attemptsCount" || editing.field === "enjoymentRating" || editing.field === "worstFail") {
             if (/^\d*$/.test(value)) {
                 const numValue = Number(value);
 
@@ -180,6 +188,7 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons}) => {
                 <td>Author</td>
                 <td>Difficulty</td>
                 <td>Attempts</td>
+                <td>Worst fail</td>
                 <td>Enjoyment</td>
                 <td>Completed at</td>
             </tr>

@@ -98,9 +98,9 @@ export default function DemonRow({
         <tr
             ref={ref}
             key={demon.id}>
-            {['delete', 'placement', 'name', 'author', 'difficulty', 'attemptsCount', 'enjoymentRating', 'dateOfCompletion']
+            {['delete', 'placement', 'name', 'author', 'difficulty', 'attemptsCount', 'worstFail', 'enjoymentRating', 'dateOfCompletion']
                 .map((fieldName) => {
-                    const isEditable = ['name', 'author', 'attemptsCount', 'enjoymentRating'].includes(fieldName);
+                    const isEditable = ['name', 'author', 'attemptsCount', 'worstFail', 'enjoymentRating'].includes(fieldName);
 
                     return (
                         <td

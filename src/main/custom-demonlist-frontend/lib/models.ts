@@ -16,6 +16,7 @@ export interface Demon {
     placement: number;
     initialPlacement?: number | null;
     difficulty?: string | null;
+    worstFail?: number | null;
     dateOfCompletion?: string | null; // ISO date string
     gddpDifficulty?: string | null;
     nlwTier?: string | null;
