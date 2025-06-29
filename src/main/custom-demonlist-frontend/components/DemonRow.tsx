@@ -132,7 +132,8 @@ export default function DemonRow({
                                             onInput={(e) => handleUpdateCompletionDate(e, demon, fieldName)}
                                         />
                                     ) :
-                                    demon[fieldName as keyof Demon]}
+                                    fieldName === "worstFail" && demon[fieldName] ?
+                                        `${demon[fieldName as keyof Demon]}%` : demon[fieldName as keyof Demon]}
                         </td>
                     )
                 })}
