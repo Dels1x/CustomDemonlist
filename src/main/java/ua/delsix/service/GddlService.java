@@ -13,7 +13,7 @@ public class GddlService {
     private final String DEMON_SEARCH_URL = "https://gdladder.com/api/level/search";
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public Object searchLevel(String name, String author) {
+    public JSONObject searchLevel(String name, String author) {
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(DEMON_SEARCH_URL)
                 .queryParam("limit", 10); // default, or you can set to 25
         if (name != null && !name.isEmpty() && !name.startsWith("Demon #")) {
