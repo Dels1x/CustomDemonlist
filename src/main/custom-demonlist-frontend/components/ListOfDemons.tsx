@@ -191,6 +191,8 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons}) => {
                 <td>Worst fail</td>
                 <td>Enjoyment</td>
                 <td>Completed at</td>
+                <td>GDDL</td>
+                <td>AREDL</td>
             </tr>
             {demons.map((demon) => (
                 <DemonRow
