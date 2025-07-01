@@ -178,14 +178,7 @@ public class DemonService {
         Person person = personService.getUserFromUserDetails(userDetails);
         authService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), person);
 
-        JSONObject gddlData = gddlService.searchLevel(newName, demon.getAuthor());
-        if (gddlData != null && gddlData.has("Rating")) {;
-            double rawRating = gddlData.getDouble("Rating");
-            int roundedRating = (int) Math.round(rawRating);
-
-            demon.setGddlTier(roundedRating); // or however you persist it
-            log.info("Rounded Rating: {}", roundedRating);
-        }
+        addGddlRatingToDemon(demon, newName, demon.getAuthor());
 
         demonRepository.updateNameById(id, newName);
     }
@@ -207,16 +200,19 @@ public class DemonService {
         Person person = personService.getUserFromUserDetails(userDetails);
         authService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), person);
 
-        JSONObject gddlData = gddlService.searchLevel(demon.getName(), newAuthor);
-        if (gddlData != null && gddlData.has("Rating")) {;
+        addGddlRatingToDemon(demon, demon.getName(), newAuthor);
+        demonRepository.updateAuthorById(id, newAuthor);
+    }
+
+    private void addGddlRatingToDemon(Demon demon, String name, String author) {
+        JSONObject gddlData = gddlService.searchLevel(name, author);
+        if (gddlData != null && gddlData.has("Rating") && !gddlData.isNull("Rating")) {
             double rawRating = gddlData.getDouble("Rating");
             int roundedRating = (int) Math.round(rawRating);
 
             demon.setGddlTier(roundedRating); // or however you persist it
             log.info("Rounded Rating: {}", roundedRating);
         }
-
-        demonRepository.updateAuthorById(id, newAuthor);
     }
 
     @Transactional
