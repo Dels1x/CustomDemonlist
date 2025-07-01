@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS demon (
     date_of_completion DATE,
     worst_fail SMALLINT,
     nlw_tier VARCHAR(32),
-    gddl_tier VARCHAR(32),
+    gddl_tier INTEGER,
     aredl_placement INTEGER,
     attempts_count INTEGER,
     enjoyment_rating INTEGER

@@ -73,7 +73,7 @@ public class Demon {
 
     @Column(name = "gddl_tier", length = 32)
     @JsonView(Views.Public.class)
-    private String gddlTier;
+    private Integer gddlTier;
 
     @Column(name = "aredl_placement")
     @JsonView(Views.Public.class)

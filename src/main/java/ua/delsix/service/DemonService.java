@@ -2,6 +2,7 @@ package ua.delsix.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.log4j.Log4j2;
+import org.json.JSONObject;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -177,10 +178,14 @@ public class DemonService {
         Person person = personService.getUserFromUserDetails(userDetails);
         authService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), person);
 
-        log.info("demon author: {}", demon.getAuthor());
+        JSONObject gddlData = gddlService.searchLevel(newName, demon.getAuthor());
+        if (gddlData != null && gddlData.has("Rating")) {;
+            double rawRating = gddlData.getDouble("Rating");
+            int roundedRating = (int) Math.round(rawRating);
 
-        Object gddlData = gddlService.searchLevel(newName, demon.getAuthor());
-        log.info("GDDL: {}", gddlData);
+            demon.setGddlTier(roundedRating); // or however you persist it
+            log.info("Rounded Rating: {}", roundedRating);
+        }
 
         demonRepository.updateNameById(id, newName);
     }
@@ -202,8 +207,14 @@ public class DemonService {
         Person person = personService.getUserFromUserDetails(userDetails);
         authService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), person);
 
-        Object gddlData = gddlService.searchLevel(demon.getName(), newAuthor);
-        log.info("GDDL: {}", gddlData);
+        JSONObject gddlData = gddlService.searchLevel(demon.getName(), newAuthor);
+        if (gddlData != null && gddlData.has("Rating")) {;
+            double rawRating = gddlData.getDouble("Rating");
+            int roundedRating = (int) Math.round(rawRating);
+
+            demon.setGddlTier(roundedRating); // or however you persist it
+            log.info("Rounded Rating: {}", roundedRating);
+        }
 
         demonRepository.updateAuthorById(id, newAuthor);
     }
