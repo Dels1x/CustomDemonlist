@@ -24,17 +24,20 @@ public class DemonService {
     private final DemonMapper demonMapper;
     private final AuthService authService;
     private final PersonService personService;
+    private final GddlService gddlService;
     private final DemonUtil demonUtil;
 
     public DemonService(AuthService authService,
                         DemonRepository demonRepository,
                         DemonMapper demonMapper,
                         PersonService personService,
+                        GddlService gddlService,
                         DemonUtil demonUtil) {
         this.authService = authService;
         this.demonRepository = demonRepository;
         this.demonMapper = demonMapper;
         this.personService = personService;
+        this.gddlService = gddlService;
         this.demonUtil = demonUtil;
     }
 
@@ -174,6 +177,11 @@ public class DemonService {
         Person person = personService.getUserFromUserDetails(userDetails);
         authService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), person);
 
+        log.info("demon author: {}", demon.getAuthor());
+
+        Object gddlData = gddlService.searchLevel(newName, demon.getAuthor());
+        log.info("GDDL: {}", gddlData);
+
         demonRepository.updateNameById(id, newName);
     }
 
@@ -193,6 +201,9 @@ public class DemonService {
         Demon demon = demonUtil.getDemonThrowIfDoesntExist(id);
         Person person = personService.getUserFromUserDetails(userDetails);
         authService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), person);
+
+        Object gddlData = gddlService.searchLevel(demon.getName(), newAuthor);
+        log.info("GDDL: {}", gddlData);
 
         demonRepository.updateAuthorById(id, newAuthor);
     }

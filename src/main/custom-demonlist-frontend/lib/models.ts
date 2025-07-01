@@ -12,7 +12,7 @@ export interface Demon {
     id: number;
     demonlistId: number;
     name: string;
-    author?: string | null;
+    author?: string;
     placement: number;
     initialPlacement?: number | null;
     difficulty?: string | null;
