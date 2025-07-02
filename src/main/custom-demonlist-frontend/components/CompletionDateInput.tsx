@@ -21,7 +21,7 @@ export default function CompletionDateInput({selectedDate, onInput}: CompletionD
         const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August',
             'September', 'October', 'November', 'December'];
 
-        return `${day}${ordinalSuffix(day)} ${months[month - 1]} ${year}`;
+        return `${months[month - 1]} ${day}${ordinalSuffix(day)} ${year}`;
     }
 
     function ordinalSuffix(day: number) {
