@@ -1,5 +1,6 @@
 package ua.delsix.service;
 
+import lombok.extern.log4j.Log4j2;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 
 @Service
+@Log4j2
 public class GddlService {
     private final String DEMON_SEARCH_URL = "https://gdladder.com/api/level/search";
     private final RestTemplate restTemplate = new RestTemplate();
@@ -38,7 +40,7 @@ public class GddlService {
                 return null;
             }
         } catch (Exception e) {
-            System.err.println("Error fetching from GDDL API: " + e.getMessage());
+            log.error("Error fetching from GDDL API: " + e.getMessage());
             return null;
         }
     }

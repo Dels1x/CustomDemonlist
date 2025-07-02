@@ -94,6 +94,38 @@ export default function DemonRow({
 
     drag(drop(ref));
 
+    function renderField(fieldName: string, demon: Demon): React.ReactNode {
+        switch (fieldName) {
+            case "delete":
+                return <DeleteButton onDelete={handleDeleteDemon} label="X" />;
+            case "difficulty":
+                return (
+                    <DropdownWithImages
+                        options={DIFFICULTIES}
+                        selected={demon.difficulty || "N/A"}
+                        onSelect={(newDiff) => handleSelectChange(newDiff, demon)}
+                    />
+                );
+            case "dateOfCompletion":
+                return (
+                    <CompletionDateInput
+                        selectedDate={demon.dateOfCompletion}
+                        onInput={(e) => handleUpdateCompletionDate(e, demon, fieldName)}
+                    />
+                );
+            case "worstFail":
+                return demon.worstFail != null ? `${demon.worstFail}%` : '';
+            case "enjoymentRating":
+                return demon.enjoymentRating != null ? `${demon.enjoymentRating}/100` : '';
+            case "gddlTier":
+                return demon.gddlTier ? `Tier ${demon.gddlTier}` : '';
+            case "aredlPlacement":
+                return demon.aredlPlacement == null || demon.aredlPlacement === -1 ? '' : `#${demon.aredlPlacement}`;
+            default:
+                return demon[fieldName as keyof Demon]?.toString() || '';
+        }
+    }
+
     return (
         <tr
             ref={ref}
@@ -104,43 +136,21 @@ export default function DemonRow({
                     const isEditable = ['name', 'author', 'attemptsCount', 'worstFail', 'enjoymentRating'].includes(fieldName);
 
                     return (
-                        <td
-                            onDoubleClick={isEditable ? () => handleDoubleClick(demon, fieldName) : undefined}
-                        >
-                            {editing.id === demon.id && editing.field === fieldName ?
-                                (<input
+                        <td onDoubleClick={isEditable ? () => handleDoubleClick(demon, fieldName) : undefined}>
+                            {editing.id === demon.id && editing.field === fieldName ? (
+                                <input
                                     type="text"
                                     onChange={handleChange}
                                     onBlur={() => handleBlur(demon, fieldName)}
                                     onKeyDown={(e) => handleKeyDown(demon, fieldName, e)}
                                     autoFocus
                                     value={data}
-                                />)
-                                : fieldName === "delete" ? (
-                                    <DeleteButton
-                                        onDelete={handleDeleteDemon}
-                                        label="X"
-                                    />
-                                ) : fieldName === "difficulty" ? (
-                                    <DropdownWithImages
-                                        options={DIFFICULTIES}
-                                        selected={demon.difficulty ? demon.difficulty : "N/A"}
-                                        onSelect={(newDiff) => handleSelectChange(newDiff, demon)}
-                                    />
-                                ) : fieldName === "dateOfCompletion" ? (
-                                        <CompletionDateInput
-                                            selectedDate={demon.dateOfCompletion}
-                                            onInput={(e) => handleUpdateCompletionDate(e, demon, fieldName)}
-                                        />
-                                    ) :
-                                    fieldName === "worstFail" && demon[fieldName] ? `${demon.worstFail}%` :
-                                        fieldName === "enjoymentRating" && demon[fieldName] ? `${demon.enjoymentRating}/100` :
-                                            fieldName === "gddlTier" ? `Tier ${demon.gddlTier}` :
-                                                fieldName === "aredlPlacement" ?
-                                                    demon.aredlPlacement === -1 ?
-                                                        '' : `#${demon.aredlPlacement}` :
-                                                    demon[fieldName as keyof Demon]}
+                                />
+                            ) : (
+                                renderField(fieldName, demon)
+                            )}
                         </td>
+
                     )
                 })}
         </tr>

@@ -11,7 +11,7 @@ public class AredlService {
 
     public int getPositionForLevel(Integer id) throws NullPointerException {
         if (id == null) {
-            throw new NullPointerException("id is null or empty");
+            return -1;
         }
 
         String uri = DEMON_SEARCH_URL;
