@@ -95,14 +95,14 @@ public class DemonController {
     }
 
     @PatchMapping("/update-name")
-    public ResponseEntity<String> updateDemonName(@RequestParam long id,
+    public ResponseEntity<?> updateDemonName(@RequestParam long id,
                                                   @RequestParam String name,
                                                   @AuthenticationPrincipal UserDetails userDetails) {
         log.info("Updating demon #{} name to {}", id, name);
 
         try {
-            demonService.updateDemonName(id,name, userDetails);
-            return ResponseEntity.ok(String.format("Demon #%d's name has been updated to %s", id, name));
+            Demon demon = demonService.updateDemonName(id,name, userDetails);
+            return ResponseEntity.ok(demon);
         } catch (InvalidNameException e) {
             return ResponseUtil.invalidName(e.getMessage());
         } catch (AuthorizationException e) {
@@ -113,14 +113,14 @@ public class DemonController {
     }
 
     @PatchMapping("/update-author")
-    public ResponseEntity<String> updateAuthor(@RequestParam long id,
+    public ResponseEntity<?> updateAuthor(@RequestParam long id,
                                                @RequestParam String author,
                                                @AuthenticationPrincipal UserDetails userDetails) {
         log.info("Updating demon #{} author to {}", id, author);
 
         try {
-            demonService.updateDemonAuthor(id, author, userDetails);
-            return ResponseEntity.ok(String.format("Demon #%d's author has been updated to %s", id, author));
+            Demon demon = demonService.updateDemonAuthor(id, author, userDetails);
+            return ResponseEntity.ok(demon);
         } catch (InvalidAuthorException e) {
             return ResponseUtil.invalidName(e.getMessage());
         } catch (AuthorizationException e) {

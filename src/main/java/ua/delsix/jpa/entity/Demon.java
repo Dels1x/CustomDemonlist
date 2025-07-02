@@ -87,6 +87,10 @@ public class Demon {
     @JsonView(Views.Public.class)
     private Integer initialPlacement;
 
+    @Column(name = "in_game_id")
+    @JsonView(Views.Public.class)
+    private Integer inGameId;
+
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;

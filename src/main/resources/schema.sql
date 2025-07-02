@@ -36,5 +36,6 @@ CREATE TABLE IF NOT EXISTS demon (
     gddl_tier INTEGER,
     aredl_placement INTEGER,
     attempts_count INTEGER,
-    enjoyment_rating INTEGER
+    enjoyment_rating INTEGER,
+    in_game_id INTEGER
 );

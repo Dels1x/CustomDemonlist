@@ -162,7 +162,7 @@ public class DemonService {
     }
 
     @Transactional
-    public void updateDemonName(long id, String newName, UserDetails userDetails) throws
+    public Demon updateDemonName(long id, String newName, UserDetails userDetails) throws
             InvalidNameException,
             DemonDoesntExistException,
             AuthorizationException {
@@ -178,13 +178,14 @@ public class DemonService {
         Person person = personService.getUserFromUserDetails(userDetails);
         authService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), person);
 
-        addGddlRatingToDemon(demon, newName, demon.getAuthor());
-
+        addGddlRatingAndIdToDemon(demon, newName, demon.getAuthor());
         demonRepository.updateNameById(id, newName);
+
+        return demon;
     }
 
     @Transactional
-    public void updateDemonAuthor(long id, String newAuthor, UserDetails userDetails) throws
+    public Demon updateDemonAuthor(long id, String newAuthor, UserDetails userDetails) throws
             InvalidAuthorException,
             DemonDoesntExistException,
             AuthorizationException {
@@ -200,18 +201,32 @@ public class DemonService {
         Person person = personService.getUserFromUserDetails(userDetails);
         authService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), person);
 
-        addGddlRatingToDemon(demon, demon.getName(), newAuthor);
+        addGddlRatingAndIdToDemon(demon, demon.getName(), newAuthor);
         demonRepository.updateAuthorById(id, newAuthor);
+
+        return demon;
     }
 
-    private void addGddlRatingToDemon(Demon demon, String name, String author) {
+    private void addGddlRatingAndIdToDemon(Demon demon, String name, String author) {
         JSONObject gddlData = gddlService.searchLevel(name, author);
+
         if (gddlData != null && gddlData.has("Rating") && !gddlData.isNull("Rating")) {
             double rawRating = gddlData.getDouble("Rating");
             int roundedRating = (int) Math.round(rawRating);
 
-            demon.setGddlTier(roundedRating); // or however you persist it
+            demon.setGddlTier(roundedRating);
             log.info("Rounded Rating: {}", roundedRating);
+        }
+
+        if (gddlData != null && gddlData.has("Meta") && !gddlData.isNull("Meta")) {
+            JSONObject meta = gddlData.getJSONObject("Meta");
+
+            if (meta.has("ID") && !meta.isNull("ID")) {
+                int id = meta.getInt("ID");
+
+                demon.setInGameId(id);
+                log.info("In Game ID: {}", id);
+            }
         }
     }
 
