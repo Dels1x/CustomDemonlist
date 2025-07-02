@@ -39,61 +39,54 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons}) => {
 
     const updateDemon = async (demon: Demon, fieldName: string, newValue?: string) => {
         const valueToUse = newValue ?? data;
+        let updated: Demon | null = null;
         console.log("valueToUse: ", valueToUse);
 
         switch (fieldName) {
             case "name":
-                await updateDemonName(demon.id, valueToUse, accessToken);
-                demon.name = valueToUse;
+                updated = await updateDemonName(demon.id, valueToUse, accessToken);
+                console.log("updated: ", updated);
                 break;
             case "author":
-                await updateDemonAuthor(demon.id, valueToUse, accessToken);
-                demon.author = valueToUse;
+                updated = await updateDemonAuthor(demon.id, valueToUse, accessToken);
                 break;
             case "attemptsCount":
-                if (valueToUse === '') {
-                    break;
-                }
-
+                if (valueToUse === '') break;
                 await updateDemonAttempts(demon.id, valueToUse, accessToken);
-                demon.attemptsCount = Number(valueToUse);
+                updated = {...demon, attemptsCount: Number(valueToUse)};
                 break;
             case "worstFail":
-                if (valueToUse === '') {
-                    break;
-                }
-
+                if (valueToUse === '') break;
                 await updateDemonWorstFail(demon.id, valueToUse, accessToken);
-                demon.worstFail = Number(valueToUse);
+                updated = {...demon, worstFail: Number(valueToUse)};
                 break;
             case "enjoymentRating":
-                if (valueToUse === '') {
-                    break;
-                }
-
+                if (valueToUse === '') break;
                 await updateDemonEnjoyment(demon.id, valueToUse, accessToken);
-                demon.enjoymentRating = Number(valueToUse);
+                updated = {...demon, enjoymentRating: Number(valueToUse)};
                 break;
             case "difficulty":
-                if (valueToUse === '') {
-                    break;
-                }
-
+                if (valueToUse === '') break;
                 await updateDemonDifficulty(demon.id, valueToUse, accessToken);
-                demon.difficulty = valueToUse;
+                updated = {...demon, difficulty: valueToUse};
                 break;
             case "dateOfCompletion":
-                if (valueToUse === '') {
-                    break;
-                }
-
+                if (valueToUse === '') break;
                 await updateDemonDateOfCompletion(demon.id, valueToUse, accessToken);
-                demon.dateOfCompletion = valueToUse;
+                updated = {...demon, dateOfCompletion: valueToUse};
                 break;
             default:
                 console.error("Unknown field: ", fieldName);
         }
+
+        if (updated) {
+            setDemons(prev =>
+                prev.map(d => d.id === demon.id ? updated! : d)
+            );
+            setData(valueToUse);  // Always sync your input state after update
+        }
     }
+
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.currentTarget.value;
