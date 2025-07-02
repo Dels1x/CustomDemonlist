@@ -52,16 +52,6 @@ public interface DemonRepository extends JpaRepository<Demon, Long> {
 
     @Modifying
     @Transactional
-    @Query("UPDATE Demon d SET d.name = :name WHERE d.id = :id")
-    void updateNameById(long id, String name);
-
-    @Modifying
-    @Transactional
-    @Query("UPDATE Demon d SET d.author = :author WHERE d.id = :id")
-    void updateAuthorById(long id, String author);
-
-    @Modifying
-    @Transactional
     @Query("UPDATE Demon d SET d.attemptsCount = :attemptsCount WHERE d.id = :id")
     void updateAttemptsCountById(long id, int attemptsCount);
 

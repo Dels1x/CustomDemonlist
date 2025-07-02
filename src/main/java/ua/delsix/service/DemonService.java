@@ -179,7 +179,7 @@ public class DemonService {
         authService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), person);
 
         addGddlRatingAndIdToDemon(demon, newName, demon.getAuthor());
-        demonRepository.updateNameById(id, newName);
+        demon.setName(newName);
 
         return demon;
     }
@@ -202,7 +202,7 @@ public class DemonService {
         authService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), person);
 
         addGddlRatingAndIdToDemon(demon, demon.getName(), newAuthor);
-        demonRepository.updateAuthorById(id, newAuthor);
+        demon.setAuthor(newAuthor);
 
         return demon;
     }
