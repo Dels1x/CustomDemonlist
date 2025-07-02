@@ -15,10 +15,12 @@ public class GddlService {
 
     public JSONObject searchLevel(String name, String author) {
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(DEMON_SEARCH_URL)
-                .queryParam("limit", 10); // default, or you can set to 25
+                .queryParam("limit", 10);
+
         if (name != null && !name.isEmpty() && !name.startsWith("Demon #")) {
             uriBuilder.queryParam("name", name);
         }
+
         if (author != null && !author.isEmpty() && !author.equals("Author")) {
             uriBuilder.queryParam("creator", author);
         }
@@ -35,7 +37,6 @@ public class GddlService {
             } else {
                 return null;
             }
-
         } catch (Exception e) {
             System.err.println("Error fetching from GDDL API: " + e.getMessage());
             return null;

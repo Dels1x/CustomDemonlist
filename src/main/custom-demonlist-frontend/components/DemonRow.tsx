@@ -98,7 +98,8 @@ export default function DemonRow({
         <tr
             ref={ref}
             key={demon.id}>
-            {['delete', 'placement', 'name', 'author', 'difficulty', 'attemptsCount', 'worstFail', 'enjoymentRating', 'dateOfCompletion', 'gddlTier', 'aredlPlacement']
+            {['delete', 'placement', 'name', 'author', 'difficulty', 'attemptsCount', 'worstFail', 'enjoymentRating',
+                'dateOfCompletion', 'gddlTier', 'aredlPlacement']
                 .map((fieldName) => {
                     const isEditable = ['name', 'author', 'attemptsCount', 'worstFail', 'enjoymentRating'].includes(fieldName);
 
@@ -121,20 +122,24 @@ export default function DemonRow({
                                         label="X"
                                     />
                                 ) : fieldName === "difficulty" ? (
-                                        <DropdownWithImages
-                                            options={DIFFICULTIES}
-                                            selected={demon.difficulty ? demon.difficulty : "N/A"}
-                                            onSelect={(newDiff) => handleSelectChange(newDiff, demon)}
-                                        />
-                                    ) : fieldName === "dateOfCompletion" ? (
+                                    <DropdownWithImages
+                                        options={DIFFICULTIES}
+                                        selected={demon.difficulty ? demon.difficulty : "N/A"}
+                                        onSelect={(newDiff) => handleSelectChange(newDiff, demon)}
+                                    />
+                                ) : fieldName === "dateOfCompletion" ? (
                                         <CompletionDateInput
                                             selectedDate={demon.dateOfCompletion}
                                             onInput={(e) => handleUpdateCompletionDate(e, demon, fieldName)}
                                         />
                                     ) :
-                                    fieldName === "worstFail" && demon[fieldName] ? `${demon[fieldName as keyof Demon]}%` :
-                                        fieldName === "enjoymentRating" && demon[fieldName] ? `${demon[fieldName as keyof Demon]}/100` :
-                                            demon[fieldName as keyof Demon]}
+                                    fieldName === "worstFail" && demon[fieldName] ? `${demon.worstFail}%` :
+                                        fieldName === "enjoymentRating" && demon[fieldName] ? `${demon.enjoymentRating}/100` :
+                                            fieldName === "gddlTier" ? `Tier ${demon.gddlTier}` :
+                                                fieldName === "aredlPlacement" ?
+                                                    demon.aredlPlacement === -1 ?
+                                                        '' : `#${demon.aredlPlacement}` :
+                                                    demon[fieldName as keyof Demon]}
                         </td>
                     )
                 })}

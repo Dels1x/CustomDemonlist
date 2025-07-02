@@ -26,6 +26,7 @@ public class DemonService {
     private final AuthService authService;
     private final PersonService personService;
     private final GddlService gddlService;
+    private final AredlService aredlService;
     private final DemonUtil demonUtil;
 
     public DemonService(AuthService authService,
@@ -33,12 +34,14 @@ public class DemonService {
                         DemonMapper demonMapper,
                         PersonService personService,
                         GddlService gddlService,
+                        AredlService aredlService,
                         DemonUtil demonUtil) {
         this.authService = authService;
         this.demonRepository = demonRepository;
         this.demonMapper = demonMapper;
         this.personService = personService;
         this.gddlService = gddlService;
+        this.aredlService = aredlService;
         this.demonUtil = demonUtil;
     }
 
@@ -178,8 +181,9 @@ public class DemonService {
         Person person = personService.getUserFromUserDetails(userDetails);
         authService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), person);
 
-        addGddlRatingAndIdToDemon(demon, newName, demon.getAuthor());
         demon.setName(newName);
+        addGddlRatingAndIdToDemon(demon);
+        addAredlPositionToDemon(demon);
 
         return demon;
     }
@@ -201,14 +205,15 @@ public class DemonService {
         Person person = personService.getUserFromUserDetails(userDetails);
         authService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), person);
 
-        addGddlRatingAndIdToDemon(demon, demon.getName(), newAuthor);
         demon.setAuthor(newAuthor);
+        addGddlRatingAndIdToDemon(demon);
+        addAredlPositionToDemon(demon);
 
         return demon;
     }
 
-    private void addGddlRatingAndIdToDemon(Demon demon, String name, String author) {
-        JSONObject gddlData = gddlService.searchLevel(name, author);
+    private void addGddlRatingAndIdToDemon(Demon demon) {
+        JSONObject gddlData = gddlService.searchLevel(demon.getName(), demon.getAuthor());
 
         if (gddlData != null && gddlData.has("Rating") && !gddlData.isNull("Rating")) {
             double rawRating = gddlData.getDouble("Rating");
@@ -230,12 +235,15 @@ public class DemonService {
         }
     }
 
+    private void addAredlPositionToDemon(Demon demon) {
+        int position = aredlService.getPositionForLevel(demon.getInGameId());
+        demon.setAredlPlacement(position);
+    }
+
     @Transactional
     public void updateDemonAttemptsCount(long id, int attemptsCount, UserDetails userDetails) throws
             DemonDoesntExistException,
             AuthorizationException {
-
-
         Demon demon = demonUtil.getDemonThrowIfDoesntExist(id);
         Person person = personService.getUserFromUserDetails(userDetails);
         authService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), person);
