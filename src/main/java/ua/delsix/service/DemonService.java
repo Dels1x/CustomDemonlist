@@ -233,19 +233,28 @@ public class DemonService {
                 log.info("In Game ID: {}", id);
             }
 
-            if (meta.has("Creator") && !meta.isNull("Creator")) {
-                String creator = meta.getString("Creator");
+            if (meta.has("Name") && !meta.isNull("Name")) {
+                if (demon.getName().startsWith("Demon #")) {
+                    String name = meta.getString("Name");
 
-                if (demon.getAuthor().equals("Author")) {
-                    demon.setAuthor(creator);
+                    demon.setName(name);
+                    log.info("Name: {}", name);
                 }
-                log.info("Author: {}", creator);
+            }
+
+            if (meta.has("Creator") && !meta.isNull("Creator")) {
+                if (demon.getAuthor().equals("Author")) {
+                    String creator = meta.getString("Creator");
+
+                    demon.setAuthor(creator);
+                    log.info("Author: {}", creator);
+                }
             }
 
             if (meta.has("Difficulty") && !meta.isNull("Difficulty")) {
-                String difficulty = meta.getString("Difficulty");
-
                 if (demon.getDifficulty() == null) {
+                    String difficulty = meta.getString("Difficulty");
+
                     switch (difficulty) {
                         case "Easy" -> demon.setDifficulty(Difficulty.EASY_DEMON);
                         case "Medium" -> demon.setDifficulty(Difficulty.MEDIUM_DEMON);
@@ -253,9 +262,9 @@ public class DemonService {
                         case "Insane" -> demon.setDifficulty(Difficulty.INSANE_DEMON);
                         case "Extreme" -> demon.setDifficulty(Difficulty.EXTREME_DEMON);
                     }
-                }
 
-                log.info("Difficulty: {}", difficulty);
+                    log.info("Difficulty: {}", difficulty);
+                }
             }
         }
     }
