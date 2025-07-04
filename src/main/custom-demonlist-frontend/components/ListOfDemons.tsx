@@ -2,10 +2,13 @@ import {Demon} from "@/lib/models";
 import React, {ChangeEvent, useState} from "react";
 import {
     updateDemonAttempts,
-    updateDemonAuthor, updateDemonDateOfCompletion, updateDemonDifficulty,
+    updateDemonAuthor,
+    updateDemonDateOfCompletion,
+    updateDemonDifficulty,
     updateDemonEnjoyment,
     updateDemonName,
-    updateDemonPosition, updateDemonWorstFail
+    updateDemonPosition,
+    updateDemonWorstFail
 } from "@/api/api";
 import {useAuthContext} from "@/context/AuthContext";
 import DemonRow from "@/components/DemonRow";
@@ -28,6 +31,8 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons}) => {
         field: null
     });
     const [data, setData] = useState<string>('');
+    const [sortField, setSortField] = useState<string | null>(null);
+    const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
     const handleDoubleClick = (demon: Demon, fieldName: string) => {
         let tempData = demon[fieldName as keyof Demon];
@@ -171,23 +176,47 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons}) => {
         })
     }
 
+    const sortDemons = (field: keyof Demon) => {
+        const newOrder = sortField === field && sortOrder === "asc" ? "desc" : "asc";
+
+        setSortField(field);
+        setSortOrder(newOrder);
+
+        setDemons(prev => {
+            return [...prev].sort((a, b) => {
+                const aVal = a[field];
+                const bVal = b[field];
+
+                if (aVal == null) return 1;
+                if (bVal == null) return -1;
+
+                if (typeof aVal === "number" && typeof bVal === "number") {
+                    return newOrder === "asc" ? aVal - bVal : bVal - aVal;
+                }
+
+                return newOrder === "asc" ? String(aVal).localeCompare(String(bVal)) :
+                    String(bVal).localeCompare(String(aVal));
+            });
+        })
+    }
+
     return (
         <table>
             <tbody>
             <tr key="names">
                 <td>X</td>
-                <td>#</td>
-                <td>Name</td>
-                <td>Author</td>
-                <td>Difficulty</td>
-                <td>Attempts</td>
-                <td>Worst fail</td>
-                <td>Enjoyment</td>
-                <td>Completed at</td>
-                <td>GDDL</td>
-                <td>AREDL</td>
+                <td onClick={() => sortDemons("placement")}>#</td>
+                <td onClick={() => sortDemons("name")}>Name</td>
+                <td onClick={() => sortDemons("author")}>Author</td>
+                <td onClick={() => sortDemons("difficulty")}>Difficulty</td>
+                <td onClick={() => sortDemons("attemptsCount")}>Attempts</td>
+                <td onClick={() => sortDemons("worstFail")}>Worst fail</td>
+                <td onClick={() => sortDemons("enjoymentRating")}>Enjoyment</td>
+                <td onClick={() => sortDemons("dateOfCompletion")}>Completed at</td>
+                <td onClick={() => sortDemons("gddlTier")}>GDDL</td>
+                <td onClick={() => sortDemons("aredlPlacement")}>AREDL</td>
             </tr>
-            {demons.map((demon) => (
+            {demons.map((demon, index) => (
                 <DemonRow
                     demonPlacement={demon.placement - 1}
                     demons={demons}
@@ -202,6 +231,7 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons}) => {
                     rearrangeDemonlist={rearrangeDemonlist}
                     deleteDemonLocally={deleteDemonLocally}
                     handleUpdateCompletionDate={handleUpdateCompletionDate}
+                    index={index}
                 />
             ))}
             </tbody>

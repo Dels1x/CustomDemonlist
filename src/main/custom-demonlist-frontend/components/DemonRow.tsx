@@ -21,6 +21,7 @@ interface DemonRowProps {
     rearrangeDemonlist: (current: number, target: number) => void,
     deleteDemonLocally: (targetDemon: Demon) => void,
     handleUpdateCompletionDate: (e: React.ChangeEvent<HTMLInputElement>, demon: Demon, fieldName: string) => void,
+    index: number,
 }
 
 export default function DemonRow({
@@ -36,7 +37,8 @@ export default function DemonRow({
                                      rearrangeDemonlistRequest,
                                      rearrangeDemonlist,
                                      deleteDemonLocally,
-                                     handleUpdateCompletionDate
+                                     handleUpdateCompletionDate,
+                                     index
                                  }: DemonRowProps,) {
     const {accessToken} = useAuthContext()
     const demon = demons.find(d => d.placement === demonPlacement + 1);
@@ -147,7 +149,7 @@ export default function DemonRow({
                                     value={data}
                                 />
                             ) : (
-                                renderField(fieldName, demon)
+                                fieldName === "placement" ? index + 1 : renderField(fieldName, demon)
                             )}
                         </td>
 
