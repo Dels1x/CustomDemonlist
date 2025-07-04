@@ -182,7 +182,7 @@ public class DemonService {
         authService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), person);
 
         demon.setName(newName);
-        addGddlRatingAndIdToDemon(demon);
+        updateGddl(demon);
         addAredlPositionToDemon(demon);
 
         return demon;
@@ -206,13 +206,13 @@ public class DemonService {
         authService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), person);
 
         demon.setAuthor(newAuthor);
-        addGddlRatingAndIdToDemon(demon);
+        updateGddl(demon);
         addAredlPositionToDemon(demon);
 
         return demon;
     }
 
-    private void addGddlRatingAndIdToDemon(Demon demon) {
+    private void updateGddl(Demon demon) {
         JSONObject gddlData = gddlService.searchLevel(demon.getName(), demon.getAuthor());
 
         if (gddlData != null && gddlData.has("Rating") && !gddlData.isNull("Rating")) {
@@ -231,6 +231,31 @@ public class DemonService {
 
                 demon.setInGameId(id);
                 log.info("In Game ID: {}", id);
+            }
+
+            if (meta.has("Creator") && !meta.isNull("Creator")) {
+                String creator = meta.getString("Creator");
+
+                if (demon.getAuthor().equals("Author")) {
+                    demon.setAuthor(creator);
+                }
+                log.info("Author: {}", creator);
+            }
+
+            if (meta.has("Difficulty") && !meta.isNull("Difficulty")) {
+                String difficulty = meta.getString("Difficulty");
+
+                if (demon.getDifficulty() == null) {
+                    switch (difficulty) {
+                        case "Easy" -> demon.setDifficulty(Difficulty.EASY_DEMON);
+                        case "Medium" -> demon.setDifficulty(Difficulty.MEDIUM_DEMON);
+                        case "Hard" -> demon.setDifficulty(Difficulty.HARD_DEMON);
+                        case "Insane" -> demon.setDifficulty(Difficulty.INSANE_DEMON);
+                        case "Extreme" -> demon.setDifficulty(Difficulty.EXTREME_DEMON);
+                    }
+                }
+
+                log.info("Difficulty: {}", difficulty);
             }
         }
     }
