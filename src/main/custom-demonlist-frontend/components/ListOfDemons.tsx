@@ -1,5 +1,5 @@
 import {Demon} from "@/lib/models";
-import React, {ChangeEvent, useState} from "react";
+import React, {ChangeEvent, useEffect, useState} from "react";
 import {
     updateDemonAttempts,
     updateDemonAuthor,
@@ -12,6 +12,7 @@ import {
 } from "@/api/api";
 import {useAuthContext} from "@/context/AuthContext";
 import DemonRow from "@/components/DemonRow";
+import {fieldLabels} from "@/constants/fieldLabels";
 
 interface DemonlistProps {
     demons: Demon[];
@@ -31,8 +32,11 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons}) => {
         field: null
     });
     const [data, setData] = useState<string>('');
-    const [sortField, setSortField] = useState<string | null>(null);
-    const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+    const [sortState, setSortState] = useState<{ field: keyof Demon, order: "asc" | "desc" }>({
+        field: "placement",
+        order: "asc",
+    });
+
 
     const handleDoubleClick = (demon: Demon, fieldName: string) => {
         let tempData = demon[fieldName as keyof Demon];
@@ -176,14 +180,21 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons}) => {
         })
     }
 
-    const sortDemons = (field: keyof Demon) => {
-        const newOrder = sortField === field && sortOrder === "asc" ? "desc" : "asc";
+    const handleSortClick = (field: keyof Demon) => {
+        setSortState(prev => {
+            const isSameField = prev.field === field;
+            const newOrder: "asc" | "desc" = isSameField && prev.order === "asc" ? "desc" : "asc";
+            return { field, order: newOrder };
+        });
+    };
 
-        setSortField(field);
-        setSortOrder(newOrder);
+    // Sort in effect when sort state changes
+    useEffect(() => {
+        if (!sortState.field) return;
 
-        setDemons(prev => {
-            return [...prev].sort((a, b) => {
+        setDemons(prevDemons => {
+            const { field, order } = sortState;
+            return [...prevDemons].sort((a, b) => {
                 const aVal = a[field];
                 const bVal = b[field];
 
@@ -191,31 +202,37 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons}) => {
                 if (bVal == null) return -1;
 
                 if (typeof aVal === "number" && typeof bVal === "number") {
-                    return newOrder === "asc" ? aVal - bVal : bVal - aVal;
+                    return order === "asc" ? aVal - bVal : bVal - aVal;
                 }
 
-                return newOrder === "asc" ? String(aVal).localeCompare(String(bVal)) :
-                    String(bVal).localeCompare(String(aVal));
+                return order === "asc"
+                    ? String(aVal).localeCompare(String(bVal))
+                    : String(bVal).localeCompare(String(aVal));
             });
-        })
-    }
+        });
+
+        console.log("Sorting by", sortState.field, "Order:", sortState.order);
+    }, [sortState, setDemons]);
+
 
     return (
         <table>
             <tbody>
             <tr key="names">
-                <td>X</td>
-                <td onClick={() => sortDemons("placement")}>#</td>
-                <td onClick={() => sortDemons("name")}>Name</td>
-                <td onClick={() => sortDemons("author")}>Author</td>
-                <td onClick={() => sortDemons("difficulty")}>Difficulty</td>
-                <td onClick={() => sortDemons("attemptsCount")}>Attempts</td>
-                <td onClick={() => sortDemons("worstFail")}>Worst fail</td>
-                <td onClick={() => sortDemons("enjoymentRating")}>Enjoyment</td>
-                <td onClick={() => sortDemons("dateOfCompletion")}>Completed at</td>
-                <td onClick={() => sortDemons("gddlTier")}>GDDL</td>
-                <td onClick={() => sortDemons("aredlPlacement")}>AREDL</td>
+                {['delete', 'placement', 'name', 'author', 'difficulty', 'attemptsCount', 'worstFail', 'enjoymentRating',
+                    'dateOfCompletion', 'gddlTier', 'aredlPlacement']
+                    .map((field) => {
+                        const showSortIcon = sortState.field === field;
+                        const icon = showSortIcon ? (sortState.order === 'asc' ? '▲' : '▼') : '';
+
+                        return (
+                            <td key={field} onClick={() => handleSortClick(field as keyof Demon)} style={{ cursor: 'pointer' }}>
+                                {fieldLabels[field] ?? field} {showSortIcon ? icon : ''}
+                            </td>
+                        )
+                    })}
             </tr>
+
             {demons.map((demon, index) => (
                 <DemonRow
                     demonPlacement={demon.placement - 1}

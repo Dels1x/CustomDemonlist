@@ -44,14 +44,11 @@ export default function DemonRow({
     const demon = demons.find(d => d.placement === demonPlacement + 1);
 
     console.log("DEMONROW demonId: ", demonPlacement);
-    console.log("The demon: ", demon);
 
     if (!demon) {
         console.log("Demon is undefined");
         return null;
     }
-
-    console.log("DEMONROW ID: ", demon.id);
 
     const DIFFICULTIES = [
         'N/A', 'EXTREME_DEMON', 'INSANE_DEMON', 'HARD_DEMON', 'MEDIUM_DEMON', 'EASY_DEMON',
@@ -99,7 +96,7 @@ export default function DemonRow({
     function renderField(fieldName: string, demon: Demon): React.ReactNode {
         switch (fieldName) {
             case "delete":
-                return <DeleteButton onDelete={handleDeleteDemon} label="X" />;
+                return <DeleteButton onDelete={handleDeleteDemon} label="X"/>;
             case "difficulty":
                 return (
                     <DropdownWithImages
@@ -131,7 +128,7 @@ export default function DemonRow({
     return (
         <tr
             ref={ref}
-            key={demon.id}>
+        >
             {['delete', 'placement', 'name', 'author', 'difficulty', 'attemptsCount', 'worstFail', 'enjoymentRating',
                 'dateOfCompletion', 'gddlTier', 'aredlPlacement']
                 .map((fieldName) => {

@@ -26,7 +26,6 @@ const DemonlistManager: React.FC<DemonlistManagerProps> = ({accessToken, demonli
     return (
         <div>
             <ListOfDemons
-                key={demons.map(d => d.id).join(",")}  // Force remount of DnD
                 demons={demons}
                 setDemons={setDemons}
             />
