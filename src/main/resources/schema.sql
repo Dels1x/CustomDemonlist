@@ -15,7 +15,8 @@ CREATE TABLE IF NOT EXISTS demonlist
     person_id BIGINT REFERENCES person (id) NOT NULL,
     name      VARCHAR(80)                   NOT NULL DEFAULT 'Demonlist',
     is_public BOOLEAN                       NOT NULL DEFAULT TRUE,
-    is_multi  BOOLEAN                       NOT NULL DEFAULT FALSE
+    is_multi  BOOLEAN                       NOT NULL DEFAULT FALSE,
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS demon
@@ -41,5 +42,15 @@ CREATE TABLE IF NOT EXISTS demon
     aredl_placement    INTEGER,
     attempts_count     INTEGER,
     enjoyment_rating   INTEGER,
-    in_game_id         INTEGER
+    in_game_id         INTEGER,
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS demonlist_likes
+(
+    id          BIGSERIAL PRIMARY KEY,
+    person_id   BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE,
+    demonlist_id BIGINT NOT NULL REFERENCES demonlist(id) ON DELETE CASCADE,
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (person_id, demonlist_id)  -- prevent multiple likes from same user
 );
