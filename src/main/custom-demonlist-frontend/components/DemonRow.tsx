@@ -9,7 +9,7 @@ import CompletionDateInput from "@/components/CompletionDateInput";
 
 interface DemonRowProps {
     demonPlacement: number,
-    demons: Demon[],
+    demon: Demon
     handleDoubleClick: (demon: Demon, fieldName: string) => void,
     handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
     handleSelectChange: (newDiff: string, demon: Demon) => void,
@@ -26,7 +26,7 @@ interface DemonRowProps {
 
 export default function DemonRow({
                                      demonPlacement,
-                                     demons,
+                                     demon,
                                      handleDoubleClick,
                                      handleChange,
                                      handleSelectChange,
@@ -41,7 +41,6 @@ export default function DemonRow({
                                      index
                                  }: DemonRowProps,) {
     const {accessToken} = useAuthContext()
-    const demon = demons.find(d => d.placement === demonPlacement + 1);
 
     console.log("DEMONROW demonId: ", demonPlacement);
 
@@ -61,11 +60,27 @@ export default function DemonRow({
     const ref = useRef<HTMLTableRowElement>(null);
     const [, drag] = useDrag(() => ({
         type: "ROW",
-        item: {id: demon.id, placement: demon.placement},
+        item: {id: demon.id, fromPlacement: demon.placement},
         collect: (monitor) => ({
             isDragging: monitor.isDragging()
         }),
     }));
+
+    const [, drop] = useDrop({
+        accept: "ROW",
+        drop: (dragged: { id: number, fromPlacement: number}) => {
+            if (!ref.current) return;
+
+            const toPlacement = demon.placement;
+
+            if (dragged.fromPlacement === toPlacement) return;
+
+            rearrangeDemonlist(dragged.fromPlacement, toPlacement);
+            rearrangeDemonlistRequest(dragged.id, toPlacement);
+        }
+    })
+
+    drag(drop(ref));
 
     const handleDeleteDemon = async () => {
         if (!accessToken) {
@@ -77,21 +92,6 @@ export default function DemonRow({
         await deleteDemon(demon.id, accessToken)
         deleteDemonLocally(demon);
     }
-
-    const [, drop] = useDrop({
-        accept: "ROW",
-        drop: (dragged: { id: number, placement: number }) => {
-            if (!ref.current) return;
-
-            console.log(demon.placement);
-            console.log(dragged);
-            console.log("REARRANGE!!!!");
-            rearrangeDemonlistRequest(dragged.id, demon.placement);
-            rearrangeDemonlist(dragged.placement, demon.placement);
-        }
-    })
-
-    drag(drop(ref));
 
     function renderField(fieldName: string, demon: Demon): React.ReactNode {
         switch (fieldName) {
