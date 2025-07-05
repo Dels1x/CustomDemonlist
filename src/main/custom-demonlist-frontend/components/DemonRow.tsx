@@ -146,7 +146,7 @@ export default function DemonRow({
                                     value={data}
                                 />
                             ) : (
-                                fieldName === "placement" ? demon.placement === index + 1 ? `#${demon.placement}` : `#${index} (${demon.placement})` : renderField(fieldName, demon)
+                                fieldName === "placement" ? demon.placement === index + 1 ? `#${demon.placement}` : `#${index + 1} (${demon.placement})` : renderField(fieldName, demon)
                             )}
                         </td>
 
