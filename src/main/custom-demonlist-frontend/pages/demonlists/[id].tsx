@@ -17,11 +17,18 @@ interface DemonlistProps {
     accessToken: any;
 }
 
-const DemonlistPage: React.FC<DemonlistProps> = ({demonlist, accessToken}) => {
-    const {refreshDemonlists} = useDemonlistContext();
+const DemonlistPage: React.FC<DemonlistProps> = ({demonlist, accessToken, user}) => {
+    const isAuthenticated = !!accessToken;
+    const refreshDemonlists = isAuthenticated
+        ? useDemonlistContext().refreshDemonlists
+        : () => Promise.resolve(); // dummy no-op function
     const [isEditing, setEditing] = React.useState(false);
+    const isEditable = user ? user.sub === String(demonlist.person.id) : false;
     const [name, setName] = React.useState(demonlist.name);
     const router = useRouter();
+    console.log("DEMONLISTPAGE: ", JSON.stringify(demonlist, null, 2));
+    console.log("USER:", JSON.stringify(user, null, 2));
+    console.log("isEditable? ", isEditable);
 
     useEffect(() => {
         setName(demonlist.name);
@@ -58,9 +65,11 @@ const DemonlistPage: React.FC<DemonlistProps> = ({demonlist, accessToken}) => {
     }
 
     const handleDeleteDemonlist = async () => {
-        await deleteDemonlist(demonlist.id, accessToken);
-        refreshDemonlists();
-        router.push("/");
+        if (isEditable) {
+            await deleteDemonlist(demonlist.id, accessToken);
+            refreshDemonlists();
+            router.push("/");
+        }
     }
 
     return (
@@ -68,27 +77,26 @@ const DemonlistPage: React.FC<DemonlistProps> = ({demonlist, accessToken}) => {
             <main>
                 <div className={styles.demonlist}>
                     {
-                        isEditing ?
-                            (
-                                <input
-                                    type="text"
-                                    autoFocus
-                                    value={name}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    onKeyDown={(e) => handleKeyDown(e)}
-                                />
-                            )
-                            :
-                            (
-                                <span onDoubleClick={doubleClick}>
+                        isEditing ? (
+                            <input
+                                type="text"
+                                autoFocus
+                                value={name}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                onKeyDown={(e) => handleKeyDown(e)}
+                            />
+                        ) : (
+                            <span onDoubleClick={doubleClick}>
                                     {`#${demonlist.id} - ${name}`}
                                 </span>
-                            )
+                        )
                     }
-                    <DeleteButton
-                        onDelete={handleDeleteDemonlist}
-                        label={`Delete ${name}`}/>
+                    {isEditable ? (
+                        <DeleteButton
+                            onDelete={handleDeleteDemonlist}
+                            label={`Delete ${name}`}/>
+                    ) : ('')}
                     <DemonlistManager accessToken={accessToken} demonlist={demonlist}/>
                 </div>
             </main>

@@ -59,6 +59,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 log.warn("User's access token is either invalid or expired: {}", e.getMessage());
             }
         } else {
+            if (path.startsWith("/demonlists/demonlist")) {
+                SecurityContextHolder.getContext().setAuthentication(new JwtAuthentication(null));
+
+                filterChain.doFilter(request, response);
+                return;
+            }
+
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("Can't proceed without an access token");
             log.info("User can't proceed without a token");
