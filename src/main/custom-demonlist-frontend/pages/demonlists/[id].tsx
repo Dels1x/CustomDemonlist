@@ -76,32 +76,34 @@ const DemonlistPage: React.FC<DemonlistProps> = ({demonlist, accessToken, user})
         <Layout>
             <main>
                 <div className={styles.demonlist}>
-                    {
-                        isEditing ? (
-                            <input
-                                type="text"
-                                autoFocus
-                                value={name}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                onKeyDown={(e) => handleKeyDown(e)}
-                            />
-                        ) : (
-                            <span onDoubleClick={doubleClick}>
-                                    {`#${demonlist.id} - ${name}`}
-                                </span>
-                        )
-                    }
-                    {isEditable ? (
+                    {isEditing ? (
+                        <input
+                            type="text"
+                            autoFocus
+                            value={name}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            onKeyDown={handleKeyDown}
+                        />
+                    ) : (
+                        <span onDoubleClick={isEditable ? doubleClick : undefined}>
+                        {`#${demonlist.id} - ${name}`}
+                    </span>
+                    )}
+
+                    {isEditable && (
                         <DeleteButton
                             onDelete={handleDeleteDemonlist}
-                            label={`Delete ${name}`}/>
-                    ) : ('')}
-                    <DemonlistManager accessToken={accessToken} demonlist={demonlist}/>
+                            label={`Delete ${name}`}
+                        />
+                    )}
+
+                    <DemonlistManager accessToken={accessToken} demonlist={demonlist} />
                 </div>
             </main>
         </Layout>
     );
+
 }
 
 export async function getServerSideProps(context: any) {
