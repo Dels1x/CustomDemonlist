@@ -98,7 +98,7 @@ const DemonlistPage: React.FC<DemonlistProps> = ({demonlist, accessToken, user})
                         />
                     )}
 
-                    <DemonlistManager accessToken={accessToken} demonlist={demonlist} />
+                    <DemonlistManager accessToken={accessToken} demonlist={demonlist} isEditable={isEditable}/>
                 </div>
             </main>
         </Layout>

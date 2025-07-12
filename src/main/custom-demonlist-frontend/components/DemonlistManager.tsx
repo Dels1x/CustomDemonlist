@@ -6,9 +6,10 @@ import {Demon, Demonlist} from "@/lib/models";
 interface DemonlistManagerProps {
     accessToken: string;
     demonlist: Demonlist;
+    isEditable: boolean;
 }
 
-const DemonlistManager: React.FC<DemonlistManagerProps> = ({accessToken, demonlist}) => {
+const DemonlistManager: React.FC<DemonlistManagerProps> = ({accessToken, demonlist, isEditable}) => {
     if (!demonlist.id) {
         console.error("Demonlist ID is missing or invalid");
         return;
@@ -29,11 +30,11 @@ const DemonlistManager: React.FC<DemonlistManagerProps> = ({accessToken, demonli
                 demons={demons}
                 setDemons={setDemons}
             />
-            <CreateDemonButton
+            {isEditable && <CreateDemonButton
                 demonlistId={demonlist.id}
                 accessToken={accessToken}
                 onDemonCreated={addDemonToState}
-            />
+            />}
         </div>
     )
 }
