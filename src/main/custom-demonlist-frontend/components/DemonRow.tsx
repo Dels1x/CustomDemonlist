@@ -1,6 +1,6 @@
 import {Demon} from "@/lib/models";
 import {useDrag, useDrop} from "react-dnd";
-import React, {useRef} from "react";
+import React, {useEffect, useRef} from "react";
 import {useAuthContext} from "@/context/AuthContext";
 import {deleteDemon} from "@/api/api";
 import DeleteButton from "@/components/DeleteButton";
@@ -60,31 +60,32 @@ export default function DemonRow({
     ];
 
     const ref = useRef<HTMLTableRowElement>(null);
-    if (isAuthorizedToEdit) {
-        const [, drag] = useDrag(() => ({
-            type: "ROW",
-            item: {id: demon.id, fromPlacement: demon.placement},
-            collect: (monitor) => ({
-                isDragging: monitor.isDragging()
-            }),
-        }));
+    const [, drag] = useDrag(() => ({
+        type: "ROW",
+        item: { id: demon.id, fromPlacement: demon.placement },
+        collect: (monitor) => ({
+            isDragging: monitor.isDragging(),
+        }),
+    }), [demon.id, demon.placement]);
 
-        const [, drop] = useDrop({
-            accept: "ROW",
-            drop: (dragged: { id: number, fromPlacement: number }) => {
-                if (!ref.current) return;
+    const [, drop] = useDrop({
+        accept: "ROW",
+        drop: (dragged: { id: number, fromPlacement: number }) => {
+            if (!ref.current || !isAuthorizedToEdit) return;
 
-                const toPlacement = demon.placement;
+            const toPlacement = demon.placement;
+            if (dragged.fromPlacement === toPlacement) return;
 
-                if (dragged.fromPlacement === toPlacement) return;
+            rearrangeDemonlist(dragged.fromPlacement, toPlacement);
+            rearrangeDemonlistRequest(dragged.id, toPlacement);
+        },
+    }, [isAuthorizedToEdit, demon.placement]);
 
-                rearrangeDemonlist(dragged.fromPlacement, toPlacement);
-                rearrangeDemonlistRequest(dragged.id, toPlacement);
-            }
-        })
-
-        drag(drop(ref));
-    }
+    useEffect(() => {
+        if (isAuthorizedToEdit) {
+            drag(drop(ref));
+        }
+    }, [drag, drop, isAuthorizedToEdit]);
 
     const handleDeleteDemon = async () => {
         if (!accessToken) {
