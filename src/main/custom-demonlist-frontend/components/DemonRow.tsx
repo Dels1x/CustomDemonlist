@@ -115,6 +115,7 @@ export default function DemonRow({
                     <CompletionDateInput
                         selectedDate={demon.dateOfCompletion}
                         onInput={(e) => handleUpdateCompletionDate(e, demon, fieldName)}
+                        isAuthorizedToEdit={isAuthorizedToEdit}
                     />
                 );
             case "worstFail":

@@ -3,9 +3,10 @@ import React, {ChangeEvent, useRef} from "react";
 interface CompletionDateInputProps {
     selectedDate?: string | null;
     onInput: (date: ChangeEvent<HTMLInputElement>) => void;
+    isAuthorizedToEdit: boolean;
 }
 
-export default function CompletionDateInput({selectedDate, onInput}: CompletionDateInputProps) {
+export default function CompletionDateInput({selectedDate, onInput, isAuthorizedToEdit}: CompletionDateInputProps) {
     const hiddenInputRef = useRef<HTMLInputElement>(null);
 
     const displayDate = selectedDate
@@ -30,10 +31,14 @@ export default function CompletionDateInput({selectedDate, onInput}: CompletionD
         }
 
         switch (day % 10) {
-            case 1: return 'st';
-            case 2: return 'nd';
-            case 3: return 'rd';
-            default: return 'th';
+            case 1:
+                return 'st';
+            case 2:
+                return 'nd';
+            case 3:
+                return 'rd';
+            default:
+                return 'th';
         }
     }
 
@@ -47,18 +52,22 @@ export default function CompletionDateInput({selectedDate, onInput}: CompletionD
 
     return (
         <div>
-            <button
-                onClick={handleButtonClick}
-            >
-                {formatDate(displayDate)}
-            </button>
-            <input
-                ref={hiddenInputRef}
-                type="date"
-                value={selectedDate ?? ''}
-                onChange={(e) => onInput(e)}
-                className="absolute w-0 h-0 opacity-0 pointer-events-none"
-            />
+            {isAuthorizedToEdit ? (
+                <>
+                    <button onClick={handleButtonClick}>
+                        {formatDate(displayDate)}
+                    </button>
+                    <input
+                        ref={hiddenInputRef}
+                        type="date"
+                        value={selectedDate ?? ''}
+                        onChange={(e) => onInput(e)}
+                        className="absolute w-0 h-0 opacity-0 pointer-events-none"
+                    />
+                </>
+            ) : (
+                formatDate(displayDate)
+            )}
         </div>
     )
 }
