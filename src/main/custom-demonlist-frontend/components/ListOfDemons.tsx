@@ -17,11 +17,12 @@ import {fieldLabels} from "@/constants/fieldLabels";
 interface DemonlistProps {
     demons: Demon[];
     setDemons: React.Dispatch<React.SetStateAction<Demon[]>>;
+    isEditable: boolean;
 }
 
 const MAX_INT = 2147483647;
 
-const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons}) => {
+const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons, isEditable}) => {
     const {accessToken} = useAuthContext()
     if (!accessToken) return;
 
@@ -225,6 +226,13 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons}) => {
                         const showSortIcon = sortState.field === field;
                         const icon = showSortIcon ? (sortState.order === 'asc' ? '▲' : '▼') : '';
 
+                        console.log("isEditable like fr?", isEditable);
+                        console.log("field like fr?", field);
+
+                        if (!isEditable && field == 'delete') {
+                            return null;
+                        }
+
                         return (
                             <td key={field} onClick={() => handleSortClick(field as keyof Demon)} style={{ cursor: 'pointer' }}>
                                 {fieldLabels[field] ?? field} {showSortIcon ? icon : ''}
@@ -249,6 +257,7 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons}) => {
                     deleteDemonLocally={deleteDemonLocally}
                     handleUpdateCompletionDate={handleUpdateCompletionDate}
                     index={index}
+                    isAuthorizedToEdit={isEditable}
                 />
             ))}
             </tbody>

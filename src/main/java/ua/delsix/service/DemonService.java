@@ -153,6 +153,7 @@ public class DemonService {
             DemonlistDoesntExistException {
         Person person = personService.getUserFromUserDetails(userDetails);
         Demon demon = getDemonById(id);
+        authService.verifyOwnershipOfTheDemonlist(demon.getDemonlist(), person);
         log.info("Demon: {}", demon);
 
         demonRepository.deleteById(id);

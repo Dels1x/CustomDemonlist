@@ -22,6 +22,7 @@ interface DemonRowProps {
     deleteDemonLocally: (targetDemon: Demon) => void,
     handleUpdateCompletionDate: (e: React.ChangeEvent<HTMLInputElement>, demon: Demon, fieldName: string) => void,
     index: number,
+    isAuthorizedToEdit: boolean,
 }
 
 export default function DemonRow({
@@ -38,7 +39,8 @@ export default function DemonRow({
                                      rearrangeDemonlist,
                                      deleteDemonLocally,
                                      handleUpdateCompletionDate,
-                                     index
+                                     index,
+                                     isAuthorizedToEdit,
                                  }: DemonRowProps,) {
     const {accessToken} = useAuthContext()
 
@@ -68,7 +70,7 @@ export default function DemonRow({
 
     const [, drop] = useDrop({
         accept: "ROW",
-        drop: (dragged: { id: number, fromPlacement: number}) => {
+        drop: (dragged: { id: number, fromPlacement: number }) => {
             if (!ref.current) return;
 
             const toPlacement = demon.placement;
@@ -134,9 +136,13 @@ export default function DemonRow({
                 .map((fieldName) => {
                     const isEditable = ['name', 'author', 'attemptsCount', 'worstFail', 'enjoymentRating'].includes(fieldName);
 
+                    if (!isAuthorizedToEdit && fieldName === 'delete') {
+                        return null;
+                    }
+
                     return (
                         <td onDoubleClick={isEditable ? () => handleDoubleClick(demon, fieldName) : undefined}>
-                            {editing.id === demon.id && editing.field === fieldName ? (
+                            {editing.id === demon.id && editing.field === fieldName && isAuthorizedToEdit ? (
                                 <input
                                     type="text"
                                     onChange={handleChange}

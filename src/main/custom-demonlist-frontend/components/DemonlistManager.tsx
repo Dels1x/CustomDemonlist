@@ -29,6 +29,7 @@ const DemonlistManager: React.FC<DemonlistManagerProps> = ({accessToken, demonli
             <ListOfDemons
                 demons={demons}
                 setDemons={setDemons}
+                isEditable={isEditable}
             />
             {isEditable && <CreateDemonButton
                 demonlistId={demonlist.id}
