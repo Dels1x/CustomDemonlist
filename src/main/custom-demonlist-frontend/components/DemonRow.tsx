@@ -60,29 +60,31 @@ export default function DemonRow({
     ];
 
     const ref = useRef<HTMLTableRowElement>(null);
-    const [, drag] = useDrag(() => ({
-        type: "ROW",
-        item: {id: demon.id, fromPlacement: demon.placement},
-        collect: (monitor) => ({
-            isDragging: monitor.isDragging()
-        }),
-    }));
+    if (isAuthorizedToEdit) {
+        const [, drag] = useDrag(() => ({
+            type: "ROW",
+            item: {id: demon.id, fromPlacement: demon.placement},
+            collect: (monitor) => ({
+                isDragging: monitor.isDragging()
+            }),
+        }));
 
-    const [, drop] = useDrop({
-        accept: "ROW",
-        drop: (dragged: { id: number, fromPlacement: number }) => {
-            if (!ref.current) return;
+        const [, drop] = useDrop({
+            accept: "ROW",
+            drop: (dragged: { id: number, fromPlacement: number }) => {
+                if (!ref.current) return;
 
-            const toPlacement = demon.placement;
+                const toPlacement = demon.placement;
 
-            if (dragged.fromPlacement === toPlacement) return;
+                if (dragged.fromPlacement === toPlacement) return;
 
-            rearrangeDemonlist(dragged.fromPlacement, toPlacement);
-            rearrangeDemonlistRequest(dragged.id, toPlacement);
-        }
-    })
+                rearrangeDemonlist(dragged.fromPlacement, toPlacement);
+                rearrangeDemonlistRequest(dragged.id, toPlacement);
+            }
+        })
 
-    drag(drop(ref));
+        drag(drop(ref));
+    }
 
     const handleDeleteDemon = async () => {
         if (!accessToken) {
