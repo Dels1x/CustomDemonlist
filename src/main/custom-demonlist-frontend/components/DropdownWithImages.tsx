@@ -8,9 +8,10 @@ interface DropdownWithImagesProps {
     options: string[],
     selected: string,
     onSelect: (value: string) => void,
+    isAuthorizedToEdit: boolean,
 }
 
-export default function DropdownWithImages({options, selected, onSelect}: DropdownWithImagesProps) {
+export default function DropdownWithImages({options, selected, onSelect, isAuthorizedToEdit}: DropdownWithImagesProps) {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -39,10 +40,10 @@ export default function DropdownWithImages({options, selected, onSelect}: Dropdo
                     />
                     <span className="text-sm">{DIFFICULTY_MAP.get(selected)}</span>
                 </div>
-                <span>▼</span>
+                {isAuthorizedToEdit && (<span>▼</span>)}
             </button>
 
-            {isOpen && (
+            {isOpen && isAuthorizedToEdit && (
                 <div className="absolute left-0 z-50 w-full bg-black border mt-1 shadow-md">
                     {options.map((opt) => (
                         <div

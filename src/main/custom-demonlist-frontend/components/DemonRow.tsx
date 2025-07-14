@@ -108,6 +108,7 @@ export default function DemonRow({
                         options={DIFFICULTIES}
                         selected={demon.difficulty || "N/A"}
                         onSelect={(newDiff) => handleSelectChange(newDiff, demon)}
+                        isAuthorizedToEdit={isAuthorizedToEdit}
                     />
                 );
             case "dateOfCompletion":
