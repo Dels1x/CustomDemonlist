@@ -6,7 +6,7 @@ import {
 } from "@/api/auth";
 import Layout from "@/layout/Layout";
 import DemonlistManager from "@/components/DemonlistManager";
-import {useDemonlistContext} from "@/context/DemonlistContext";
+import {useOptionalDemonlistContext} from "@/context/DemonlistContext";
 import DeleteButton from "@/components/DeleteButton";
 import {useRouter} from "next/router";
 import styles from "@/styles/Demonlist.module.css"
@@ -18,17 +18,20 @@ interface DemonlistProps {
 }
 
 const DemonlistPage: React.FC<DemonlistProps> = ({demonlist, accessToken, user}) => {
-    const isAuthenticated = !!accessToken;
-    const refreshDemonlists = isAuthenticated
-        ? useDemonlistContext().refreshDemonlists
-        : () => Promise.resolve(); // dummy no-op function
+    const demonlistContext = useOptionalDemonlistContext();
+    const refreshDemonlists = demonlistContext?.refreshDemonlists || (() => Promise.resolve());
+
     const [isEditing, setEditing] = React.useState(false);
     const isEditable = user ? user.sub === String(demonlist.person.id) : false;
     const [name, setName] = React.useState(demonlist.name);
     const router = useRouter();
-    console.log("DEMONLISTPAGE: ", JSON.stringify(demonlist, null, 2));
-    console.log("USER:", JSON.stringify(user, null, 2));
-    console.log("isEditable? ", isEditable);
+
+    console.log("=== DemonlistPage Debug ===");
+    console.log("demonlist:", demonlist);
+    console.log("accessToken:", accessToken);
+    console.log("user:", user);
+    console.log("========================");
+
 
     useEffect(() => {
         setName(demonlist.name);
@@ -114,14 +117,21 @@ export async function getServerSideProps(context: any) {
     const demonlist = await getDemonlist(id, accessToken);
     console.log("Demonlist: " + JSON.stringify(demonlist));
 
+    // Handle case where demonlist is null (error occurred or not found)
+    if (!demonlist) {
+        return {
+            notFound: true,
+        };
+    }
+
     return {
         props: {
             demonlist,
             user,
-            accessToken,
+            // Ensure accessToken is null instead of undefined for JSON serialization
+            accessToken: accessToken || null,
         }
     }
-
 }
 
 export default DemonlistPage;

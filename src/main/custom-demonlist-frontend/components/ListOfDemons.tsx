@@ -24,7 +24,6 @@ const MAX_INT = 2147483647;
 
 const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons, isEditable}) => {
     const {accessToken} = useAuthContext()
-    if (!accessToken) return;
 
     console.log("DEMONS: ", demons);
 
@@ -48,6 +47,11 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons, isEditable})
     }
 
     const updateDemon = async (demon: Demon, fieldName: string, newValue?: string) => {
+        if (!accessToken) {
+            console.warn("Cannot update demon: user not authenticated");
+            return;
+        }
+
         const valueToUse = newValue ?? data;
         let updated: Demon | null = null;
         console.log("valueToUse: ", valueToUse);

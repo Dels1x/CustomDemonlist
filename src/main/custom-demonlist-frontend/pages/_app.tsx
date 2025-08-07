@@ -12,15 +12,15 @@ export default function App({Component, pageProps}: AppProps) {
 
     return (
         <AuthProvider accessToken={pageProps.accessToken} user={pageProps.user}>
-            {isAuthenticated ? (
-                <DemonlistProvider accessToken={pageProps.accessToken} userId={pageProps.user.sub}>
-                    <DndProvider backend={HTML5Backend}>
+            <DndProvider backend={HTML5Backend}>
+                {isAuthenticated ? (
+                    <DemonlistProvider accessToken={pageProps.accessToken} userId={pageProps.user.sub}>
                         <Component {...pageProps} />
-                    </DndProvider>
-                </DemonlistProvider>
-            ) : (
-                <Component {...pageProps} />
-            )}
+                    </DemonlistProvider>
+                ) : (
+                    <Component {...pageProps} />
+                )}
+            </DndProvider>
         </AuthProvider>
     );
 }

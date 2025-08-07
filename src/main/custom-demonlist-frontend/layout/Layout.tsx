@@ -16,6 +16,10 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
         console.log(JSON.stringify(user));
     }
 
+    console.log("=== Layout Debug ===");
+    console.log("children:", children);
+    console.log("==================");
+
     return (
         <div>
             <Head>

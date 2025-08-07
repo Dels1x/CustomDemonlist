@@ -52,3 +52,8 @@ export const useDemonlistContext = () => {
 
     return context;
 }
+
+
+export const useOptionalDemonlistContext = () => {
+    return useContext(DemonlistContext);
+}

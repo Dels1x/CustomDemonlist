@@ -16,12 +16,19 @@ import ua.delsix.service.PersonService;
 import ua.delsix.util.JwtUtil;
 
 import java.io.IOException;
+import java.util.Set;
 
 @Component
 @Log4j2
 public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final PersonService personService;
+
+    private final Set<String> publicEndpoints = Set.of(
+            "/demonlists/demonlist",
+            "/oauth2/callback",
+            "/oauth2/refresh-access-token"
+    );
 
     public JwtAuthFilter(JwtUtil jwtUtil, PersonService personService) {
         this.jwtUtil = jwtUtil;
@@ -34,6 +41,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
         String path = request.getRequestURI();
         log.info("New request incoming on path: {}", path);
+
+        boolean isPublicEndpoint = publicEndpoints.stream().anyMatch(path::startsWith);
+
+        // Skip authentication entirely for OAuth2 callback endpoints
         if (path.startsWith("/oauth2/callback") || path.startsWith("/oauth2/refresh-access-token")) {
             filterChain.doFilter(request, response);
             return;
@@ -50,26 +61,31 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 UserDetails userDetails = new CustomUserDetails(personService.getUserById(Long.parseLong(id)));
                 log.info("User's name: {}", userDetails.getUsername());
                 SecurityContextHolder.getContext().setAuthentication(new JwtAuthentication(userDetails));
-
-                filterChain.doFilter(request, response);
-                return;
             } catch (AuthenticationCredentialsNotFoundException e) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("Invalid or expired access token: " + e.getMessage());
                 log.warn("User's access token is either invalid or expired: {}", e.getMessage());
+
+                // If this is a public endpoint, allow unauthenticated access
+                if (isPublicEndpoint) {
+                    log.info("Invalid token provided for public endpoint, proceeding without authentication");
+                    SecurityContextHolder.getContext().setAuthentication(new JwtAuthentication(null));
+                } else {
+                    // For private endpoints, return 401
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.getWriter().write("Invalid or expired access token: " + e.getMessage());
+                    return;
+                }
             }
         } else {
-            if (path.startsWith("/demonlists/demonlist")) {
+            // No authorization header provided
+            if (isPublicEndpoint) {
+                log.info("No token provided for public endpoint, proceeding without authentication");
                 SecurityContextHolder.getContext().setAuthentication(new JwtAuthentication(null));
-
-                filterChain.doFilter(request, response);
+            } else {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Can't proceed without an access token");
+                log.info("User can't proceed without a token");
                 return;
             }
-
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Can't proceed without an access token");
-            log.info("User can't proceed without a token");
-            return;
         }
 
         filterChain.doFilter(request, response);

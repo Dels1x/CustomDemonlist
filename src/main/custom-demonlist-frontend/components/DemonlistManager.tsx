@@ -10,12 +10,20 @@ interface DemonlistManagerProps {
 }
 
 const DemonlistManager: React.FC<DemonlistManagerProps> = ({accessToken, demonlist, isEditable}) => {
-    if (!demonlist.id) {
-        console.error("Demonlist ID is missing or invalid");
-        return;
+    console.log("=== DemonlistManager Debug ===");
+    console.log("accessToken:", accessToken);
+    console.log("demonlist:", demonlist);
+    console.log("isEditable:", isEditable);
+    console.log("demonlist.demons:", demonlist?.demons);
+    console.log("demonlist.demons length:", demonlist?.demons?.length);
+    console.log("============================");
+
+    if (!demonlist || !demonlist.id) {
+        console.error("DemonlistManager: Demonlist ID is missing or invalid");
+        return <div>Error: Invalid demonlist</div>;
     }
 
-    const [demons, setDemons] = useState<Demon[]>([]);
+    const [demons, setDemons] = useState<Demon[]>(demonlist.demons || []);
     useEffect(() => {
         setDemons(demonlist.demons);
     }, [demonlist.demons]);
