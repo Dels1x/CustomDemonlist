@@ -1,6 +1,4 @@
 @import 'tailwindcss';
-@tailwind base;
-@tailwind components;
 @tailwind utilities;
 
 
@@ -48,7 +46,7 @@ a {
 }
 
 main {
-  margin-left: 20%
+  margin-left: 11%
 }
 
 td {

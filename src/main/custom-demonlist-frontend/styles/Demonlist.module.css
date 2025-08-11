@@ -1,3 +1,354 @@
 .demonlist {
-    height: 100vh;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+    padding: 20px;
+    color: #e2e8f0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Header section with title and delete button */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    padding: 20px 0;
+    border-bottom: 2px solid rgba(0, 212, 255, 0.3);
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.titleSection {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex: 1;
+    min-width: 300px;
+}
+
+.titleText {
+    font-size: 28px;
+    font-weight: 700;
+    color: #ffffff;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 8px 12px;
+    border-radius: 6px;
+    background: transparent;
+    border: 2px solid transparent;
+}
+
+.titleText:hover {
+    color: #00d4ff;
+    background: rgba(0, 212, 255, 0.1);
+    border-color: rgba(0, 212, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+.titleInput {
+    font-size: 28px;
+    font-weight: 700;
+    color: #ffffff;
+    background: linear-gradient(135deg, #1a1a2e 0%, #2d3748 100%);
+    border: 2px solid #00d4ff;
+    border-radius: 6px;
+    padding: 8px 12px;
+    outline: none;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+    transition: all 0.2s ease;
+    min-width: 300px;
+}
+
+.titleInput:focus {
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+    border-color: #00b8e6;
+}
+
+.actionsSection {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* ID badge */
+.idBadge {
+    background: linear-gradient(45deg, #00d4ff, #0099cc);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 700;
+    text-shadow: none;
+    display: inline-block;
+    min-width: 30px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Content area */
+.content {
+    background: rgba(26, 32, 44, 0.6);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(74, 85, 104, 0.3);
+    backdrop-filter: blur(10px);
+}
+
+/* Status indicators */
+.statusBar {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 20px;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 153, 204, 0.05));
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 8px;
+    border-left: 4px solid #00d4ff;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    font-family: 'Courier New', monospace; /* Gaming/terminal font */
+}
+
+.statusItem {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #e2e8f0;
+    font-weight: 500;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.statusIcon {
+    width: 16px;
+    height: 16px;
+    color: #00d4ff;
+    filter: drop-shadow(0 0 4px rgba(0, 212, 255, 0.4));
+    transition: all 0.2s ease;
+}
+
+.statusItem:hover .statusIcon {
+    color: #ffffff;
+    filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.8));
+    transform: scale(1.1);
+}
+
+.creatorName {
+    color: #00d4ff;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.creatorName:hover {
+    color: #ffffff;
+    text-shadow: 0 0 8px rgba(0, 212, 255, 0.6);
+}
+
+.demonCount {
+    color: #68d391;
+    font-weight: 700;
+    text-shadow: 0 0 4px rgba(104, 211, 145, 0.4);
+}
+
+.publicBadge {
+    background: linear-gradient(45deg, #68d391, #48bb78);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-shadow: none;
+    border: 1px solid rgba(104, 211, 145, 0.5);
+    box-shadow: 0 0 8px rgba(104, 211, 145, 0.2);
+}
+
+.privateBadge {
+    background: linear-gradient(45deg, #f56565, #e53e3e);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-shadow: none;
+    border: 1px solid rgba(245, 101, 101, 0.5);
+    box-shadow: 0 0 8px rgba(245, 101, 101, 0.2);
+}
+
+/* Add glowing animation for status bar */
+.statusBar::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    right: -1px;
+    bottom: -1px;
+    background: linear-gradient(45deg, #00d4ff, transparent, #00d4ff);
+    border-radius: 8px;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.statusBar:hover::before {
+    opacity: 0.3;
+}
+
+/* Loading states */
+.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.loadingSpinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(0, 212, 255, 0.2);
+    border-top-color: #00d4ff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.loadingText {
+    color: #a0aec0;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Error states */
+.error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+}
+
+.errorIcon {
+    width: 48px;
+    height: 48px;
+    color: #f56565;
+}
+
+.errorText {
+    color: #f56565;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.errorSubtext {
+    color: #a0aec0;
+    font-size: 14px;
+}
+
+/* Floating action buttons */
+.floatingActions {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 100;
+}
+
+/* Responsive design */
+@media (max-width: 1024px) {
+    .demonlist {
+        padding: 16px;
+    }
+
+    .content {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .demonlist {
+        padding: 12px;
+    }
+
+    .header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+    }
+
+    .titleSection {
+        min-width: auto;
+    }
+
+    .titleText,
+    .titleInput {
+        font-size: 24px;
+        min-width: auto;
+    }
+
+    .actionsSection {
+        justify-content: center;
+    }
+
+    .content {
+        padding: 16px;
+    }
+
+    .statusBar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .demonlist {
+        padding: 8px;
+    }
+
+    .titleText,
+    .titleInput {
+        font-size: 20px;
+    }
+
+    .content {
+        padding: 12px;
+    }
+
+    .floatingActions {
+        bottom: 16px;
+        right: 16px;
+    }
+}
+
+/* Print styles */
+@media print {
+    .demonlist {
+        background: white;
+        color: black;
+        padding: 0;
+    }
+
+    .actionsSection,
+    .floatingActions {
+        display: none;
+    }
 }

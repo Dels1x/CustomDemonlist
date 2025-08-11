@@ -1,5 +1,5 @@
 export const fieldLabels: Record<string, string> = {
-    delete: "X",
+    delete: "Del",
     placement: "#",
     name: "Name",
     author: "Author",

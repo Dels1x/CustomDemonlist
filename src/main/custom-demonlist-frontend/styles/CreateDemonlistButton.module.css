@@ -1,0 +1,180 @@
+.container {
+    display: inline-block;
+    margin: 16px 0;
+}
+
+.createButton {
+    background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+    border: 2px solid #4a5568;
+    border-radius: 8px;
+    padding: 14px 18px;
+    color: #e2e8f0;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+    min-width: 160px;
+}
+
+.createButton::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.createButton:hover {
+    background: linear-gradient(135deg, #4a5568 0%, #00d4ff 100%);
+    border-color: #00d4ff;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.createButton:hover::before {
+    left: 100%;
+}
+
+.createButton:hover .plusIcon {
+    transform: rotate(90deg) scale(1.1);
+    filter: drop-shadow(0 0 6px rgba(0, 212, 255, 0.6));
+}
+
+.createButton:active {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 212, 255, 0.2); /* CHANGED: From purple to cyan */
+}
+
+.createButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: #718096;
+    border-color: #718096;
+}
+
+.createButton:disabled:hover {
+    transform: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.plusIcon {
+    width: 22px; /* Slightly bigger than demon button */
+    height: 22px;
+    transition: all 0.3s ease;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}
+
+.buttonText {
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    white-space: nowrap;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Loading state */
+.createButton.loading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.createButton.loading .plusIcon {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Success animation */
+.createButton.success {
+    background: linear-gradient(135deg, #00d4ff 0%, #00b8e6 100%);
+    border-color: #00d4ff;
+    animation: successPulse 0.6s ease-out;
+}
+
+@keyframes successPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* Demonlist-specific styling */
+.createButton.demonlist {
+    background: linear-gradient(135deg, #1a365d 0%, #2b77ad 100%);
+    border-color: #2b77ad;
+    box-shadow: 0 2px 8px rgba(43, 119, 173, 0.2);
+}
+
+.createButton.demonlist:hover {
+    box-shadow:
+            0 4px 16px rgba(0, 212, 255, 0.4), /* CHANGED: From purple to cyan */
+            0 0 20px rgba(0, 212, 255, 0.2); /* CHANGED: From purple to cyan */
+}
+
+.createButton.demonlist::before {
+    background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.15), transparent); /* CHANGED: From purple to cyan */
+}
+/* Enhanced glow effect for demonlist button */
+.createButton.demonlist:hover {
+    background: linear-gradient(135deg, #2b77ad 0%, #00d4ff 100%);
+    border-color: #00d4ff;
+    box-shadow: 0 4px 16px rgba(0, 212, 255, 0.4);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .createButton {
+        padding: 12px 16px;
+        font-size: 14px;
+        min-width: 140px;
+    }
+
+    .plusIcon {
+        width: 20px;
+        height: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .createButton {
+        padding: 10px 14px;
+        font-size: 13px;
+        min-width: 120px;
+    }
+
+    .plusIcon {
+        width: 18px;
+        height: 18px;
+    }
+
+    .buttonText {
+        font-size: 13px;
+    }
+}
+
+/* Special hover text effect */
+.createButton:hover .buttonText {
+    text-shadow: 0 0 8px rgba(0, 212, 255, 0.6);
+}
+
+/* Loading text animation */
+.createButton.loading .buttonText {
+    animation: loadingPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes loadingPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}

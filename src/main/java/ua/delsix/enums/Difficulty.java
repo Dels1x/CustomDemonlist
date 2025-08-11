@@ -1,6 +1,7 @@
 package ua.delsix.enums;
 
 public enum Difficulty {
+    NA,
     AUTO,
     EASY,
     NORMAL,

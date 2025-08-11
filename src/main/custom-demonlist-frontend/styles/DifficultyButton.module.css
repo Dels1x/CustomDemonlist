@@ -1,0 +1,256 @@
+.container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.imageButton {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0; /* Remove any default margins */
+    cursor: pointer;
+    display: inline-block; /* Keep it simple */
+    transition: all 0.2s ease;
+    border-radius: 4px;
+}
+
+.imageButton:hover {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.6));
+}
+
+.imageButton:active {
+    transform: scale(0.95);
+}
+
+.imageButtonDisabled {
+    cursor: default;
+    opacity: 0.8;
+}
+
+.imageButtonDisabled:hover {
+    transform: none;
+    filter: none;
+}
+
+.difficultyIcon {
+    width: 48px;
+    height: 48px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+    transition: filter 0.2s ease;
+}
+
+.portalDropdown {
+    width: 200px;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border: 2px solid #00d4ff;
+    border-radius: 8px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+    max-height: 300px;
+    overflow-y: auto;
+    animation: dropdownAppear 0.2s ease-out;
+}
+
+@keyframes dropdownAppear {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+.option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border-bottom: 1px solid rgba(74, 85, 104, 0.3);
+    font-size: 14px;
+    font-weight: 500;
+    color: #e2e8f0;
+}
+
+.option:last-child {
+    border-bottom: none;
+    border-radius: 0 0 6px 6px;
+}
+
+.option:first-child {
+    border-radius: 6px 6px 0 0;
+}
+
+.option:hover {
+    background: linear-gradient(90deg, rgba(0, 212, 255, 0.15), rgba(0, 153, 204, 0.15));
+    color: #00d4ff;
+    transform: translateX(4px);
+}
+
+.optionIcon {
+    width: 24px;
+    height: 24px;
+    filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.5));
+    transition: filter 0.15s ease;
+    flex-shrink: 0;
+}
+
+.option:hover .optionIcon {
+    filter: drop-shadow(0 0 6px rgba(0, 212, 255, 0.4));
+    transform: scale(1.05);
+}
+
+.optionText {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    white-space: nowrap;
+}
+
+/* Scrollbar styling for dropdown */
+.dropdown::-webkit-scrollbar {
+    width: 6px;
+}
+
+.dropdown::-webkit-scrollbar-track {
+    background: rgba(26, 32, 44, 0.5);
+    border-radius: 3px;
+}
+
+.dropdown::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #00d4ff, #0099cc);
+    border-radius: 3px;
+}
+
+.dropdown::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #00b8e6, #0077aa);
+}
+
+/* Difficulty-specific text colors */
+.extremeDemon {
+    color: #ff0040;
+    text-shadow: 0 0 8px rgba(255, 0, 64, 0.4);
+}
+
+.insaneDemon {
+    color: #ff4500;
+    text-shadow: 0 0 8px rgba(255, 69, 0, 0.4);
+}
+
+.hardDemon {
+    color: #ff8c00;
+    text-shadow: 0 0 8px rgba(255, 140, 0, 0.4);
+}
+
+.mediumDemon {
+    color: #ffa500;
+    text-shadow: 0 0 8px rgba(255, 165, 0, 0.4);
+}
+
+.easyDemon {
+    color: #32cd32;
+    text-shadow: 0 0 8px rgba(50, 205, 50, 0.4);
+}
+
+.insane {
+    color: #ff1493;
+    text-shadow: 0 0 8px rgba(255, 20, 147, 0.4);
+}
+
+.harder {
+    color: #ff6347;
+    text-shadow: 0 0 8px rgba(255, 99, 71, 0.4);
+}
+
+.hard {
+    color: #ffd700;
+    text-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
+}
+
+.normal {
+    color: #00fa9a;
+    text-shadow: 0 0 8px rgba(0, 250, 154, 0.4);
+}
+
+.easy {
+    color: #7fff00;
+    text-shadow: 0 0 8px rgba(127, 255, 0, 0.4);
+}
+
+.auto {
+    color: #87ceeb;
+    text-shadow: 0 0 8px rgba(135, 206, 235, 0.4);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .difficultyIcon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .dropdown {
+        width: 180px;
+    }
+
+    .option {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+
+    .optionIcon {
+        width: 20px;
+        height: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .difficultyIcon {
+        width: 36px;
+        height: 36px;
+    }
+
+    .dropdown {
+        width: 160px;
+    }
+
+    .option {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+
+    .optionIcon {
+        width: 18px;
+        height: 18px;
+    }
+}
+
+/* Focus states for accessibility */
+.imageButton:focus {
+    outline: 2px solid #00d4ff;
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+.imageButtonDisabled:focus {
+    outline: none;
+}
+
+/* Special effects for different difficulties */
+.extremeDemonIcon:hover {
+    filter: drop-shadow(0 0 12px rgba(255, 0, 64, 0.8));
+}
+
+.insaneDemonIcon:hover {
+    filter: drop-shadow(0 0 12px rgba(255, 69, 0, 0.8));
+}
+
+.hardDemonIcon:hover {
+    filter: drop-shadow(0 0 12px rgba(255, 140, 0, 0.8));
+}

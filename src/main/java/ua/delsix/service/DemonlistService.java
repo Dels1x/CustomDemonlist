@@ -11,6 +11,7 @@ import ua.delsix.exception.DemonlistDoesntExistException;
 import ua.delsix.exception.MoreDemonlistsThanAllowedException;
 import ua.delsix.jpa.entity.Demonlist;
 import ua.delsix.jpa.entity.Person;
+import ua.delsix.jpa.repository.DemonlistLikesRepository;
 import ua.delsix.jpa.repository.DemonlistRepository;
 import ua.delsix.mapper.DemonlistMapper;
 import ua.delsix.util.DemonlistUtil;
@@ -22,6 +23,7 @@ import java.util.List;
 public class DemonlistService {
     private final AuthService authService;
     private final DemonlistRepository demonlistRepository;
+    private final DemonlistLikesRepository demonlistLikesRepository;
     private final DemonlistMapper demonlistMapper;
     private final PersonService personService;
     private final DemonlistUtil demonlistUtil;
@@ -30,10 +32,14 @@ public class DemonlistService {
 
     public DemonlistService(AuthService authService,
                             DemonlistRepository demonlistRepository,
+                            DemonlistLikesRepository demonlistLikesRepository,
                             DemonlistMapper demonlistMapper,
-                            PersonService personService, DemonlistUtil demonlistUtil, DemonService demonService) {
+                            PersonService personService,
+                            DemonlistUtil demonlistUtil,
+                            DemonService demonService) {
         this.authService = authService;
         this.demonlistRepository = demonlistRepository;
+        this.demonlistLikesRepository = demonlistLikesRepository;
         this.demonlistMapper = demonlistMapper;
         this.personService = personService;
         this.demonlistUtil = demonlistUtil;

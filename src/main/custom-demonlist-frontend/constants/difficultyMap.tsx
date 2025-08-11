@@ -1,5 +1,5 @@
 export const DIFFICULTY_MAP: Map<string, string> = new Map([
-    ['N/A', 'N/A'],
+    ['NA', 'NA'],
     ['EXTREME_DEMON', 'Extreme Demon'],
     ['INSANE_DEMON', 'Insane Demon'],
     ['HARD_DEMON', 'Hard Demon'],

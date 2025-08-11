@@ -4,8 +4,9 @@ import React, {useEffect, useRef} from "react";
 import {useAuthContext} from "@/context/AuthContext";
 import {deleteDemon} from "@/api/api";
 import DeleteButton from "@/components/DeleteButton";
-import DropdownWithImages from "@/components/DropdownWithImages";
+import DifficultyButton from "@/components/DifficultyButton";
 import CompletionDateInput from "@/components/CompletionDateInput";
+import styles from "@/styles/DemonRow.module.css"
 
 interface DemonRowProps {
     demonPlacement: number,
@@ -52,7 +53,7 @@ export default function DemonRow({
     }
 
     const DIFFICULTIES = [
-        'N/A', 'EXTREME_DEMON', 'INSANE_DEMON', 'HARD_DEMON', 'MEDIUM_DEMON', 'EASY_DEMON',
+        'NA', 'EXTREME_DEMON', 'INSANE_DEMON', 'HARD_DEMON', 'MEDIUM_DEMON', 'EASY_DEMON',
         'OBSIDIAN_DEMON', 'AZURITE_DEMON', 'AMETHYST_DEMON', 'ONYX_DEMON', 'PEARL_DEMON', 'DIAMOND_DEMON',
         'RUBY_DEMON', 'EMERALD_DEMON', 'JADE_DEMON', 'SAPPHIRE_DEMON', 'PLATINUM_DEMON',
         'AMBER_DEMON', 'GOLD_DEMON', 'SILVER_DEMON', 'BRONZE_DEMON', 'BEGINNER_DEMON',
@@ -60,7 +61,7 @@ export default function DemonRow({
     ];
 
     const ref = useRef<HTMLTableRowElement>(null);
-    const [, drag] = useDrag(() => ({
+    const [ {isDragging}, drag] = useDrag(() => ({
         type: "ROW",
         item: { id: demon.id, fromPlacement: demon.placement },
         collect: (monitor) => ({
@@ -68,7 +69,7 @@ export default function DemonRow({
         }),
     }), [demon.id, demon.placement]);
 
-    const [, drop] = useDrop({
+    const [ {isOver}, drop] = useDrop({
         accept: "ROW",
         drop: (dragged: { id: number, fromPlacement: number }) => {
             if (!ref.current || !isAuthorizedToEdit) return;
@@ -79,6 +80,9 @@ export default function DemonRow({
             rearrangeDemonlist(dragged.fromPlacement, toPlacement);
             rearrangeDemonlistRequest(dragged.id, toPlacement);
         },
+        collect: (monitor) => ({
+            isOver: monitor.isOver(),
+        })
     }, [isAuthorizedToEdit, demon.placement]);
 
     useEffect(() => {
@@ -101,12 +105,12 @@ export default function DemonRow({
     function renderField(fieldName: string, demon: Demon): React.ReactNode {
         switch (fieldName) {
             case "delete":
-                return <DeleteButton onDelete={handleDeleteDemon} label="X"/>;
+                return <DeleteButton onDelete={handleDeleteDemon} label="X" variant="trash"/>;
             case "difficulty":
                 return (
-                    <DropdownWithImages
+                    <DifficultyButton
                         options={DIFFICULTIES}
-                        selected={demon.difficulty || "N/A"}
+                        selected={demon.difficulty || "NA"}
                         onSelect={(newDiff) => handleSelectChange(newDiff, demon)}
                         isAuthorizedToEdit={isAuthorizedToEdit}
                     />
@@ -132,11 +136,19 @@ export default function DemonRow({
         }
     }
 
+    const rowClasses = [
+        styles.row,
+        isAuthorizedToEdit ? styles.rowDraggable : '',
+        isDragging ? styles.rowDragging : '',
+        isOver ? styles.dropTarget : ''
+    ].filter(Boolean).join(' ');
+
     return (
         <tr
             ref={ref}
+            className={rowClasses}
         >
-            {['delete', 'placement', 'name', 'author', 'difficulty', 'attemptsCount', 'worstFail', 'enjoymentRating',
+            {['delete', 'placement_', 'difficulty', 'name', 'author', 'attemptsCount', 'worstFail', 'enjoymentRating',
                 'dateOfCompletion', 'gddlTier', 'aredlPlacement']
                 .map((fieldName) => {
                     const isEditable = ['name', 'author', 'attemptsCount', 'worstFail', 'enjoymentRating'].includes(fieldName);
@@ -146,9 +158,14 @@ export default function DemonRow({
                     }
 
                     return (
-                        <td onDoubleClick={isEditable ? () => handleDoubleClick(demon, fieldName) : undefined}>
+                        <td
+                            key={fieldName}
+                            className={`${styles.cell} ${styles[fieldName]}`}
+                            onDoubleClick={isEditable && isAuthorizedToEdit ? () => handleDoubleClick(demon, fieldName) : undefined}
+                        >
                             {editing.id === demon.id && editing.field === fieldName && isAuthorizedToEdit ? (
                                 <input
+                                    className={styles.input}
                                     type="text"
                                     onChange={handleChange}
                                     onBlur={() => handleBlur(demon, fieldName)}
@@ -157,7 +174,11 @@ export default function DemonRow({
                                     value={data}
                                 />
                             ) : (
-                                fieldName === "placement" ? demon.placement === index + 1 ? `#${demon.placement}` : `#${index + 1} (${demon.placement})` : renderField(fieldName, demon)
+                                fieldName === "placement_" ?
+                                    demon.placement === index + 1 ?
+                                        `#${demon.placement}` :
+                                        `#${index + 1} (${demon.placement})`
+                                    : renderField(fieldName, demon)
                             )}
                         </td>
 

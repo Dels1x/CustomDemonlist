@@ -13,6 +13,7 @@ import {
 import {useAuthContext} from "@/context/AuthContext";
 import DemonRow from "@/components/DemonRow";
 import {fieldLabels} from "@/constants/fieldLabels";
+import styles from "@/styles/ListOfDemons.module.css";
 
 interface DemonlistProps {
     demons: Demon[];
@@ -36,7 +37,6 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons, isEditable})
         field: "placement",
         order: "asc",
     });
-
 
     const handleDoubleClick = (demon: Demon, fieldName: string) => {
         let tempData = demon[fieldName as keyof Demon];
@@ -97,7 +97,7 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons, isEditable})
             setDemons(prev =>
                 prev.map(d => d.id === demon.id ? updated! : d)
             );
-            setData(valueToUse);  // Always sync your input state after update
+            setData(valueToUse); 
         }
     }
 
@@ -218,54 +218,78 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons, isEditable})
 
         console.log("Sorting by", sortState.field, "Order:", sortState.order);
     }, [sortState, setDemons]);
+    if (!demons) {
+        return (
+            <div className={styles.container}>
+                <div className={styles.noDemons}>Error: No demons data</div>
+            </div>
+        );
+    }
 
+    if (demons.length === 0) {
+        return (
+            <div className={styles.container}>
+                <div className={styles.noDemons}>No demons in this list</div>
+            </div>
+        );
+    }
 
     return (
-        <table>
-            <tbody>
-            <tr key="names">
-                {['delete', 'placement', 'name', 'author', 'difficulty', 'attemptsCount', 'worstFail', 'enjoymentRating',
-                    'dateOfCompletion', 'gddlTier', 'aredlPlacement']
-                    .map((field) => {
-                        const showSortIcon = sortState.field === field;
-                        const icon = showSortIcon ? (sortState.order === 'asc' ? '▲' : '▼') : '';
+        <div className={styles.container}>
+            <div className={styles.debugInfo}>
+                Displaying {demons.length} demons
+            </div>
+            <table className={styles.table}>
+                <tbody>
+                <tr className={styles.headerRow}>
+                    {['delete', 'placement', 'difficulty', 'name', 'author', 'attemptsCount', 'worstFail', 'enjoymentRating',
+                        'dateOfCompletion', 'gddlTier', 'aredlPlacement']
+                        .map((field) => {
+                            const showSortIcon = sortState.field === field;
+                            const icon = showSortIcon ? (sortState.order === 'asc' ? '▲' : '▼') : '';
 
-                        console.log("isEditable like fr?", isEditable);
-                        console.log("field like fr?", field);
+                            if (!isEditable && (field as string) == 'delete') {
+                                return null;
+                            }
 
-                        if (!isEditable && field == 'delete') {
-                            return null;
-                        }
+                            return (
+                                <th
+                                    key={field}
+                                    className={styles.headerCell}
+                                    onClick={(field as string) !== 'delete' ? () => handleSortClick(field as keyof Demon) : undefined}
+                                    data-field={field}
+                                    style={{ cursor: (field as string) !== 'delete' ? 'pointer' : 'default' }}
+                                >
+                                    {fieldLabels[field] ?? field}
+                                    {showSortIcon && (field as string) !== 'delete' && <span className={styles.sortIcon}>{icon}</span>}
+                                </th>
+                            )
+                        })}
+                </tr>
 
-                        return (
-                            <td key={field} onClick={() => handleSortClick(field as keyof Demon)} style={{ cursor: 'pointer' }}>
-                                {fieldLabels[field] ?? field} {showSortIcon ? icon : ''}
-                            </td>
-                        )
-                    })}
-            </tr>
-
-            {demons.map((demon, index) => (
-                <DemonRow
-                    demonPlacement={demon.placement - 1}
-                    demon={demon}
-                    handleDoubleClick={handleDoubleClick}
-                    handleChange={handleChange}
-                    handleSelectChange={handleSelectDifficultyChange}
-                    handleBlur={handleBlur}
-                    handleKeyDown={handleKeyDown}
-                    editing={editing}
-                    data={data}
-                    rearrangeDemonlistRequest={rearrangeDemonlistRequest}
-                    rearrangeDemonlist={rearrangeDemonlist}
-                    deleteDemonLocally={deleteDemonLocally}
-                    handleUpdateCompletionDate={handleUpdateCompletionDate}
-                    index={index}
-                    isAuthorizedToEdit={isEditable}
-                />
-            ))}
-            </tbody>
-        </table>
+                {demons.map((demon, index) => (
+                    <DemonRow
+                        key={demon.id}
+                        demonPlacement={demon.placement - 1}
+                        demon={demon}
+                        handleDoubleClick={handleDoubleClick}
+                        handleChange={handleChange}
+                        handleSelectChange={handleSelectDifficultyChange}
+                        handleBlur={handleBlur}
+                        handleKeyDown={handleKeyDown}
+                        editing={editing}
+                        data={data}
+                        rearrangeDemonlistRequest={rearrangeDemonlistRequest}
+                        rearrangeDemonlist={rearrangeDemonlist}
+                        deleteDemonLocally={deleteDemonLocally}
+                        handleUpdateCompletionDate={handleUpdateCompletionDate}
+                        index={index}
+                        isAuthorizedToEdit={isEditable}
+                    />
+                ))}
+                </tbody>
+            </table>
+        </div>
     );
 }
 

@@ -1,0 +1,233 @@
+.deleteButton {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 35px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    color: #a0aec0;
+    font-size: 20px;
+    font-weight: 700;
+    position: relative;
+    overflow: hidden;
+}
+
+.deleteButton::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, transparent, rgba(255, 59, 59, 0.1));
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    border-radius: 4px;
+}
+
+.deleteButton:hover {
+    color: #ff3b3b;
+    background: rgba(255, 59, 59, 0.1);
+    border: 1px solid rgba(255, 59, 59, 0.3);
+    transform: scale(1.05);
+}
+
+.deleteButton:hover::before {
+    opacity: 1;
+}
+
+.deleteButton:active {
+    transform: scale(0.95);
+    background: rgba(255, 59, 59, 0.2);
+}
+
+.deleteButton:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    color: #718096;
+}
+
+.deleteButton:disabled:hover {
+    transform: none;
+    background: none;
+    border: none;
+}
+
+.deleteIcon {
+    font-size: 14px;
+    line-height: 1;
+    user-select: none;
+    pointer-events: none;
+}
+
+/* Alternative trash icon style */
+.deleteButtonTrash {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 35px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    color: #a0aec0;
+    position: relative;
+}
+
+.deleteButtonTrash:hover {
+    color: #ff3b3b;
+    background: rgba(255, 59, 59, 0.1);
+    transform: scale(1.1);
+}
+
+.deleteButtonTrash:active {
+    transform: scale(0.9);
+}
+
+.trashIcon {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+    transition: all 0.2s ease;
+}
+
+/* Minimalist dot style */
+.deleteButtonDot {
+    background: #4a5568;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    opacity: 0.6;
+}
+
+.deleteButtonDot:hover {
+    background: #ff3b3b;
+    opacity: 1;
+    transform: scale(1.5);
+    box-shadow: 0 0 8px rgba(255, 59, 59, 0.4);
+}
+
+.deleteButtonDot:active {
+    transform: scale(1.2);
+}
+
+/* Ultra minimal line style */
+.deleteButtonLine {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    width: 20px;
+    height: 2px;
+    background: #a0aec0;
+    transition: all 0.2s ease;
+    border-radius: 1px;
+    opacity: 0.6;
+}
+
+.deleteButtonLine:hover {
+    background: #ff3b3b;
+    opacity: 1;
+    height: 3px;
+    box-shadow: 0 0 6px rgba(255, 59, 59, 0.4);
+}
+
+.deleteButtonLine:active {
+    height: 2px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .deleteButton,
+    .deleteButtonTrash {
+        width: 24px;
+        height: 24px;
+    }
+
+    .deleteIcon {
+        font-size: 12px;
+    }
+
+    .trashIcon {
+        width: 14px;
+        height: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .deleteButton,
+    .deleteButtonTrash {
+        width: 20px;
+        height: 20px;
+    }
+
+    .deleteIcon {
+        font-size: 10px;
+    }
+
+    .trashIcon {
+        width: 12px;
+        height: 12px;
+    }
+}
+
+.deleteButtonWide {
+    background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+    border: 2px solid transparent;
+    padding: 8px 16px;
+    margin: 0;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 120px;
+    height: auto;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.deleteButtonWide:hover {
+    background: linear-gradient(135deg, #c53030 0%, #a02e2e 100%);
+    border-color: rgba(255, 59, 59, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(229, 62, 62, 0.3);
+}
+
+.deleteButtonWide:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.deleteButtonWide:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: #718096;
+}
+
+.wideButtonText {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

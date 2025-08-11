@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS demon
     placement          INTEGER                       NOT NULL,
     initial_placement  INTEGER,
     difficulty         VARCHAR(32) CHECK (difficulty IN
-                                          ('AUTO', 'EASY', 'NORMAL', 'HARD', 'HARDER', 'INSANE', 'EASY_DEMON',
+                                          ('NA', 'AUTO', 'EASY', 'NORMAL', 'HARD', 'HARDER', 'INSANE', 'EASY_DEMON',
                                            'MEDIUM_DEMON', 'HARD_DEMON', 'INSANE_DEMON', 'EXTREME_DEMON',
                                            'OBSIDIAN_DEMON', 'AZURITE_DEMON', 'AMETHYST_DEMON', 'ONYX_DEMON',
                                            'PEARL_DEMON', 'DIAMOND_DEMON', 'RUBY_DEMON', 'EMERALD_DEMON',

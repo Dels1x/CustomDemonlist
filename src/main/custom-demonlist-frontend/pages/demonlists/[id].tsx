@@ -77,36 +77,100 @@ const DemonlistPage: React.FC<DemonlistProps> = ({demonlist, accessToken, user})
 
     return (
         <Layout>
-            <main>
-                <div className={styles.demonlist}>
-                    {isEditing ? (
-                        <input
-                            type="text"
-                            autoFocus
-                            value={name}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            onKeyDown={handleKeyDown}
-                        />
-                    ) : (
-                        <span onDoubleClick={isEditable ? doubleClick : undefined}>
-                        {`#${demonlist.id} - ${name}`}
-                    </span>
-                    )}
+            <main className={styles.demonlist}> {/* CHANGED: Moved class here */}
+                {/* ADDED: Header section */}
+                <div className={styles.header}>
+                    <div className={styles.titleSection}>
+                        <span className={styles.idBadge}>#{demonlist.id}</span> {/* ADDED: ID badge */}
+                        {isEditing ? (
+                            <input
+                                className={styles.titleInput} // ADDED: CSS class
+                                type="text"
+                                autoFocus
+                                value={name}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                onKeyDown={handleKeyDown}
+                            />
+                        ) : (
+                            <span
+                                className={styles.titleText} // ADDED: CSS class
+                                onDoubleClick={doubleClick}
+                                title={isEditable ? "Double-click to edit" : undefined} // ADDED: Tooltip
+                            >
+                                {name}
+                            </span>
+                        )}
+                    </div>
 
-                    {isEditable && (
-                        <DeleteButton
-                            onDelete={handleDeleteDemonlist}
-                            label={`Delete ${name}`}
-                        />
-                    )}
+                    {/* ADDED: Actions section */}
+                    <div className={styles.actionsSection}>
+                        {isEditable && (
+                            <DeleteButton
+                                onDelete={handleDeleteDemonlist}
+                                label={`Delete ${name}`}
+                                variant='wide'
+                            />
+                        )}
+                    </div>
+                </div>
 
-                    <DemonlistManager accessToken={accessToken} demonlist={demonlist} isEditable={isEditable}/>
+                {/* ADDED: Status bar */}
+                <div className={styles.statusBar}>
+                    <div className={styles.statusItem}>
+                        {/* CHANGED: User SVG icon instead of emoji */}
+                        <svg className={styles.statusIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             strokeWidth="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                        <span>Created by <span className={styles.creatorName}>{demonlist.person.username}</span></span>
+                    </div>
+
+                    <div className={styles.statusItem}>
+                        {/* CHANGED: Database/list SVG icon instead of emoji */}
+                        <svg className={styles.statusIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             strokeWidth="2">
+                            <ellipse cx="12" cy="5" rx="9" ry="3"/>
+                            <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
+                            <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+                        </svg>
+                        <span><span className={styles.demonCount}>{demonlist.demons?.length || 0}</span> demons registered</span>
+                    </div>
+
+                    <div className={styles.statusItem}>
+                        {/* CHANGED: Lock/unlock SVG icon instead of emoji */}
+                        {demonlist.isPublic ? (
+                            <svg className={styles.statusIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                 strokeWidth="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                            </svg>
+                        ) : (
+                            <svg className={styles.statusIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                 strokeWidth="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                                <path d="M7 11V7a5 5 0 0 1 5-5 5 5 0 0 1 5 5v4"/>
+                                <line x1="12" y1="16" x2="12" y2="18"/>
+                            </svg>
+                        )}
+                        <span className={demonlist.isPublic ? styles.publicBadge : styles.privateBadge}>
+            {demonlist.isPublic ? 'Public Access' : 'Private Vault'}
+        </span>
+                    </div>
+                </div>
+
+                {/* CHANGED: Wrapped content */}
+                <div className={styles.content}>
+                    <DemonlistManager
+                        accessToken={accessToken}
+                        demonlist={demonlist}
+                        isEditable={isEditable}
+                    />
                 </div>
             </main>
         </Layout>
     );
-
 }
 
 export async function getServerSideProps(context: any) {
