@@ -15,6 +15,9 @@ import java.time.LocalDate;
 public interface DemonRepository extends JpaRepository<Demon, Long> {
     int countByDemonlistId(long demonlistId);
 
+    @Query("SELECT COUNT(d) FROM Demon d WHERE d.demonlist.person.id = :personId")
+    int countDemonsByPersonId(Long personId);
+
     @Modifying
     @Transactional
     @Query("UPDATE Demon d SET d.placement = d.placement + 1 WHERE d.placement >= :placement " +

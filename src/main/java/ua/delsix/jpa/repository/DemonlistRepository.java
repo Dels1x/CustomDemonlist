@@ -20,6 +20,9 @@ public interface DemonlistRepository extends JpaRepository<Demonlist, Long> {
 
     int countByPersonId(long id);
 
+    @Query("SELECT COUNT(d) FROM Demonlist d WHERE d.person.id = :personId AND d.isPublic = true")
+    int countByPersonIdAndIsPublicTrue(Long personId);
+
     @Query("SELECT d From Demonlist d WHERE d.person = :person ORDER BY d.id ASC")
     List<Demonlist> findAllByPerson(Person person);
 

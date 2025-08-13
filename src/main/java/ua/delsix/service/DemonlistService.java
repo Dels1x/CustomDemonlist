@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.delsix.dto.DemonlistDto;
+import ua.delsix.dto.UserStatsDto;
 import ua.delsix.exception.AuthorizationException;
 import ua.delsix.exception.DemonlistDoesntExistException;
 import ua.delsix.exception.MoreDemonlistsThanAllowedException;
@@ -142,5 +143,13 @@ public class DemonlistService {
         }
 
         return demonlistRepository.countByPersonId(id);
+    }
+
+    public UserStatsDto getUserStats(long personId) {
+        int demonsCount = demonService.countDemonsByPersonId(personId);
+        int listsCount = demonlistRepository.countByPersonId(personId);
+        int publicListsCount = demonlistRepository.countByPersonIdAndIsPublicTrue(personId);
+
+        return new UserStatsDto(listsCount, demonsCount, publicListsCount, 0);
     }
 }

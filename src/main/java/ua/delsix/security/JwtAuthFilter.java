@@ -26,6 +26,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final Set<String> publicEndpoints = Set.of(
             "/demonlists/demonlist",
+            "/users/stats",
             "/oauth2/callback",
             "/oauth2/refresh-access-token"
     );

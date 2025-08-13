@@ -333,4 +333,9 @@ public class DemonService {
     public void deleteDemonsBy(Demonlist demonlist) {
         demonRepository.deleteByDemonlist(demonlist);
     }
+
+    @Transactional
+    public int countDemonsByPersonId(long id) {
+        return demonRepository.countDemonsByPersonId(id);
+    }
 }

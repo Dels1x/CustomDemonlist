@@ -45,6 +45,7 @@ public class Person {
     private Instant createdAt;
 
     @Column(name = "pfp_url")
+    @JsonView(Views.Public.class)
     private String pfpUrl;
 
     @Column(name = "discord_id")

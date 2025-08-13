@@ -9,6 +9,7 @@ import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
 import ua.delsix.util.Views;
 
+import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -43,6 +44,10 @@ public class Demonlist {
     @Column(name = "is_multi", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
     @JsonView({Views.Public.class, Views.Superficial.class})
     private Boolean isMulti = false;
+
+    @Column(name = "created_at", nullable = false)
+    @JsonView({Views.Public.class, Views.Superficial.class})
+    private LocalDate createdAt;
 
     @OneToMany(mappedBy = "demonlist", fetch = FetchType.EAGER)
     @OrderBy("placement ASC")
