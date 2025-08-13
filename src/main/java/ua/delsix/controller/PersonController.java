@@ -57,11 +57,11 @@ public class PersonController {
     }
 
     @GetMapping("/stats")
-    public ResponseEntity<?> getUserStats(@RequestParam long userId) {
-        log.info("New request to get stats for user id {}", userId);
+    public ResponseEntity<?> getUserStats(@RequestParam long id) {
+        log.info("New request to get stats for user id {}", id);
 
         try {
-            UserStatsDto stats = demonlistService.getUserStats(userId);
+            UserStatsDto stats = demonlistService.getUserStats(id);
             return ResponseEntity.ok(stats);
         } catch (EntityNotFoundException e) {
             return ResponseUtil.notFoundMessage(e.getMessage());
