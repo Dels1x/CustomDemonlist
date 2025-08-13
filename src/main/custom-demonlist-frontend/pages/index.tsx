@@ -32,7 +32,7 @@ const Home: React.FC<HomeProps> = ({ user: serverUser }) => {
                         Welcome to Custom Demonlist
                     </h1>
                     <p className={styles.heroSubtitle}>
-                        Create and manage your personalized Geometry Dash demon lists.
+                        Create and manage your personalized Geometry Dash demonlists.
                         Track your progress, organize your completions, and share your achievements
                         with the community.
                     </p>
