@@ -2,8 +2,10 @@ import React, {ReactNode, useState} from "react";
 import styles from "@/styles/Layout.module.css";
 import Head from "next/head";
 import Link from "next/link";
+import Image from 'next/image';
 import DemonlistListManager from "@/components/DemonlistListManager";
 import {useAuthContext} from "@/context/AuthContext";
+import {usePersonContext} from "@/context/PersonContext";
 
 interface LayoutProps {
     children: ReactNode;
@@ -11,8 +13,9 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({children}) => {
     const {user, accessToken} = useAuthContext();
+    const {person, isLoading: isLoadingPerson} = usePersonContext();
     const isAuthenticated = user !== null;
-    const [isMobileNavOpen, setIsMobileNavOpen] = useState(false); // ADDED: Mobile nav state
+    const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
 
     if (isAuthenticated) {
         console.log(JSON.stringify(user));
@@ -20,23 +23,22 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
 
     console.log("=== Layout Debug ===");
     console.log("children:", children);
+    console.log("person:", person);
     console.log("==================");
 
-    // ADDED: Toggle mobile nav
     const toggleMobileNav = () => {
         setIsMobileNavOpen(!isMobileNavOpen);
     };
 
     return (
-        <div className={styles.container}> {/* CHANGED: Added container class */}
+        <div className={styles.container}>
             <Head>
-                <title>Custom Demonlist</title> {/* CHANGED: Better title */}
+                <title>Custom Demonlist</title>
                 <meta name="description" content="Create and manage your custom demon lists - The ultimate Geometry Dash community platform"/>
                 <meta name="viewport" content="width=device-width, initial-scale=1"/>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
-            {/* ADDED: Mobile navigation toggle */}
             <button
                 className={styles.mobileNavToggle}
                 onClick={toggleMobileNav}
@@ -49,9 +51,7 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
                 </svg>
             </button>
 
-            {/* UPDATED: Enhanced navigation */}
             <nav className={`${styles.nav} ${isMobileNavOpen ? styles.open : ''}`}>
-                {/* ADDED: Navigation header */}
                 <div className={styles.navHeader}>
                     <Link href="/" className={styles.logo}>
                         DEMONLIST
@@ -61,9 +61,7 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
                     </div>
                 </div>
 
-                {/* ADDED: Navigation content */}
                 <div className={styles.navContent}>
-                    {/* ADDED: Main navigation section */}
                     <div className={styles.navSection}>
                         <div className={styles.navSectionTitle}>Navigation</div>
                         <div className={styles.navLinks}>
@@ -97,7 +95,6 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
                         </div>
                     </div>
 
-                    {/* ADDED: Demonlist section for authenticated users */}
                     {accessToken && isAuthenticated && (
                         <div className={styles.navSection}>
                             <div className={styles.navSectionTitle}>Your Lists</div>
@@ -105,16 +102,27 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
                         </div>
                     )}
 
-                    {/* ADDED: User section at bottom */}
                     {isAuthenticated && user && (
                         <div className={styles.userSection}>
                             <div className={styles.userInfo}>
                                 <div className={styles.userAvatar}>
-                                    {user.username ? user.username.charAt(0).toUpperCase() : 'U'}
+                                    {person?.pfpUrl && !isLoadingPerson ? (
+                                        <Image
+                                            src={person.pfpUrl}
+                                            alt={`${person.username || user?.username || 'User'} avatar`}
+                                            width={40}
+                                            height={40}
+                                            className={styles.avatarImage}
+                                        />
+                                    ) : user?.username ? (
+                                        user.username.charAt(0).toUpperCase()
+                                    ) : (
+                                        'U'
+                                    )}
                                 </div>
                                 <div className={styles.userDetails}>
                                     <div className={styles.userName}>
-                                        {user.username || 'User'}
+                                        {person?.username || user?.username || 'User'}
                                     </div>
                                     <div className={styles.userStatus}>
                                         Online
@@ -126,7 +134,6 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
                 </div>
             </nav>
 
-            {/* UPDATED: Main content area */}
             <main className={`${styles.mainContent} ${isMobileNavOpen ? styles.navOpen : ''}`}>
                 {children}
             </main>
