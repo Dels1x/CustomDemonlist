@@ -369,7 +369,6 @@ export async function deleteDemon(demonId: number,
                                   accessToken: string) {
     try {
         const url = `demons/delete?demonId=${demonId}`;
-        console.log(url);
         const response = await api.delete(
             url,
             {
@@ -378,6 +377,30 @@ export async function deleteDemon(demonId: number,
                 }
             }
         );
+
+        return response.data;
+    } catch (error) {
+        console.error('Error deleting demonlist', error);
+    }
+}
+
+// USER endpoints
+
+export async function getUser(id: number) {
+    try {
+        const url = `users/user?id=${id}`;
+        const response = await api.get(url);
+
+        return response.data;
+    } catch (error) {
+        console.error('Error deleting demonlist', error);
+    }
+}
+
+export async function getUserStats(id: number) {
+    try {
+        const url = `users/stats?id=${id}`;
+        const response = await api.get(url);
 
         return response.data;
     } catch (error) {

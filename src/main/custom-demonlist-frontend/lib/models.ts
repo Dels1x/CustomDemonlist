@@ -32,5 +32,6 @@ export interface Demonlist {
     name: string;
     isPublic: boolean;
     isMulti: boolean;
+    createdAt: Date;
     demons: Demon[];
 }

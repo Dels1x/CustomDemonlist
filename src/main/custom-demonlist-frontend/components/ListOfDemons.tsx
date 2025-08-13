@@ -97,7 +97,7 @@ const ListOfDemons: React.FC<DemonlistProps> = ({demons, setDemons, isEditable})
             setDemons(prev =>
                 prev.map(d => d.id === demon.id ? updated! : d)
             );
-            setData(valueToUse); 
+            setData(valueToUse);
         }
     }
 

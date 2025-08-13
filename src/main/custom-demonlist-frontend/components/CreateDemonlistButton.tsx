@@ -31,6 +31,7 @@ const CreateDemonlistButton: React.FC<CreateDemonlistButtonProps> = ({onDemonlis
                 name: "Demonlist #" + (Number(demonlistCount) + 1),
                 isPublic: true,
                 isMulti: false,
+                createdAt: new Date(), // placeholder
                 demons: [],
             };
 
