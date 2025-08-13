@@ -4,6 +4,7 @@ import {AuthProvider} from "@/context/AuthContext";
 import {DemonlistProvider} from "@/context/DemonlistContext";
 import {DndProvider} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";
+import {PersonProvider} from "@/context/PersonContext";
 
 export default function App({Component, pageProps}: AppProps) {
     const isAuthenticated = pageProps.user !== undefined && pageProps.user !== null;
@@ -12,15 +13,17 @@ export default function App({Component, pageProps}: AppProps) {
 
     return (
         <AuthProvider accessToken={pageProps.accessToken} user={pageProps.user}>
-            <DndProvider backend={HTML5Backend}>
-                {isAuthenticated ? (
-                    <DemonlistProvider accessToken={pageProps.accessToken} userId={pageProps.user.sub}>
+            <PersonProvider>
+                <DndProvider backend={HTML5Backend}>
+                    {isAuthenticated ? (
+                        <DemonlistProvider accessToken={pageProps.accessToken} userId={pageProps.user.sub}>
+                            <Component {...pageProps} />
+                        </DemonlistProvider>
+                    ) : (
                         <Component {...pageProps} />
-                    </DemonlistProvider>
-                ) : (
-                    <Component {...pageProps} />
-                )}
-            </DndProvider>
+                    )}
+                </DndProvider>
+            </PersonProvider>
         </AuthProvider>
     );
 }
