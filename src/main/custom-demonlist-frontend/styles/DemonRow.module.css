@@ -1,0 +1,283 @@
+
+.row {
+    transition: all 0.2s ease;
+    border-bottom: 1px solid rgba(74, 85, 104, 0.3);
+    position: relative;
+}
+
+.row:nth-child(even) {
+    background: linear-gradient(90deg, rgba(26, 32, 44, 0.3), rgba(45, 55, 72, 0.2));
+}
+
+.row:nth-child(odd) {
+    background: linear-gradient(90deg, rgba(22, 33, 62, 0.3), rgba(26, 26, 46, 0.2));
+}
+
+.row:hover {
+    background: linear-gradient(90deg, rgba(0, 212, 255, 0.1), rgba(0, 153, 204, 0.1));
+    transform: scale(1.001);
+    box-shadow: 0 2px 8px rgba(0, 212, 255, 0.2);
+}
+
+.rowDraggable {
+    cursor: move;
+}
+
+.rowDragging {
+    opacity: 0.5;
+    background: linear-gradient(90deg, rgba(0, 212, 255, 0.2), rgba(0, 153, 204, 0.2));
+    transform: rotate(2deg);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+}
+
+.cell {
+    padding: 12px 8px;
+    text-align: center;
+    vertical-align: middle;
+    border-right: 1px solid rgba(74, 85, 104, 0.2);
+    color: #e2e8f0;
+    font-weight: 500;
+    position: relative;
+}
+
+.cell:last-child {
+    border-right: none;
+}
+
+.cellEditable {
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.cellEditable:hover {
+    background: rgba(0, 212, 255, 0.1);
+    color: #00d4ff;
+}
+
+.placement {
+    font-weight: 700;
+    font-size: 16px;
+    color: #00d4ff;
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+}
+
+.placementMismatch {
+    color: #ff6b6b;
+    text-shadow: 0 0 10px rgba(255, 107, 107, 0.3);
+}
+
+.demonName {
+    font-weight: 700;
+    font-size: 15px;
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.author {
+    color: #a0aec0;
+    font-style: italic;
+    font-size: 13px;
+}
+
+.difficulty {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+}
+
+.difficultyExtremeDemon {
+    color: #ff0040;
+    text-shadow: 0 0 8px rgba(255, 0, 64, 0.4);
+}
+
+.difficultyInsaneDemon {
+    color: #ff4500;
+    text-shadow: 0 0 8px rgba(255, 69, 0, 0.4);
+}
+
+.difficultyHardDemon {
+    color: #ff8c00;
+    text-shadow: 0 0 8px rgba(255, 140, 0, 0.4);
+}
+
+.percentage {
+    color: #4fd1c7;
+    font-weight: 600;
+}
+
+.enjoymentRating {
+    color: #68d391;
+    font-weight: 600;
+}
+
+.tierRating {
+    background: linear-gradient(45deg, #805ad5, #b794f6);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    text-shadow: none;
+    display: inline-block;
+    min-width: 40px;
+}
+
+.placement {
+    background: linear-gradient(45deg, #00d4ff, #0099cc);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    text-shadow: none;
+    display: inline-block;
+    min-width: 30px;
+}
+
+.input {
+    background: rgba(26, 32, 44, 0.9);
+    border: 2px solid #00d4ff;
+    border-radius: 6px;
+    padding: 6px 10px;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 500;
+    width: 100%;
+    max-width: 120px;
+    text-align: center;
+    outline: none;
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+    transition: all 0.2s ease;
+}
+
+.input:focus {
+    border-color: #00b8e6;
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
+    background: rgba(26, 32, 44, 1);
+}
+
+.input::placeholder {
+    color: #a0aec0;
+}
+
+.deleteButton {
+    background: linear-gradient(45deg, #f56565, #e53e3e);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 10px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 12px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.deleteButton:hover {
+    background: linear-gradient(45deg, #e53e3e, #c53030);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(245, 101, 101, 0.3);
+}
+
+.deleteButton:active {
+    transform: translateY(0);
+}
+
+/* Drag and drop visual feedback */
+.dropTarget {
+    border-top: 3px solid #00d4ff;
+    box-shadow: 0 -2px 8px rgba(0, 212, 255, 0.3);
+}
+
+.dragPreview {
+    opacity: 0.8;
+    transform: rotate(-3deg);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+/* Loading states */
+.rowLoading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.cellLoading {
+    position: relative;
+}
+
+.cellLoading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(0, 212, 255, 0.2);
+    border-top-color: #00d4ff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+/* Responsive design */
+@media (max-width: 1200px) {
+    .cell {
+        padding: 10px 6px;
+        font-size: 13px;
+    }
+
+    .input {
+        max-width: 100px;
+        padding: 4px 6px;
+    }
+}
+
+@media (max-width: 768px) {
+    .cell {
+        padding: 8px 4px;
+        font-size: 12px;
+    }
+
+    .demonName {
+        font-size: 13px;
+    }
+
+    .placement {
+        font-size: 14px;
+    }
+
+    .input {
+        max-width: 80px;
+        padding: 4px;
+        font-size: 12px;
+    }
+
+    .deleteButton {
+        padding: 4px 6px;
+        font-size: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .cell {
+        padding: 6px 2px;
+        font-size: 10px;
+    }
+
+    .input {
+        max-width: 60px;
+    }
+}
+
+.difficulty {
+    text-align: center;
+    vertical-align: center;
+}
