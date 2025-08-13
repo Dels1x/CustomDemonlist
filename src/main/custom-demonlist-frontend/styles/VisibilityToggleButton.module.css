@@ -1,0 +1,234 @@
+.toggleButton {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 110px;
+    justify-content: center;
+    background: transparent;
+    border: 2px solid;
+    position: relative;
+    overflow: hidden;
+}
+
+.toggleButton:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.toggleButton:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.toggleButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Public state styles (green tint) */
+.public {
+    color: #16a34a;
+    border-color: #16a34a;
+    background: rgba(22, 163, 74, 0.1);
+}
+
+.public:hover:not(:disabled) {
+    background: rgba(22, 163, 74, 0.2);
+    border-color: #15803d;
+    color: #15803d;
+}
+
+.public.animating {
+    background: rgba(22, 163, 74, 0.25);
+    border-color: #15803d;
+    color: #15803d;
+}
+
+/* Private state styles (red tint) */
+.private {
+    color: #dc2626;
+    border-color: #dc2626;
+    background: rgba(220, 38, 38, 0.1);
+}
+
+.private:hover:not(:disabled) {
+    background: rgba(220, 38, 38, 0.2);
+    border-color: #b91c1c;
+    color: #b91c1c;
+}
+
+.private.animating {
+    background: rgba(220, 38, 38, 0.25);
+    border-color: #b91c1c;
+    color: #b91c1c;
+}
+
+.iconContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lockIcon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+}
+
+.shackle {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: center;
+}
+
+.openShackle {
+    stroke-dasharray: 20;
+    stroke-dashoffset: 0;
+    animation: openLock 0.6s ease-out;
+}
+
+.closedShackle {
+    stroke-dasharray: 20;
+    stroke-dashoffset: 0;
+    animation: closeLock 0.6s ease-out;
+}
+
+.keyhole {
+    transition: all 0.3s ease;
+}
+
+.keyholeSlot {
+    transition: all 0.3s ease;
+    fill: currentColor;
+}
+
+/* Lock opening animation */
+@keyframes openLock {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        stroke-dashoffset: 0;
+    }
+    30% {
+        transform: translateY(-1px) rotate(-2deg);
+        stroke-dashoffset: -2;
+    }
+    60% {
+        transform: translateY(-2px) rotate(2deg);
+        stroke-dashoffset: 2;
+    }
+    100% {
+        transform: translateY(-1px) rotate(0deg);
+        stroke-dashoffset: 0;
+    }
+}
+
+/* Lock closing animation */
+@keyframes closeLock {
+    0% {
+        transform: translateY(-1px) rotate(0deg);
+        stroke-dashoffset: 0;
+    }
+    30% {
+        transform: translateY(-1px) rotate(2deg);
+        stroke-dashoffset: 2;
+    }
+    60% {
+        transform: translateY(0px) rotate(-1deg);
+        stroke-dashoffset: -1;
+    }
+    100% {
+        transform: translateY(0) rotate(0deg);
+        stroke-dashoffset: 0;
+    }
+}
+
+.loadingIcon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Button press animation */
+.toggleButton:active:not(:disabled) .lockIcon {
+    transform: scale(0.95);
+}
+
+/* Hover animation for the entire lock */
+.toggleButton:hover:not(:disabled) .lockIcon {
+    animation: lockHover 0.8s ease-in-out;
+}
+
+@keyframes lockHover {
+    0%, 100% {
+        transform: scale(1) rotate(0deg);
+    }
+    25% {
+        transform: scale(1.05) rotate(-1deg);
+    }
+    50% {
+        transform: scale(1.03) rotate(1deg);
+    }
+    75% {
+        transform: scale(1.01) rotate(-0.5deg);
+    }
+}
+
+/* Enhanced animation when state is changing */
+.animating .lockIcon {
+    animation: stateChange 0.6s ease-in-out;
+}
+
+@keyframes stateChange {
+    0% {
+        transform: scale(1) rotate(0deg);
+    }
+    25% {
+        transform: scale(1.15) rotate(-5deg);
+    }
+    50% {
+        transform: scale(1.1) rotate(5deg);
+    }
+    75% {
+        transform: scale(1.05) rotate(-2deg);
+    }
+    100% {
+        transform: scale(1) rotate(0deg);
+    }
+}
+
+.buttonText {
+    font-weight: 600;
+    letter-spacing: 0.025em;
+    transition: all 0.3s ease;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .toggleButton {
+        padding: 8px 12px;
+        font-size: 13px;
+        min-width: 90px;
+    }
+
+    .lockIcon,
+    .loadingIcon {
+        width: 16px;
+        height: 16px;
+    }
+}

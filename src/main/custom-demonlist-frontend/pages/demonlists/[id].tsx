@@ -10,6 +10,7 @@ import {useOptionalDemonlistContext} from "@/context/DemonlistContext";
 import DeleteButton from "@/components/DeleteButton";
 import {useRouter} from "next/router";
 import styles from "@/styles/Demonlist.module.css"
+import VisibilityToggleButton from "@/components/VisibilityToggleButton";
 
 interface DemonlistProps {
     demonlist: any;
@@ -75,16 +76,27 @@ const DemonlistPage: React.FC<DemonlistProps> = ({demonlist, accessToken, user})
         }
     }
 
+    const handleVisibilityToggle = async (newVisibility: boolean) => {
+        if (!isEditable || !accessToken) return;
+
+        try {
+            demonlist.isPublic = newVisibility; // Update the demonlist object
+            await refreshDemonlists();
+        } catch (error) {
+            console.error('Failed to update visibility:', error);
+            // Optionally show an error message to the user
+        }
+    }
+
     return (
         <Layout>
-            <main className={styles.demonlist}> {/* CHANGED: Moved class here */}
-                {/* ADDED: Header section */}
+            <main className={styles.demonlist}>
                 <div className={styles.header}>
                     <div className={styles.titleSection}>
-                        <span className={styles.idBadge}>#{demonlist.id}</span> {/* ADDED: ID badge */}
+                        <span className={styles.idBadge}>#{demonlist.id}</span>
                         {isEditing ? (
                             <input
-                                className={styles.titleInput} // ADDED: CSS class
+                                className={styles.titleInput}
                                 type="text"
                                 autoFocus
                                 value={name}
@@ -92,33 +104,36 @@ const DemonlistPage: React.FC<DemonlistProps> = ({demonlist, accessToken, user})
                                 onBlur={handleBlur}
                                 onKeyDown={handleKeyDown}
                             />
-                        ) : (
+                        ) :(
                             <span
-                                className={styles.titleText} // ADDED: CSS class
+                                className={styles.titleText}
                                 onDoubleClick={doubleClick}
-                                title={isEditable ? "Double-click to edit" : undefined} // ADDED: Tooltip
+                                title={isEditable ? "Double-click to edit" : undefined}
                             >
                                 {name}
                             </span>
                         )}
                     </div>
 
-                    {/* ADDED: Actions section */}
                     <div className={styles.actionsSection}>
                         {isEditable && (
-                            <DeleteButton
-                                onDelete={handleDeleteDemonlist}
-                                label={`Delete ${name}`}
-                                variant='wide'
-                            />
+                            <>
+                                <VisibilityToggleButton
+                                    isPublic={demonlist.isPublic}
+                                    onToggle={handleVisibilityToggle}
+                                />
+                                <DeleteButton
+                                    onDelete={handleDeleteDemonlist}
+                                    label={`Delete ${name}`}
+                                    variant='wide'
+                                />
+                            </>
                         )}
                     </div>
                 </div>
 
-                {/* ADDED: Status bar */}
                 <div className={styles.statusBar}>
                     <div className={styles.statusItem}>
-                        {/* CHANGED: User SVG icon instead of emoji */}
                         <svg className={styles.statusIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor"
                              strokeWidth="2">
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
@@ -128,7 +143,6 @@ const DemonlistPage: React.FC<DemonlistProps> = ({demonlist, accessToken, user})
                     </div>
 
                     <div className={styles.statusItem}>
-                        {/* CHANGED: Database/list SVG icon instead of emoji */}
                         <svg className={styles.statusIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor"
                              strokeWidth="2">
                             <ellipse cx="12" cy="5" rx="9" ry="3"/>
@@ -139,7 +153,6 @@ const DemonlistPage: React.FC<DemonlistProps> = ({demonlist, accessToken, user})
                     </div>
 
                     <div className={styles.statusItem}>
-                        {/* CHANGED: Lock/unlock SVG icon instead of emoji */}
                         {demonlist.isPublic ? (
                             <svg className={styles.statusIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                  strokeWidth="2">
@@ -160,7 +173,6 @@ const DemonlistPage: React.FC<DemonlistProps> = ({demonlist, accessToken, user})
                     </div>
                 </div>
 
-                {/* CHANGED: Wrapped content */}
                 <div className={styles.content}>
                     <DemonlistManager
                         accessToken={accessToken}
@@ -181,7 +193,6 @@ export async function getServerSideProps(context: any) {
     const demonlist = await getDemonlist(id, accessToken);
     console.log("Demonlist: " + JSON.stringify(demonlist));
 
-    // Handle case where demonlist is null (error occurred or not found)
     if (!demonlist) {
         return {
             notFound: true,
@@ -192,7 +203,6 @@ export async function getServerSideProps(context: any) {
         props: {
             demonlist,
             user,
-            // Ensure accessToken is null instead of undefined for JSON serialization
             accessToken: accessToken || null,
         }
     }
