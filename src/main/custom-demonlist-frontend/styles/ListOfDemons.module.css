@@ -126,9 +126,9 @@
 
 .headerCell:nth-child(3),
 .cell:nth-child(3) {
-    width: 70px; /* Just 2px padding on each side */
-    min-width: 70px;
-    max-width: 80px;
+    width: 80px;
+    min-width: 80px;
+    max-width: 90px;
     padding: 4px 1px;
     text-align: center;
     vertical-align: center;
@@ -136,7 +136,7 @@
 
 .headerCell:nth-child(1),
 .cell:nth-child(1) {
-    width: 30px; /* Just 2px padding on each side */
+    width: 30px;
     min-width: 30px;
     max-width: 30px;
     padding: 4px 1px;
