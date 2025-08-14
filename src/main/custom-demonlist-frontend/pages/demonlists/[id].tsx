@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {deleteDemonlist, getDemonlist, updateDemonlistName} from "@/api/api";
+import {deleteDemonlist, getDemonlist, updateDemonlistName, updateDemonlistVisibility} from "@/api/api";
 import {
     extractFromAccessToken,
     getAccessTokenAndRefreshToken,
@@ -80,11 +80,11 @@ const DemonlistPage: React.FC<DemonlistProps> = ({demonlist, accessToken, user})
         if (!isEditable || !accessToken) return;
 
         try {
-            demonlist.isPublic = newVisibility; // Update the demonlist object
+            await updateDemonlistVisibility(demonlist.id, newVisibility, accessToken);
+            demonlist.isPublic = newVisibility;
             await refreshDemonlists();
         } catch (error) {
             console.error('Failed to update visibility:', error);
-            // Optionally show an error message to the user
         }
     }
 

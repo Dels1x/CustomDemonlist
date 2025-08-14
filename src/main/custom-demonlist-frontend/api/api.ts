@@ -153,6 +153,27 @@ export async function createNewDemon(
     }
 }
 
+export async function updateDemonlistVisibility(id: number,
+                                          isPublic: boolean,
+                                          accessToken: string) {
+    try {
+        const response = await api.patch(
+            'demonlists/update-visibility',
+            null,
+            {
+                params: {id: id, isPublic: isPublic},
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                }
+            }
+        );
+
+        return response.data;
+    } catch (error) {
+        console.error('Error updating demonlist\'s name', error);
+    }
+}
+
 export async function updateDemonlistName(id: number,
                                           name: string,
                                           accessToken: string) {

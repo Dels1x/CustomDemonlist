@@ -33,4 +33,9 @@ public interface DemonlistRepository extends JpaRepository<Demonlist, Long> {
     @Transactional
     @Query("UPDATE Demonlist d SET d.name = :newName WHERE d.id = :id")
     void updateNameById(long id, String newName);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Demonlist d SET d.isPublic = :isPublic WHERE d.id = :id")
+    void updateIsPublicById(long id, boolean isPublic);
 }

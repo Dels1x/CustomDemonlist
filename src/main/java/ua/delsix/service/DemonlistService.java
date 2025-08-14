@@ -152,4 +152,15 @@ public class DemonlistService {
 
         return new UserStatsDto(listsCount, demonsCount, publicListsCount, 0);
     }
+
+    @Transactional
+    public void updateDemonlistVisibility(long id, boolean isPublic, UserDetails userDetails) throws
+            DemonlistDoesntExistException,
+            AuthorizationException {
+        Person person = personService.getUserFromUserDetails(userDetails);
+        Demonlist demonlist = demonlistUtil.getDemonlistThrowIfDoesntExist(id);
+        authService.verifyOwnershipOfTheDemonlist(demonlist, person);
+
+        demonlistRepository.updateIsPublicById(id, isPublic);
+    }
 }

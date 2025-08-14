@@ -110,6 +110,25 @@ public class DemonlistController {
         }
     }
 
+    @PatchMapping("/update-visibility")
+    public ResponseEntity<String> updateDemonlistVisibility(@RequestParam long id,
+                                                      @RequestParam boolean isPublic,
+                                                      @AuthenticationPrincipal UserDetails userDetails) {
+        log.info("New request to update demonlist with visibility isPublic {}", isPublic);
+
+        try {
+            demonlistService.updateDemonlistVisibility(id, isPublic, userDetails);
+            return ResponseEntity.ok(String.format("%s's demonlist #%s's name has been updated to %s",
+                    userDetails.getUsername(),
+                    id,
+                    isPublic));
+        } catch (AuthorizationException e) {
+            return ResponseUtil.authorizationExceptionMessage(e.getMessage());
+        } catch (DemonlistDoesntExistException e) {
+            return ResponseUtil.demonlistDoesntExistMessage();
+        }
+    }
+
     @GetMapping("/count")
     public ResponseEntity<String> countDemonlists(@RequestParam long userId,
                                                    @AuthenticationPrincipal UserDetails userDetails) {
