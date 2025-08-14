@@ -1,0 +1,303 @@
+.demonlistsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 4px;
+    position: relative;
+}
+
+/* Custom scrollbar for the list */
+.demonlistsContainer::-webkit-scrollbar {
+    width: 4px;
+}
+
+.demonlistsContainer::-webkit-scrollbar-track {
+    background: rgba(26, 32, 44, 0.3);
+    border-radius: 2px;
+}
+
+.demonlistsContainer::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, rgba(0, 212, 255, 0.5), rgba(0, 153, 204, 0.5));
+    border-radius: 2px;
+}
+
+.demonlistsContainer::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, rgba(0, 212, 255, 0.7), rgba(0, 153, 204, 0.7));
+}
+
+/* Empty state */
+.emptyState {
+    padding: 24px 16px;
+    text-align: center;
+    color: #68737d;
+    font-size: 13px;
+    background: rgba(45, 55, 72, 0.2);
+    border-radius: 8px;
+    border: 1px dashed rgba(0, 212, 255, 0.2);
+    margin: 8px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.emptyState::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 60px;
+    height: 60px;
+    background: radial-gradient(circle, rgba(0, 212, 255, 0.1) 0%, transparent 70%);
+    transform: translate(-50%, -50%);
+    animation: pulseGlow 3s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+    0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 0.6; transform: translate(-50%, -50%) scale(1.2); }
+}
+
+.emptyStateIcon {
+    width: 32px;
+    height: 32px;
+    margin: 0 auto 8px;
+    color: #4a5568;
+    opacity: 0.5;
+}
+
+.emptyStateText {
+    font-weight: 500;
+    color: #a0aec0;
+    margin-bottom: 4px;
+}
+
+.emptyStateSubtext {
+    font-size: 11px;
+    color: #68737d;
+    font-family: 'Courier New', monospace;
+}
+
+/* Demonlist link item */
+.demonlistLink {
+    text-decoration: none;
+    display: block;
+    transition: all 0.2s ease;
+}
+
+.demonlistItem {
+    padding: 10px 15px;
+    background: rgba(45, 55, 72, 0.3);
+    border: 1px solid rgba(74, 85, 104, 0.3);
+    border-radius: 8px;
+    color: #e2e8f0;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Hover shine effect */
+.demonlistItem::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(0, 212, 255, 0.15),
+            transparent
+    );
+    transition: left 0.5s ease;
+}
+
+.demonlistItem:hover::before {
+    left: 100%;
+}
+
+.demonlistItem:hover {
+    background: rgba(0, 212, 255, 0.1);
+    border-color: rgba(0, 212, 255, 0.4);
+    color: #00d4ff;
+    transform: translateX(4px);
+    box-shadow:
+            0 4px 12px rgba(0, 212, 255, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* List icon */
+.listIcon {
+    width: 16px;
+    height: 16px;
+    color: #00d4ff;
+    opacity: 0.7;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+
+.demonlistItem:hover .listIcon {
+    opacity: 1;
+    transform: rotate(5deg) scale(1.1);
+    filter: drop-shadow(0 0 6px rgba(0, 212, 255, 0.6));
+}
+
+/* List name */
+.listName {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    letter-spacing: 0.3px;
+}
+
+/* List stats badge */
+.listStats {
+    font-size: 10px;
+    padding: 2px 6px;
+    background: rgba(0, 212, 255, 0.1);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 12px;
+    color: #68d391;
+    font-family: 'Courier New', monospace;
+    font-weight: 600;
+    white-space: nowrap;
+    opacity: 0.8;
+    transition: all 0.2s ease;
+}
+
+.demonlistItem:hover .listStats {
+    opacity: 1;
+    background: rgba(0, 212, 255, 0.2);
+    border-color: rgba(0, 212, 255, 0.3);
+}
+
+/* Active/current list */
+.demonlistItem.active {
+    background: rgba(0, 212, 255, 0.15);
+    border-color: #00d4ff;
+    color: #00d4ff;
+    border-left: 3px solid #00d4ff;
+    padding-left: 11px;
+}
+
+.demonlistItem.active .listIcon {
+    color: #00d4ff;
+    opacity: 1;
+    filter: drop-shadow(0 0 6px rgba(0, 212, 255, 0.6));
+}
+
+/* Loading state */
+.loadingContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.loadingSpinner {
+    width: 24px;
+    height: 24px;
+    border: 2px solid rgba(0, 212, 255, 0.2);
+    border-top-color: #00d4ff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.loadingText {
+    font-size: 12px;
+    color: #68737d;
+    font-family: 'Courier New', monospace;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Add new list button */
+.addNewButton {
+    margin-top: 5px;
+    padding: 10px 14px;
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 153, 204, 0.05));
+    border: 1px dashed rgba(0, 212, 255, 0.3);
+    border-radius: 8px;
+    color: #00d4ff;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.addNewButton::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, rgba(0, 212, 255, 0.2) 0%, transparent 70%);
+    transform: translate(-50%, -50%);
+    transition: width 0.4s ease, height 0.4s ease;
+}
+
+.addNewButton:hover::before {
+    width: 100px;
+    height: 100px;
+}
+
+.addNewButton:hover {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 153, 204, 0.1));
+    border-color: #00d4ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3);
+}
+
+.addIcon {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.3s ease;
+}
+
+.addNewButton:hover .addIcon {
+    transform: rotate(90deg);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .demonlistsContainer {
+        max-height: 300px;
+    }
+
+    .demonlistItem {
+        padding: 12px 16px;
+        font-size: 14px;
+    }
+
+    .listStats {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .demonlistsContainer {
+        max-height: 250px;
+    }
+}

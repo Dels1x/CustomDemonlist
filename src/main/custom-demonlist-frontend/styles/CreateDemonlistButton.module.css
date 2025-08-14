@@ -178,3 +178,85 @@
     0%, 100% { opacity: 1; }
     50% { opacity: 0.7; }
 }
+
+.sidebarButton {
+    margin-top: 5px;
+    padding: 10px 14px;
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 153, 204, 0.05));
+    border: 1px dashed rgba(0, 212, 255, 0.3);
+    border-radius: 8px;
+    color: #00d4ff;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+}
+
+.sidebarButton::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, rgba(0, 212, 255, 0.2) 0%, transparent 70%);
+    transform: translate(-50%, -50%);
+    transition: width 0.4s ease, height 0.4s ease;
+}
+
+.sidebarButton:hover::before {
+    width: 100px;
+    height: 100px;
+}
+
+.sidebarButton:hover {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 153, 204, 0.1));
+    border-color: #00d4ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3);
+}
+
+.sidebarIcon {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.3s ease;
+}
+
+.sidebarButton:hover .sidebarIcon {
+    transform: rotate(90deg);
+}
+
+.sidebarText {
+    font-weight: 600;
+    white-space: nowrap;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Loading state for sidebar variant */
+.sidebarButton.loading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.sidebarButton.loading .sidebarIcon {
+    animation: spin 1s linear infinite;
+}
+
+/* Success state for sidebar variant */
+.sidebarButton.success {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.3), rgba(0, 153, 204, 0.15));
+    animation: successPulse 0.6s ease-out;
+}
+
+/* Loading text animation for sidebar */
+.sidebarButton.loading .sidebarText {
+    animation: loadingPulse 1.5s ease-in-out infinite;
+}

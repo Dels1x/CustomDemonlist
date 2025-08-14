@@ -3,9 +3,9 @@ import styles from "@/styles/Layout.module.css";
 import Head from "next/head";
 import Link from "next/link";
 import Image from 'next/image';
-import DemonlistListManager from "@/components/DemonlistListManager";
 import {useAuthContext} from "@/context/AuthContext";
 import {usePersonContext} from "@/context/PersonContext";
+import ListOfDemonlists from "@/components/ListOfDemonlists";
 
 interface LayoutProps {
     children: ReactNode;
@@ -98,7 +98,7 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
                     {accessToken && isAuthenticated && (
                         <div className={styles.navSection}>
                             <div className={styles.navSectionTitle}>Your Lists</div>
-                            <DemonlistListManager/>
+                            <ListOfDemonlists/>
                         </div>
                     )}
 
