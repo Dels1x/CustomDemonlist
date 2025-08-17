@@ -1,4 +1,4 @@
-.deleteButton {
+.baseButton {
     background: none;
     border: none;
     padding: 0;
@@ -7,14 +7,30 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.baseButton:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    color: #718096;
+}
+
+.baseButton:disabled:hover {
+    transform: none;
+    background: none;
+    border: none;
+}
+
+.deleteButton {
+    composes: baseButton;
     width: 35px;
     height: 35px;
     border-radius: 4px;
-    transition: all 0.2s ease;
     color: #a0aec0;
     font-size: 20px;
     font-weight: 700;
-    position: relative;
     overflow: hidden;
 }
 
@@ -47,17 +63,6 @@
     background: rgba(255, 59, 59, 0.2);
 }
 
-.deleteButton:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-    color: #718096;
-}
-
-.deleteButton:disabled:hover {
-    transform: none;
-    background: none;
-    border: none;
-}
 
 .deleteIcon {
     font-size: 14px;
@@ -68,20 +73,11 @@
 
 /* Alternative trash icon style */
 .deleteButtonTrash {
-    background: none;
-    border: none;
-    padding: 0;
-    margin: 0;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    composes: baseButton;
     width: 35px;
     height: 35px;
     border-radius: 4px;
-    transition: all 0.2s ease;
     color: #a0aec0;
-    position: relative;
 }
 
 .deleteButtonTrash:hover {
@@ -103,15 +99,11 @@
 
 /* Minimalist dot style */
 .deleteButtonDot {
+    composes: baseButton;
     background: #4a5568;
-    border: none;
-    padding: 0;
-    margin: 0;
-    cursor: pointer;
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    transition: all 0.2s ease;
     opacity: 0.6;
 }
 
@@ -128,15 +120,10 @@
 
 /* Ultra minimal line style */
 .deleteButtonLine {
-    background: none;
-    border: none;
-    padding: 0;
-    margin: 0;
-    cursor: pointer;
+    composes: baseButton;
     width: 20px;
     height: 2px;
     background: #a0aec0;
-    transition: all 0.2s ease;
     border-radius: 1px;
     opacity: 0.6;
 }
@@ -188,22 +175,17 @@
 }
 
 .deleteButtonWide {
+    composes: baseButton;
     background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
     border: 2px solid transparent;
     padding: 8px 16px;
-    margin: 0;
-    cursor: pointer;
     display: inline-flex;
-    align-items: center;
-    justify-content: center;
     min-width: 120px;
     height: auto;
     border-radius: 6px;
-    transition: all 0.2s ease;
     color: white;
     font-size: 14px;
     font-weight: 600;
-    position: relative;
     overflow: hidden;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
